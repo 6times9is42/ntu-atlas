@@ -265,13 +265,16 @@ function openModal(type) {
   legalModalBody.innerHTML = c.body;
   legalModal.removeAttribute('hidden');
   legalModal.setAttribute('aria-hidden', 'false');
-  const focusable = getFocusable(legalModal);
-  if (focusable.length) focusable[0].focus();
+  document.querySelectorAll('body > *:not(#legalModal)').forEach(el => el.setAttribute('inert', ''));
+  document.body.style.overflow = 'hidden';
+  legalModalTitle.focus();
 }
 
 function closeModal() {
   legalModal.setAttribute('hidden', '');
   legalModal.setAttribute('aria-hidden', 'true');
+  document.querySelectorAll('body > *:not(#legalModal)').forEach(el => el.removeAttribute('inert'));
+  document.body.style.overflow = '';
   if (modalTrigger) { modalTrigger.focus(); modalTrigger = null; }
 }
 
