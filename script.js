@@ -225,3 +225,80 @@ revealElements.forEach((el, i) => {
   io.observe(el);
 });
 
+/* ——— LEGAL MODAL ——— */
+const legalModal = document.getElementById('legalModal');
+const legalModalTitle = document.getElementById('legalModalTitle');
+const legalModalBody = document.getElementById('legalModalBody');
+let modalTrigger = null;
+
+const legalContent = {
+  about: {
+    title: 'About NTU Atlas',
+    body: `<p>NTU Atlas is a student-built directory of NTU's digital ecosystem — portals, campus services, clubs and societies — all in one place.</p>
+<p>Built and maintained by NTU students. Not affiliated with or endorsed by Nanyang Technological University.</p>
+<p>Want to suggest a link, report a broken one, or contribute? <a class="modal-link" href="https://t.me/ntulinksss" target="_blank" rel="noopener">Join the community on Telegram →</a></p>`
+  },
+  disclaimer: {
+    title: 'Disclaimer',
+    body: `<p>NTU Atlas is an independent student project and is not affiliated with, endorsed by, or connected to Nanyang Technological University.</p>
+<p>Links are student-maintained and may become outdated or inaccurate over time. Use them at your own discretion.</p>
+<p>For official NTU information, always refer to <a class="modal-link" href="https://www.ntu.edu.sg" target="_blank" rel="noopener">ntu.edu.sg</a>.</p>`
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    body: `<p>NTU Atlas does not collect any personal data. There are no cookies, no analytics, no tracking scripts, and no user accounts.</p>
+<p>The only data stored on your device is a single <code>localStorage</code> entry that remembers your dark or light theme preference. It is stored locally in your browser and never transmitted anywhere.</p>
+<p>External links on this site lead to third-party websites, each governed by their own privacy policies.</p>`
+  }
+};
+
+function getFocusable(container) {
+  return Array.from(container.querySelectorAll(
+    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  ));
+}
+
+function openModal(type) {
+  const c = legalContent[type];
+  if (!c) return;
+  legalModalTitle.textContent = c.title;
+  legalModalBody.innerHTML = c.body;
+  legalModal.removeAttribute('hidden');
+  legalModal.setAttribute('aria-hidden', 'false');
+  const focusable = getFocusable(legalModal);
+  if (focusable.length) focusable[0].focus();
+}
+
+function closeModal() {
+  legalModal.setAttribute('hidden', '');
+  legalModal.setAttribute('aria-hidden', 'true');
+  if (modalTrigger) { modalTrigger.focus(); modalTrigger = null; }
+}
+
+document.querySelectorAll('.footer-legal-link').forEach(btn => {
+  btn.addEventListener('click', () => {
+    modalTrigger = btn;
+    openModal(btn.dataset.modal);
+  });
+});
+
+document.getElementById('legalModalClose').addEventListener('click', closeModal);
+
+legalModal.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); return; }
+  if (e.key !== 'Tab') return;
+  const focusable = getFocusable(legalModal);
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.shiftKey) {
+    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+  } else {
+    if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+});
+
+legalModal.addEventListener('click', e => {
+  if (e.target === legalModal) closeModal();
+});
+

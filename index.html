@@ -754,8 +754,24 @@
       <div class="footer-ntu-dot" aria-hidden="true"></div>
       Singapore · NTU Campus
     </div>
+    <div class="footer-legal">
+      <button class="footer-legal-link" data-modal="about">About</button>
+      <span aria-hidden="true">·</span>
+      <button class="footer-legal-link" data-modal="disclaimer">Disclaimer</button>
+      <span aria-hidden="true">·</span>
+      <button class="footer-legal-link" data-modal="privacy">Privacy Policy</button>
+    </div>
   </div>
 </footer>
+
+<!-- Legal Modal -->
+<div id="legalModal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle" hidden aria-hidden="true">
+  <div class="modal-panel">
+    <button class="modal-close" id="legalModalClose" aria-label="Close">&times;</button>
+    <h2 class="modal-title" id="legalModalTitle"></h2>
+    <div class="modal-body" id="legalModalBody"></div>
+  </div>
+</div>
 
 <script src="data.js"></script>
 <script src="script.js"></script>
