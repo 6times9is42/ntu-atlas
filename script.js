@@ -203,9 +203,11 @@ function renderClubs(filter) {
         <div class="club-card-links">${igLink}${tgLink}</div>
       </div>`;
   }).join('');
-  clubsGrid.classList.remove('fade-in');
-  void clubsGrid.offsetWidth; // force reflow so animation restarts
-  clubsGrid.classList.add('fade-in');
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    clubsGrid.classList.remove('fade-in');
+    void clubsGrid.offsetWidth;
+    clubsGrid.classList.add('fade-in');
+  }
 }
 
 document.querySelectorAll('.club-tab').forEach(tab => {
