@@ -109,14 +109,6 @@ nav {
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
-.nav-logo-sub {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  font-weight: 300;
-  color: var(--text-tertiary);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
 
 .nav-right {
   display: flex;
@@ -124,24 +116,6 @@ nav {
   gap: 24px;
 }
 
-.nav-pill {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  text-decoration: none;
-  padding: 6px 14px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  transition: all 0.2s ease;
-}
-.nav-pill:hover {
-  color: var(--text-primary);
-  border-color: var(--border-hover);
-  background: var(--bg-hover);
-}
 
 .theme-toggle {
   width: 38px;
@@ -212,11 +186,7 @@ nav {
 }
 
 .hero-sub-row {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px;
-  flex-wrap: wrap;
+  display: block;
 }
 
 .hero-desc {
@@ -224,32 +194,9 @@ nav {
   font-weight: 300;
   line-height: 1.7;
   color: var(--text-secondary);
-  max-width: 440px;
+  max-width: 560px;
 }
 
-.hero-stats {
-  display: flex;
-  gap: 32px;
-  flex-shrink: 0;
-}
-.hero-stat {
-  text-align: right;
-}
-.hero-stat-num {
-  font-family: 'Instrument Serif', serif;
-  font-size: 32px;
-  color: var(--text-primary);
-  display: block;
-  line-height: 1;
-}
-.hero-stat-label {
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-top: 4px;
-  display: block;
-}
 
 .hero-scroll-hint {
   position: absolute;
@@ -585,7 +532,6 @@ nav {
 .link-card-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   margin-top: 4px;
 }
 
@@ -602,20 +548,6 @@ nav {
 .link-card:hover .link-card-go { color: var(--ntu-red); gap: 8px; }
 .link-card-go svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
-.link-card-ext {
-  width: 24px; height: 24px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-.link-card:hover .link-card-ext {
-  border-color: var(--ntu-red);
-  background: var(--ntu-red-dim);
-}
-.link-card-ext svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Subgroup label */
 .links-subgroup-label {
@@ -1093,12 +1025,10 @@ footer {
   .top-pick-card { border-right: none; border-bottom: 1px solid var(--border); }
   .top-pick-card:last-child { border-bottom: none; }
   .tools-row { flex-wrap: nowrap; }
-  .hero-stats { gap: 20px; }
 }
 
 @media (max-width: 600px) {
   .hero-title { font-size: 38px; }
-  .hero-stats { display: none; }
   .links-grid { grid-template-columns: 1fr; }
   .fresh-checklist { grid-template-columns: 1fr; }
   .clubs-grid { grid-template-columns: 1fr; }
