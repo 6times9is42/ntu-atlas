@@ -70,6 +70,58 @@ body::before {
   z-index: 0;
 }
 
+/* ——— RADIAL GLOW ——— */
+.bg-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-glow::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  top: -100px;
+  left: -100px;
+  background: radial-gradient(circle, var(--ntu-red), transparent 70%);
+  opacity: 0.08;
+  border-radius: 50%;
+  animation: glowDrift1 18s ease-in-out infinite alternate;
+}
+
+.bg-glow::after {
+  content: '';
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  bottom: -200px;
+  right: -100px;
+  background: radial-gradient(circle, #6080a0, transparent 70%);
+  opacity: 0.05;
+  border-radius: 50%;
+  animation: glowDrift2 22s ease-in-out infinite alternate;
+}
+
+@keyframes glowDrift1 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(60px, 40px) scale(1.1); }
+}
+
+@keyframes glowDrift2 {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(-50px, -60px) scale(1.15); }
+}
+
+[data-theme="light"] .bg-glow::before { opacity: 0.04; }
+[data-theme="light"] .bg-glow::after  { opacity: 0.025; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-glow::before, .bg-glow::after { animation-play-state: paused; }
+}
+
 /* ——— TOPOGRAPHIC LINES ——— */
 .topo-svg {
   position: fixed;
