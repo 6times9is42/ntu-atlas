@@ -71,7 +71,7 @@ function searchLinks(query) {
   allClubs.forEach(club => {
     if (!results.find(r => r.name === club.name)) {
       if (club.name.toLowerCase().includes(q) || club.desc.toLowerCase().includes(q) || club.type.toLowerCase().includes(q)) {
-        results.push({ name: club.name, cat: 'Club', url: club.instagram ? `https://instagram.com/${club.instagram}` : '#' });
+        results.push({ name: escapeHtml(club.name), cat: 'Club', url: club.instagram ? `https://instagram.com/${escapeHtml(club.instagram)}` : '#' });
       }
     }
   });
