@@ -139,6 +139,20 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
   });
 });
 
+/* ——— THEME PERSISTENCE ——— */
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    const iconSunEl = document.getElementById('iconSun');
+    const iconMoonEl = document.getElementById('iconMoon');
+    if (iconSunEl && iconMoonEl) {
+      iconSunEl.style.display = saved === 'dark' ? 'none' : 'block';
+      iconMoonEl.style.display = saved === 'dark' ? 'block' : 'none';
+    }
+  }
+})();
+
 /* ——— THEME TOGGLE ——— */
 const toggle = document.getElementById('themeToggle');
 const iconSun = document.getElementById('iconSun');
@@ -147,7 +161,9 @@ const iconMoon = document.getElementById('iconMoon');
 toggle.addEventListener('click', () => {
   const html = document.documentElement;
   const isDark = html.getAttribute('data-theme') === 'dark';
-  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
   iconSun.style.display = isDark ? 'none' : 'block';
   iconMoon.style.display = isDark ? 'block' : 'none';
   toggle.setAttribute('aria-label', isDark ? 'Switch to dark mode' : 'Switch to light mode');

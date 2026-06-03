@@ -1258,4 +1258,7 @@ footer {
     -webkit-backdrop-filter: none;
     background: var(--bg-primary);
   }
+  .marquee-track { animation-play-state: paused; }
+  .scroll-line { animation: none; }
+  .hero-label, .hero-title, .hero-sub-row { animation: none; }
 }
