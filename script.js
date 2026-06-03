@@ -94,6 +94,18 @@ searchInput.addEventListener('input', () => {
     </a>
   `).join('');
   searchResults.classList.add('active');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!prefersReducedMotion) {
+    searchResults.querySelectorAll('.search-result-item').forEach((item, i) => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(6px)';
+      item.style.transition = `opacity 0.2s ease ${i * 30}ms, transform 0.2s ease ${i * 30}ms`;
+      requestAnimationFrame(() => {
+        item.style.opacity = '1';
+        item.style.transform = 'translateY(0)';
+      });
+    });
+  }
 });
 
 document.addEventListener('click', e => {
@@ -141,6 +153,12 @@ toggle.addEventListener('click', () => {
   toggle.setAttribute('aria-label', isDark ? 'Switch to dark mode' : 'Switch to light mode');
 });
 
+/* ——— NAV SCROLL STATE ——— */
+const navEl = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
 /* ——— CLUBS & SOCIETIES ——— */
 const clubsGrid = document.getElementById('clubsGrid');
 const clubsCount = document.getElementById('clubsCount');
@@ -185,6 +203,9 @@ function renderClubs(filter) {
         <div class="club-card-links">${igLink}${tgLink}</div>
       </div>`;
   }).join('');
+  clubsGrid.classList.remove('fade-in');
+  void clubsGrid.offsetWidth; // force reflow so animation restarts
+  clubsGrid.classList.add('fade-in');
 }
 
 document.querySelectorAll('.club-tab').forEach(tab => {
@@ -208,7 +229,7 @@ document.querySelectorAll('.club-tab').forEach(tab => {
 renderClubs('All');
 
 /* ——— SCROLL REVEAL ——— */
-const revealElements = document.querySelectorAll('.top-pick-card, .link-card, .fresh-item, .tool-item, .club-card');
+const revealElements = document.querySelectorAll('.top-pick-card, .link-card, .fresh-item, .tool-item, .club-card, h2.section-title');
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
@@ -218,7 +239,9 @@ const io = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
+const prefersReducedMotionReveal = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 revealElements.forEach((el, i) => {
+  if (prefersReducedMotionReveal) return;
   el.style.opacity = '0';
   el.style.transform = 'translateY(16px)';
   el.style.transition = `opacity 0.5s ease ${(i % 8) * 0.06}s, transform 0.5s ease ${(i % 8) * 0.06}s, background 0.2s ease`;
