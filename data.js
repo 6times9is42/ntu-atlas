@@ -32,7 +32,7 @@ const allLinks = [
   { name: 'NTU ConfessIt', desc: 'Anonymous confessions from the NTU student body — the unfiltered pulse of campus life', cat: 'Community', tag: 'Social', group: null, url: 'https://t.me/ntuconfessit' },
   { name: 'NTU Marketplace', desc: 'Student-to-student trading for textbooks, electronics, furniture and campus essentials', cat: 'Community', tag: 'Buy & Sell', group: null, url: 'https://t.me/ntumarketplace' },
   { name: 'InUniSell', desc: 'NTU student marketplace website — buy and sell textbooks, electronics and campus items', cat: 'Community', tag: 'Buy & Sell', group: null, url: 'https://inunisell.ntuscds.com/' },
-  { name: 'NTU Atlas Community', desc: 'Suggest new links, report broken ones and connect with fellow students', cat: 'Community', tag: 'Community', group: null, url: 'https://t.me/ntulinksss' },
+  { name: 'NTU Atlas Community', desc: 'Suggest new links, report broken ones and connect with fellow students', cat: 'Community', tag: 'Community', group: null, url: 'https://t.me/+vuhtJw7fENg5OTll' },
   { name: 'Clubs & Societies Directory', desc: 'Official NTU directory of all recognised student clubs and societies', cat: 'Community', tag: 'Directory', group: null, url: 'https://www.ntu.edu.sg/life-at-ntu/student-life/student-activities-and-engagement/clubs-groups-societies' },
   /* Campus Life */
   { name: 'Campus Shuttle (Omnibus)', desc: 'NTU campus bus app guide — routes, timings and how to use the Omnibus mobile app', cat: 'Campus Life', tag: 'Transport', group: null, url: 'https://ebook.ntu.edu.sg/ntu-omnibus-app-user-guide.html' },

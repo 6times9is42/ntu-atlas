@@ -311,7 +311,7 @@ const legalContent = {
     title: 'About NTU Atlas',
     body: `<p>NTU Atlas is a student-built directory of NTU's digital ecosystem — portals, campus services, clubs and societies — all in one place.</p>
 <p>Built and maintained by NTU students. Not affiliated with or endorsed by Nanyang Technological University.</p>
-<p>Want to suggest a link, report a broken one, or contribute? <a class="modal-link" href="https://t.me/ntulinksss" target="_blank" rel="noopener">Join the community on Telegram →</a></p>`
+<p>Want to suggest a link, report a broken one, or contribute? <a class="modal-link" href="https://t.me/+vuhtJw7fENg5OTll" target="_blank" rel="noopener">Join the community on Telegram →</a></p>`
   },
   disclaimer: {
     title: 'Disclaimer',
