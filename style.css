@@ -1092,18 +1092,22 @@ footer {
   border-bottom-color: var(--ntu-red);
 }
 
+.clubs-grid-wrap {
+  max-height: 560px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-tertiary) transparent;
+}
+.clubs-grid-wrap::-webkit-scrollbar { width: 4px; }
+.clubs-grid-wrap::-webkit-scrollbar-track { background: transparent; }
+.clubs-grid-wrap::-webkit-scrollbar-thumb { background: var(--text-tertiary); border-radius: 2px; }
+
 .clubs-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 0;
-  max-height: 560px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
 }
-.clubs-grid::-webkit-scrollbar { width: 4px; }
-.clubs-grid::-webkit-scrollbar-track { background: transparent; }
-.clubs-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 .club-card {
   padding: 28px 28px 24px;
