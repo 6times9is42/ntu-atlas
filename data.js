@@ -31,6 +31,7 @@ const allLinks = [
   /* Community */
   { name: 'NTU ConfessIt', desc: 'Anonymous confessions from the NTU student body — the unfiltered pulse of campus life', cat: 'Community', url: 'https://t.me/ntuconfessit' },
   { name: 'NTU Marketplace', desc: 'Student-to-student trading for textbooks, electronics, furniture and campus essentials', cat: 'Community', url: 'https://t.me/ntumarketplace' },
+  { name: 'InUniSell', desc: 'NTU student marketplace website — buy and sell textbooks, electronics and campus items', cat: 'Community', url: 'https://inunisell.ntuscds.com/' },
   { name: 'NTU Atlas Community', desc: 'Suggest new links, report broken ones and connect with fellow students', cat: 'Community', url: 'https://t.me/ntulinksss' },
   { name: 'Clubs & Societies Directory', desc: 'Official NTU directory of all recognised student clubs and societies', cat: 'Community', url: 'https://www.ntu.edu.sg/life-at-ntu/student-life/student-activities-and-engagement/clubs-groups-societies' },
   /* Campus Life */
@@ -116,7 +117,7 @@ const allClubs = [
   { name: 'Lindy Hop', type: 'Arts', desc: 'Swing dance community teaching Lindy Hop, Charleston and Blues in a social dance setting.', instagram: 'ntulindyhop' },
   { name: 'MJ (Hip Hop)', type: 'Arts', desc: 'Street dance club covering hip hop, popping, locking and new-style, with showcases and battles.', instagram: 'ntumj' },
   { name: 'Soul Funky Pop & Lock', type: 'Arts', desc: 'Popping and locking dance crew performing at campus events and local competitions.', instagram: 'ntusoulfunky' },
-  { name: 'Dragon & Lion Dance Troupe', type: 'Arts', desc: 'Traditional Chinese dragon and lion dance performances at Chinese New Year and cultural events.', instagram: null },
+  { name: 'Dragon & Lion Dance Troupe', type: 'Arts', desc: 'Traditional Chinese dragon and lion dance performances at Chinese New Year and cultural events.', instagram: 'ntu_liondance' },
   { name: 'Salsa En Sync', type: 'Arts', desc: 'Latin social dance community teaching salsa, bachata and other Latin styles through weekly socials.', instagram: 'ntusalsa' },
 
   /* ── Arts — Performing & Visual ── */
@@ -150,17 +151,16 @@ const allClubs = [
   { name: 'NTU Entrepreneurship Society', type: 'Academic', desc: 'NTU\'s premier student entrepreneurship body — startup pitches, incubation support and founder networking since 2000.', instagram: 'ntu_es' },
   { name: 'Investment Interactive Club (IIC)', type: 'Academic', desc: 'Stock pitch competitions, investment simulations and finance industry networking for aspiring investors.', instagram: 'ntu.iic' },
   { name: 'NTU Open Source Society (NTUOSS)', type: 'Academic', desc: 'Hacker club fostering open-source development through workshops, project nights and the Git community since 1998.', instagram: 'ntuoss' },
-  { name: 'NTU Computing Society', type: 'Academic', desc: 'Hackathons, coding competitions, tech talks and career networking for computing students.', instagram: null },
   { name: 'AIESEC NTU', type: 'Academic', desc: 'Global youth leadership organisation offering international internships, exchanges and leadership development.', instagram: 'aiesec_ntu' },
-  { name: 'Debating Society', type: 'Academic', desc: 'Competitive parliamentary debating, public speaking workshops and Model UN preparation.', instagram: null },
+  { name: 'Debating Society', type: 'Academic', desc: 'Competitive parliamentary debating, public speaking workshops and Model UN preparation.', instagram: 'ntudebatesoc' },
   { name: 'Toastmasters Club', type: 'Academic', desc: 'Public speaking and leadership development through structured speeches, table topics and peer evaluations.', instagram: 'ntu.toastmastersclub' },
-  { name: 'Management Consulting Club', type: 'Academic', desc: 'Case competitions, consulting workshops and industry networking for students interested in management consulting.', instagram: null },
-  { name: 'Nanyang Capital', type: 'Academic', desc: 'Student-run investment fund combining finance education with real portfolio management experience.', instagram: null },
+  { name: 'Management Consulting Club', type: 'Academic', desc: 'Case competitions, consulting workshops and industry networking for students interested in management consulting.', instagram: 'ntumcclub' },
+  { name: 'Nanyang Capital', type: 'Academic', desc: 'Student-run investment fund combining finance education with real portfolio management experience.', instagram: 'nanyangcapitalsg' },
   { name: 'NTU Esports Society', type: 'Academic', desc: 'Competitive and recreational gaming across popular titles, with tournaments and inter-varsity representation.', instagram: 'ntu_esports' },
   { name: 'Women in Tech NTU', type: 'Academic', desc: 'Community empowering women in STEM through mentorship, networking and industry speaker events.', instagram: 'ntu_witech' },
   { name: 'NTU SCDS Club', type: 'Academic', desc: "Students' Computing and Data Science Club — organises Techfest hackathons, career events and community activities for CCDS students.", instagram: 'ntuscdsclub' },
   { name: 'NTU SCSE Club', type: 'Academic', desc: 'Computer Science and Engineering student club running coding competitions, industry talks and networking for SCSE students.', instagram: 'ntucseclub' },
-  { name: 'NTU AIML Club', type: 'Academic', desc: 'AI/ML community under SCDS running workshops, competitions and the CACTUS team for students passionate about artificial intelligence.', instagram: null },
+  { name: 'NTU AIML Club', type: 'Academic', desc: 'AI/ML community under SCDS running workshops, competitions and the CACTUS team for students passionate about artificial intelligence.', instagram: 'ccds_aiml' },
   { name: '180 Degrees Consulting (Nanyang)', type: 'Academic', desc: 'Global non-profit consulting club connecting NTU students with real consulting projects for social enterprises and NGOs.', instagram: '180dcntu' },
   { name: 'NTU Business Solutions', type: 'Academic', desc: 'Business case club offering case competition training, consulting workshops and career development for business-minded students.', instagram: 'ntubusinesssolutions' },
   { name: 'NTU Astronomical Society', type: 'Academic', desc: 'Stargazing sessions, astrophotography, telescope workshops and space science talks for the curious.', instagram: 'ntu_astro' },
@@ -174,9 +174,8 @@ const allClubs = [
   { name: 'Earthlink NTU', type: 'Community', desc: 'NTU\'s largest environmental sustainability club — tree planting, eco-campaigns and community nature events.', instagram: 'earthlinkntu' },
   { name: 'Rotaract Club of NTU', type: 'Community', desc: 'Rotary-affiliated service club running community outreach, social projects and leadership development programmes.', instagram: 'racntu' },
   { name: 'Welfare Services Club (WSC)', type: 'Community', desc: 'Constituent club running 9 service projects for the deaf, elderly, disabled and other vulnerable communities.', instagram: 'ntuwsc' },
-  { name: 'Project Heartware', type: 'Community', desc: 'Student-run VWO connecting NTU students with regular community service placements around Singapore.', instagram: null },
-  { name: 'Uni-Y NTU', type: 'Community', desc: 'University YMCA chapter running youth development, community service and leadership programmes.', instagram: null },
-  { name: 'Engineers Without Borders NTU', type: 'Community', desc: 'Applies engineering skills to humanitarian projects in Singapore and developing communities overseas.', instagram: null },
+  { name: 'Uni-Y NTU', type: 'Community', desc: 'University YMCA chapter running youth development, community service and leadership programmes.', instagram: 'uniysg' },
+  { name: 'Engineers Without Borders NTU', type: 'Community', desc: 'Applies engineering skills to humanitarian projects in Singapore and developing communities overseas.', instagram: 'ewb.ntu' },
   { name: 'NTU Civil Defence Lionhearter Club', type: 'Community', desc: 'Civil defence awareness and community preparedness — partnered with SCDF to train student volunteers.', instagram: 'ntulionhearters' },
   { name: 'Fastforward Board Games Society', type: 'Community', desc: 'Casual and competitive board gaming — game nights, tournaments and a growing library of tabletop titles.', instagram: 'ntu_fastforward' },
   { name: 'NTU Wine Society', type: 'Community', desc: 'Wine appreciation society running tastings, pairing sessions and vineyard visits for curious palates.', instagram: 'ntuwinesociety' },
@@ -184,11 +183,8 @@ const allClubs = [
   /* ── Uniformed ── */
   { name: 'Red Cross Youth NTU Chapter', type: 'Uniformed', desc: 'Bi-annual blood donation drives, first aid coverage and community involvement programmes since 1994.', instagram: 'nturedcross' },
   { name: 'National Police Cadet Corps (NPCC)', type: 'Uniformed', desc: 'One of two open NPCC university units — crime prevention, police liaison and leadership training.', instagram: 'ntunpcc' },
-  { name: 'Naval Volunteer Force (NVF)', type: 'Uniformed', desc: "NTU's uniformed naval unit under the Singapore Armed Forces — seamanship, leadership and community service.", instagram: null },
-  { name: "St John's Brigade (SJAB)", type: 'Uniformed', desc: 'First aid training, nursing skills and emergency response as part of St John Singapore\'s university unit.', instagram: null },
 
   /* ── Welfare ── */
   { name: "Students' Union (NTUSU)", type: 'Welfare', desc: "Representative body of all NTU undergraduates — student advocacy, campus-wide events and club governance.", instagram: 'ntu.su' },
-  { name: 'Green Club', type: 'Welfare', desc: 'Campus sustainability drives, upcycling workshops and green-living awareness campaigns across NTU halls.', instagram: null },
   { name: "Animal Lovers' Society (ALS)", type: 'Welfare', desc: 'Animal welfare advocacy, adoption drives and volunteering with local shelters and community cat programmes.', instagram: 'ntuals' },
 ];
