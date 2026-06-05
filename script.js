@@ -175,6 +175,46 @@ window.addEventListener('scroll', () => {
   navEl.classList.toggle('scrolled', window.scrollY > 60);
 }, { passive: true });
 
+/* ——— PORTALS ——— */
+const CAT_PANEL_MAP = {
+  'Academics': 'panel-academics',
+  'Career': 'panel-career',
+  'Exchange': 'panel-exchange',
+  'Facilities': 'panel-facilities',
+  'Finance': 'panel-finance',
+  'Housing': 'panel-housing',
+  'Community': 'panel-community',
+  'Campus Life': 'panel-campuslife',
+  'IT & Tech': 'panel-ittech',
+  'Student Services': 'panel-services',
+};
+const ACADEMICS_GROUP_ORDER = ['Core academic', 'Results', 'Registration', 'Resources', 'MOOCs'];
+
+function renderPortals() {
+  for (const [cat, panelId] of Object.entries(CAT_PANEL_MAP)) {
+    const grid = document.querySelector(`#${panelId} .links-grid`);
+    if (!grid) continue;
+    const catLinks = allLinks.filter(l => l.cat === cat);
+    const groups = cat === 'Academics' ? ACADEMICS_GROUP_ORDER : [null];
+    let html = '';
+    for (const group of groups) {
+      const groupLinks = catLinks.filter(l => l.group === group);
+      if (!groupLinks.length) continue;
+      if (group !== null) html += `<div class="links-subgroup-label" aria-hidden="true">${escapeHtml(group)}</div>`;
+      for (const link of groupLinks) {
+        const name = escapeHtml(link.name);
+        const tag = escapeHtml(link.tag);
+        const desc = escapeHtml(link.desc);
+        const url = escapeHtml(link.url);
+        html += `<a class="link-card" href="${url}" target="_blank" rel="noopener" aria-label="${name}"><span class="link-card-tag">${tag}</span><span class="link-card-name">${name}</span><span class="link-card-desc">${desc}</span><div class="link-card-footer"><span class="link-card-go">Go <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div></a>`;
+      }
+    }
+    grid.innerHTML = html;
+  }
+}
+
+renderPortals();
+
 /* ——— CLUBS & SOCIETIES ——— */
 const clubsGrid = document.getElementById('clubsGrid');
 const clubsCount = document.getElementById('clubsCount');
