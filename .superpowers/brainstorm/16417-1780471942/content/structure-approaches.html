@@ -1,0 +1,82 @@
+<style>
+  .options { gap: 16px; }
+  .mock-page { background: #111; border: 1px solid #2a2a2a; border-radius: 6px; padding: 12px; font-size: 11px; color: #666; margin-top: 10px; }
+  .mock-section { padding: 8px 10px; margin-bottom: 4px; border-radius: 3px; font-size: 11px; }
+  .mock-section.dim { background: #1a1a1a; color: #555; }
+  .mock-section.active { background: #1e1e1e; color: #9a9590; }
+  .mock-section.highlight { background: rgba(193,39,45,0.15); color: #e8474d; border: 1px solid rgba(193,39,45,0.3); }
+  .mock-section.new { background: rgba(76,175,125,0.1); color: #4caf7d; border: 1px solid rgba(76,175,125,0.2); }
+  .mock-tab-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
+  .mock-tab { background: #1a1a1a; color: #555; padding: 3px 8px; border-radius: 2px; font-size: 10px; }
+  .mock-tab.new { background: rgba(76,175,125,0.1); color: #4caf7d; }
+  .mock-link-icon { display: inline-block; width: 8px; height: 8px; background: #c1272d; border-radius: 50%; margin-right: 4px; }
+  .tradeoff { font-size: 11px; margin-top: 8px; color: #666; line-height: 1.5; }
+  .tradeoff strong { color: #9a9590; }
+</style>
+
+<h2>Where should Clubs & Societies live?</h2>
+<p class="subtitle">Three structural approaches — pick what feels right</p>
+
+<div class="options">
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Section on the main page</h3>
+      <p>Clubs appear as a new scrollable section below the freshmen checklist. Filterable by type using tabs. ~200 cards inline on the page.</p>
+      <div class="mock-page">
+        <div class="mock-section active">Hero</div>
+        <div class="mock-section active">Marquee</div>
+        <div class="mock-section active">Search</div>
+        <div class="mock-section active">Most visited</div>
+        <div class="mock-section active">All portals <span style="font-size:10px;color:#4caf7d">+ 3 new tabs</span></div>
+        <div class="mock-section active">Freshmen checklist</div>
+        <div class="mock-section new">Clubs & Societies (filterable)</div>
+        <div class="mock-section active">Direct access row</div>
+        <div class="mock-section active">Footer</div>
+      </div>
+      <div class="tradeoff"><strong>Pro:</strong> everything in one place, no navigation needed<br><strong>Con:</strong> page gets very long and heavy with 200+ club cards</div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Separate page (clubs.html)</h3>
+      <p>Clubs get their own dedicated page. Main page has a prominent link/banner to it. Keeps the main page lean.</p>
+      <div class="mock-page">
+        <div class="mock-section active">Hero</div>
+        <div class="mock-section active">Marquee</div>
+        <div class="mock-section active">Search</div>
+        <div class="mock-section active">Most visited</div>
+        <div class="mock-section active">All portals <span style="font-size:10px;color:#4caf7d">+ 3 new tabs</span></div>
+        <div class="mock-section active">Freshmen checklist</div>
+        <div class="mock-section new">→ Banner: "Browse Clubs & Societies"</div>
+        <div class="mock-section active">Direct access row</div>
+        <div class="mock-section active">Footer</div>
+      </div>
+      <div class="tradeoff"><strong>Pro:</strong> main page stays fast and focused; clubs page can grow freely<br><strong>Con:</strong> breaks the single-page flow; two files to maintain</div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Modal / drawer overlay</h3>
+      <p>A "Clubs & Societies" button in the nav or portals section opens a full-screen overlay with the filterable list.</p>
+      <div class="mock-page">
+        <div class="mock-section active">Hero</div>
+        <div class="mock-section active">Marquee</div>
+        <div class="mock-section active">Search</div>
+        <div class="mock-section active">Most visited</div>
+        <div class="mock-section active">All portals <span style="font-size:10px;color:#4caf7d">+ 3 new tabs</span></div>
+        <div class="mock-section active">Freshmen checklist</div>
+        <div class="mock-section active">Direct access row</div>
+        <div class="mock-section active">Footer</div>
+        <div class="mock-section new" style="margin-top:8px;border-style:dashed">↗ Clubs overlay (triggered from nav/portals)</div>
+      </div>
+      <div class="tradeoff"><strong>Pro:</strong> page stays clean; clubs feel like a feature, not an afterthought<br><strong>Con:</strong> more complex JS; overlay with 200 cards can feel heavy</div>
+    </div>
+  </div>
+
+</div>
