@@ -1096,7 +1096,14 @@ footer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 0;
+  max-height: 560px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
+.clubs-grid::-webkit-scrollbar { width: 4px; }
+.clubs-grid::-webkit-scrollbar-track { background: transparent; }
+.clubs-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
 .club-card {
   padding: 28px 28px 24px;

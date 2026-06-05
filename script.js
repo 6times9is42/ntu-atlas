@@ -190,8 +190,6 @@ function escapeHtml(str) {
 }
 
 const instagramSVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`;
-const telegramSVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`;
-
 function renderClubs(filter) {
   const filtered = filter === 'All' ? allClubs : allClubs.filter(c => c.type === filter);
   const count = filtered.length;
@@ -203,20 +201,16 @@ function renderClubs(filter) {
     const type = escapeHtml(club.type);
     const desc = escapeHtml(club.desc);
     const handle = club.instagram ? escapeHtml(club.instagram) : null;
-    const tgUrl = club.telegram ? escapeHtml(club.telegram) : null;
 
     const igLink = handle
       ? `<a class="club-social-link" href="https://instagram.com/${handle}" target="_blank" rel="noopener" aria-label="${name} on Instagram">${instagramSVG}@${handle}</a>`
-      : '';
-    const tgLink = tgUrl
-      ? `<a class="club-social-link" href="${tgUrl}" target="_blank" rel="noopener" aria-label="${name} on Telegram">${telegramSVG}Telegram</a>`
       : '';
     return `
       <div class="club-card" role="listitem">
         <span class="club-card-tag">${type}</span>
         <span class="club-card-name">${name}</span>
         <span class="club-card-desc">${desc}</span>
-        <div class="club-card-links">${igLink}${tgLink}</div>
+        <div class="club-card-links">${igLink}</div>
       </div>`;
   }).join('');
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
