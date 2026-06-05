@@ -1216,7 +1216,6 @@ footer {
   .top-picks-grid { grid-template-columns: 1fr; }
   .top-pick-card { border-right: none; border-bottom: 1px solid var(--border); }
   .top-pick-card:last-child { border-bottom: none; }
-  .tools-row { flex-wrap: nowrap; }
 }
 
 @media (max-width: 600px) {
@@ -1224,6 +1223,21 @@ footer {
   .links-grid { grid-template-columns: 1fr; }
   .fresh-checklist { grid-template-columns: 1fr; }
   .clubs-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  nav { padding: 0 16px; }
+  .hero { padding: 96px 16px 48px; }
+  .hero-title { font-size: clamp(32px, 9vw, 38px); }
+  .search-section, .top-picks, .cat-section, .fresh-section, .clubs-section, .tools-section, .marquee-wrap { padding-left: 16px; padding-right: 16px; }
+  .section-header, footer { padding-left: 16px; padding-right: 16px; }
+  footer { padding-top: 32px; padding-bottom: 28px; }
+  .footer-right { text-align: left; }
+  .footer-legal { justify-content: flex-start; }
+  .modal-panel { padding: 24px; }
+  .clubs-grid-wrap { max-height: 420px; }
+  .tools-row { flex-wrap: wrap; justify-content: center; }
+  .search-bar { padding: 14px 16px; }
 }
 .sr-only {
   position: absolute;

@@ -11,8 +11,7 @@ const allLinks = [
   { name: 'Class Schedule', desc: 'Browse available classes for any module', cat: 'Academics', url: 'https://wish.wis.ntu.edu.sg/webexe/owa/aus_schedule.main' },
   { name: 'LOA Form', desc: 'Leave of absence application form', cat: 'Academics', url: 'https://entuedu.sharepoint.com/sites/Student/dept/sasd/oas/Shared%20Documents/Forms/display.aspx?id=%2Fsites%2FStudent%2Fdept%2Fsasd%2Foas%2FShared%20Documents%2FCandidature%2FShort%20Leave%20Application%20Form0324%2Epdf' },
   { name: 'Academic Calendar', desc: 'Semester dates, recess weeks, exam periods and public holidays', cat: 'Academics', url: 'https://www.ntu.edu.sg/admissions/matriculation/academic-calendars' },
-  { name: 'Library Catalogue', desc: 'Search NTU library holdings — books, journals, databases and e-resources', cat: 'Academics', url: 'https://libportal.ntu.edu.sg/' },
-  { name: 'Turnitin', desc: 'Plagiarism detection and originality checking tool, accessed through NTULearn course shells', cat: 'Academics', url: 'https://ntulearn.ntu.edu.sg/ultra/institution-page' },
+  { name: 'Library Catalogue', desc: 'Search NTU library holdings — books, journals, databases and e-resources', cat: 'Academics', url: 'https://libguides.ntu.edu.sg/OneSearch' },
   { name: 'MOOC Transfer', desc: 'Credit transfer portal for approved online MOOCs. Submit completed certificates for AU recognition.', cat: 'Academics', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=&p2=https://venus2.wis.ntu.edu.sg/MOOC/Student/Login.aspx&extra=&pg=' },
   { name: 'MOOC Guide', desc: "Approved MOOC platforms and eligibility for AU credit under NTU's recognition programme", cat: 'Academics', url: 'https://www.ntu.edu.sg/admissions/matriculation/mooc' },
   /* Career */
@@ -23,7 +22,7 @@ const allLinks = [
   { name: 'Course Matching', desc: 'Match overseas courses to NTU equivalents for credit transfer approval', cat: 'Exchange', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=1&p2=https://wis.ntu.edu.sg/pls/lms/instep_past_subj_matching.show_rec_INSTEP' },
   /* Facilities */
   { name: 'Library Booking', desc: "Study rooms and library spaces across NTU's library network", cat: 'Facilities', url: 'https://libcalendar.ntu.edu.sg/' },
-  { name: 'Facilities Booking', desc: 'Sports courts, function rooms and multi-purpose halls for club or personal use', cat: 'Facilities', url: 'https://wis.ntu.edu.sg/pls/webexe88/srce_smain_s.srce$sel31_v_menu' },
+  { name: 'Facilities Booking', desc: 'Sports courts, function rooms and multi-purpose halls for club or personal use', cat: 'Facilities', url: 'https://ntu.facilitiesbooking.com/' },
   { name: 'Sports & Rec Centre', desc: 'Book facilities at the Sports & Recreation Centre — gym, pools, courts and fitness classes', cat: 'Facilities', url: 'https://www.ntu.edu.sg/life-at-ntu/recreational-spaces-facilities/sports-recreation-centre' },
   /* Finance */
   { name: 'Financial Aid', desc: 'Scholarships, bursaries, tuition grants and financial assistance for undergraduates', cat: 'Finance', url: 'https://www.ntu.edu.sg/admissions/undergraduate/financial-matters/financial-aid' },
@@ -33,24 +32,22 @@ const allLinks = [
   { name: 'NTU ConfessIt', desc: 'Anonymous confessions from the NTU student body — the unfiltered pulse of campus life', cat: 'Community', url: 'https://t.me/ntuconfessit' },
   { name: 'NTU Marketplace', desc: 'Student-to-student trading for textbooks, electronics, furniture and campus essentials', cat: 'Community', url: 'https://t.me/ntumarketplace' },
   { name: 'NTU Atlas Community', desc: 'Suggest new links, report broken ones and connect with fellow students', cat: 'Community', url: 'https://t.me/ntulinksss' },
-  { name: 'OSA Clubs Directory', desc: 'Official NTU list of all recognised clubs and societies managed by the Office of Student Affairs', cat: 'Community', url: 'https://www.ntu.edu.sg/student-services/office-of-student-affairs/clubs-and-societies' },
+  { name: 'Clubs & Societies Directory', desc: 'Official NTU directory of all recognised student clubs and societies', cat: 'Community', url: 'https://www.ntu.edu.sg/life-at-ntu/student-life/student-activities-and-engagement/clubs-groups-societies' },
   /* Campus Life */
-  { name: 'Campus Shuttle', desc: 'Real-time NTU campus bus timings and routes — also available as the NTU Campus Shuttle mobile app', cat: 'Campus Life', url: 'https://transport.ntu.edu.sg/' },
-  { name: 'Campus Map', desc: 'Interactive NTU campus map — find buildings, bus stops, canteens and facilities', cat: 'Campus Life', url: 'https://maps.ntu.edu.sg/maps' },
-  { name: 'Food & Beverage', desc: 'NTU canteen locations, operating hours and food options across the campus', cat: 'Campus Life', url: 'https://www.ntu.edu.sg/life-at-ntu/amenities/foodandbeverage' },
+  { name: 'Campus Shuttle (Omnibus)', desc: 'NTU campus bus app guide — routes, timings and how to use the Omnibus mobile app', cat: 'Campus Life', url: 'https://ebook.ntu.edu.sg/ntu-omnibus-app-user-guide.html' },
+  { name: 'Campus Map', desc: 'Interactive NTU campus map — find buildings, bus stops, canteens and facilities', cat: 'Campus Life', url: 'https://maps.ntu.edu.sg/' },
+  { name: 'Food & Beverage', desc: 'NTU canteen locations, operating hours and food options across the campus', cat: 'Campus Life', url: 'https://www.ntu.edu.sg/life-at-ntu/leisure-and-dining/general-directory' },
   { name: 'Student Health Centre', desc: 'Book GP consultations, vaccinations and health screenings at the on-campus clinic', cat: 'Campus Life', url: 'https://www.ntu.edu.sg/life-at-ntu/health-and-safety/services/health-care' },
   { name: 'Counselling Services', desc: 'Free and confidential counselling and psychological support for all NTU students', cat: 'Campus Life', url: 'https://www.ntu.edu.sg/life-at-ntu/student-life/campus-life-and-wellbeing/ntu-wellbeing/student-well-being/Counselling-and-Psychological-Services' },
   /* IT & Tech */
-  { name: 'NTU VPN', desc: 'Access NTU intranet resources off-campus using the official Cisco AnyConnect VPN', cat: 'IT & Tech', url: 'https://ntuvpn.ntu.edu.sg/' },
-  { name: 'eduroam Setup', desc: 'Connect to eduroam Wi-Fi on campus and at partner institutions worldwide', cat: 'IT & Tech', url: 'https://www.ntu.edu.sg/ntunetwork/eduroam' },
-  { name: 'NTU Email', desc: 'Access your NTU student email inbox via Outlook — check regularly for official communications', cat: 'IT & Tech', url: 'https://outlook.office365.com/' },
-  { name: 'Microsoft 365', desc: 'Free Microsoft 365 suite for NTU students — Word, Excel, PowerPoint, Teams and OneDrive', cat: 'IT & Tech', url: 'https://www.ntu.edu.sg/ntunetwork/microsoft-365' },
+  { name: 'NTU VPN', desc: 'Access NTU intranet resources off-campus using GlobalProtect VPN', cat: 'IT & Tech', url: 'https://vpngate.ntu.edu.sg/global-protect/getsoftwarepage.esp' },
+  { name: 'eduroam Setup', desc: 'Connect to eduroam Wi-Fi on campus and at partner institutions worldwide', cat: 'IT & Tech', url: 'https://www.ntu.edu.sg/life-at-ntu/internet-account-and-policy/how-to-login-to-the-ntu-wireless-network' },
   { name: 'IT Service Desk', desc: 'Report IT issues, request software licences and get help with NTU tech services', cat: 'IT & Tech', url: 'https://entuedu.sharepoint.com/sites/Student/dept/imsc/SitePages/Home.aspx' },
   /* Student Services */
-  { name: 'Student Service Centre', desc: 'One-stop counter for academic records, letters, graduation matters and general admin', cat: 'Student Services', url: 'https://www.ntu.edu.sg/student-services/student-service-centre' },
-  { name: 'Office of Student Affairs', desc: 'OSA oversees student life, welfare, clubs, and non-academic student matters', cat: 'Student Services', url: 'https://www.ntu.edu.sg/student-services/office-of-student-affairs' },
-  { name: 'Global Relations Office', desc: 'Support and resources for international students studying at NTU', cat: 'Student Services', url: 'https://www.ntu.edu.sg/gro' },
-  { name: 'Graduation', desc: 'Graduation eligibility checks, ceremony registration and collection of certificates', cat: 'Student Services', url: 'https://www.ntu.edu.sg/student-services/academic-services/graduation' },
+  { name: 'One Stop @ SAC', desc: 'Counter for academic records, letters, graduation matters and general student admin', cat: 'Student Services', url: 'https://www.ntu.edu.sg/life-at-ntu/student-life/student-services/onestop' },
+  { name: 'Student Life Hub', desc: 'NTU student life — clubs, wellbeing, inclusion, community engagement and student support services', cat: 'Student Services', url: 'https://www.ntu.edu.sg/life-at-ntu/student-life' },
+  { name: 'Global Education Office', desc: 'Support and resources for international students, exchanges and global education programmes', cat: 'Student Services', url: 'https://www.ntu.edu.sg/education/student-exchanges' },
+  { name: 'Graduation', desc: 'Graduation eligibility checks, ceremony registration and collection of certificates', cat: 'Student Services', url: 'https://www.ntu.edu.sg/education/academic-services/graduation-matters' },
 ];
 
 /* ——— CLUBS DATA ——— */
@@ -89,6 +86,14 @@ const allClubs = [
   { name: 'Silat', type: 'Sports', desc: 'Malay martial art Pencak Silat, blending self-defence, performance and cultural heritage.', instagram: 'ntusilat' },
   { name: 'Taekwondo', type: 'Sports', desc: 'Olympic taekwondo with poomsae and sparring training, belt gradings and varsity competition.', instagram: 'ntutkd' },
   { name: 'Wushu', type: 'Sports', desc: 'Chinese martial art combining form and sparring disciplines, representing NTU at varsity level.', instagram: 'ntucacwushu' },
+  { name: "Women's Contact Rugby", type: 'Sports', desc: "NTU's women's contact rugby team competing at varsity and inter-university level.", instagram: 'ntuwomensrugby' },
+  { name: 'Track and Field', type: 'Sports', desc: 'Athletics club covering sprints, middle distance, field events and cross-country with IVP representation.', instagram: 'ntu.athletics' },
+  { name: 'Canoe Kayak Sprint', type: 'Sports', desc: 'Flatwater sprint kayaking at varsity level, training at Bedok Reservoir with IVP competition.', instagram: 'ntucanoesprint' },
+  { name: 'Dragon Boat', type: 'Sports', desc: 'Dragon boat paddling team competing at local and regional regattas throughout the year.', instagram: 'ntudragonboat' },
+  { name: 'Calisthenics Club', type: 'Sports', desc: 'Bodyweight strength and skills training — muscle-ups, handstands, levers and freestyle movement.', instagram: 'ntu_calisthenics' },
+  { name: 'Squash Club', type: 'Sports', desc: 'Competitive and recreational squash with varsity representation in IVP leagues and local tournaments.', instagram: 'ntusquashers' },
+  { name: 'Aquathlon Club', type: 'Sports', desc: 'Combined swim-and-run multisport, training for aquathlon races and triathlon events around Singapore.', instagram: 'ntuaquathlon' },
+  { name: "Men's Touch Football", type: 'Sports', desc: 'Non-contact touch football with regular training sessions and inter-varsity competition.', instagram: 'ntu_menstouchfootball' },
 
   /* ── Arts — Music ── */
   { name: 'Choir', type: 'Arts', desc: "NTU's premier choral ensemble, performing Western classical and Asian repertoire locally and internationally.", instagram: 'ntuchoir' },
@@ -112,7 +117,7 @@ const allClubs = [
   { name: 'MJ (Hip Hop)', type: 'Arts', desc: 'Street dance club covering hip hop, popping, locking and new-style, with showcases and battles.', instagram: 'ntumj' },
   { name: 'Soul Funky Pop & Lock', type: 'Arts', desc: 'Popping and locking dance crew performing at campus events and local competitions.', instagram: 'ntusoulfunky' },
   { name: 'Dragon & Lion Dance Troupe', type: 'Arts', desc: 'Traditional Chinese dragon and lion dance performances at Chinese New Year and cultural events.', instagram: null },
-  { name: 'Salsa En Sync', type: 'Arts', desc: 'Latin social dance community teaching salsa, bachata and other Latin styles through weekly socials.', instagram: null },
+  { name: 'Salsa En Sync', type: 'Arts', desc: 'Latin social dance community teaching salsa, bachata and other Latin styles through weekly socials.', instagram: 'ntusalsa' },
 
   /* ── Arts — Performing & Visual ── */
   { name: 'Epiphany (NTU English Drama Society)', type: 'Arts', desc: 'English-language theatre productions, comedy improv, workshops and the annual Main Stage show.', instagram: 'ntudrama' },
@@ -122,6 +127,9 @@ const allClubs = [
   { name: 'Visual Arts Society (VAS)', type: 'Arts', desc: 'Painting, drawing, illustration and mixed-media art, running workshops and exhibitions on campus.', instagram: 'ntuvas' },
   { name: 'Emcee Club', type: 'Arts', desc: 'Develops student MCs for NTU events — public speaking, stage presence and event hosting skills.', instagram: 'ntuemcees' },
   { name: 'Concert Engineers', type: 'Arts', desc: 'Live sound, lighting and production crew behind NTU\'s major CAC concerts and performances.', instagram: 'ntuconcerteng' },
+  { name: 'Miniaturists and Modellers Club', type: 'Arts', desc: 'Scale modelling, miniatures, dioramas and tabletop hobby crafts — painting workshops, building sessions and community showcases.', instagram: 'minisatntu' },
+  { name: 'Fashion and Makeup Club', type: 'Arts', desc: 'Creative community exploring fashion styling, makeup artistry and visual presentation through workshops and showcases.', instagram: 'ntu.fam' },
+  { name: 'CAC Media and Infotech', type: 'Arts', desc: 'CAC media arm handling digital content, visual production and broadcast support for NTU cultural events.', instagram: 'ntucac_mit' },
 
   /* ── Cultural ── */
   { name: 'Chinese Society', type: 'Cultural', desc: 'Celebrates Chinese language, arts and festivals through cultural camps, performances and community events.', instagram: 'ntuchinesesoc' },
@@ -131,6 +139,11 @@ const allClubs = [
   { name: 'Japanese Appreciation Club (JAC)', type: 'Cultural', desc: 'Japanese language, anime, food and cultural exchange between NTU students and Japanese exchange students.', instagram: 'ntujac' },
   { name: 'Indian Society (IndSoc)', type: 'Cultural', desc: 'A community celebrating Indian culture and heritage through Holi, Diwali and cultural exchange events.', instagram: 'indsoc_ntu' },
   { name: 'Heritage Club', type: 'Cultural', desc: 'Raises awareness of Singapore\'s cultural heritage through tours, talks and the annual Heritage Week.', instagram: 'ntu_heritage_club' },
+  { name: 'NTU Christian Fellowship', type: 'Cultural', desc: 'Pan-denominational Christian community with Bible study, prayer groups and cell groups in English, Chinese and Indonesian.', instagram: 'ntucf' },
+  { name: 'NTU Cru', type: 'Cultural', desc: 'Campus ministry running Bible discussions, leadership training and outreach events for students of all backgrounds.', instagram: 'ntucru' },
+  { name: 'NTU Muslim Society', type: 'Cultural', desc: 'Muslim student community hosting Ramadan iftars, Islamic talks, welfare drives and interfaith dialogue events.', instagram: 'myntums' },
+  { name: 'NTU Buddhist Society', type: 'Cultural', desc: 'Buddhist community offering meditation sessions, Dharma talks, retreats and cultural activities for members.', instagram: 'ntubuddhist' },
+  { name: 'NTU Tabernacle Fellowship', type: 'Cultural', desc: 'Christian fellowship community centred on worship, discipleship and campus outreach for NTU students.', instagram: 'ntutf' },
 
   /* ── Academic ── */
   { name: 'IEEE NTU Student Branch', type: 'Academic', desc: 'IEEE student chapter running iNTUition hackathon, technical workshops and industry networking events.', instagram: 'ieee_ntu' },
@@ -140,14 +153,22 @@ const allClubs = [
   { name: 'NTU Computing Society', type: 'Academic', desc: 'Hackathons, coding competitions, tech talks and career networking for computing students.', instagram: null },
   { name: 'AIESEC NTU', type: 'Academic', desc: 'Global youth leadership organisation offering international internships, exchanges and leadership development.', instagram: 'aiesec_ntu' },
   { name: 'Debating Society', type: 'Academic', desc: 'Competitive parliamentary debating, public speaking workshops and Model UN preparation.', instagram: null },
-  { name: 'Toastmasters Club', type: 'Academic', desc: 'Public speaking and leadership development through structured speeches, table topics and peer evaluations.', instagram: null },
+  { name: 'Toastmasters Club', type: 'Academic', desc: 'Public speaking and leadership development through structured speeches, table topics and peer evaluations.', instagram: 'ntu.toastmastersclub' },
   { name: 'Management Consulting Club', type: 'Academic', desc: 'Case competitions, consulting workshops and industry networking for students interested in management consulting.', instagram: null },
   { name: 'Nanyang Capital', type: 'Academic', desc: 'Student-run investment fund combining finance education with real portfolio management experience.', instagram: null },
-  { name: 'NTU Esports Society', type: 'Academic', desc: 'Competitive and recreational gaming across popular titles, with tournaments and inter-varsity representation.', instagram: null },
-  { name: 'Women in Tech NTU', type: 'Academic', desc: 'Community empowering women in STEM through mentorship, networking and industry speaker events.', instagram: null },
+  { name: 'NTU Esports Society', type: 'Academic', desc: 'Competitive and recreational gaming across popular titles, with tournaments and inter-varsity representation.', instagram: 'ntu_esports' },
+  { name: 'Women in Tech NTU', type: 'Academic', desc: 'Community empowering women in STEM through mentorship, networking and industry speaker events.', instagram: 'ntu_witech' },
   { name: 'NTU SCDS Club', type: 'Academic', desc: "Students' Computing and Data Science Club — organises Techfest hackathons, career events and community activities for CCDS students.", instagram: 'ntuscdsclub' },
   { name: 'NTU SCSE Club', type: 'Academic', desc: 'Computer Science and Engineering student club running coding competitions, industry talks and networking for SCSE students.', instagram: 'ntucseclub' },
   { name: 'NTU AIML Club', type: 'Academic', desc: 'AI/ML community under SCDS running workshops, competitions and the CACTUS team for students passionate about artificial intelligence.', instagram: null },
+  { name: '180 Degrees Consulting (Nanyang)', type: 'Academic', desc: 'Global non-profit consulting club connecting NTU students with real consulting projects for social enterprises and NGOs.', instagram: '180dcntu' },
+  { name: 'NTU Business Solutions', type: 'Academic', desc: 'Business case club offering case competition training, consulting workshops and career development for business-minded students.', instagram: 'ntubusinesssolutions' },
+  { name: 'NTU Astronomical Society', type: 'Academic', desc: 'Stargazing sessions, astrophotography, telescope workshops and space science talks for the curious.', instagram: 'ntu_astro' },
+  { name: 'UAVionics Society', type: 'Academic', desc: 'Drone engineering and UAV development club building, flying and competing with unmanned aerial systems.', instagram: 'ntu_uavionics_society' },
+  { name: 'NTU Biomedical Engineering Society (BMES)', type: 'Academic', desc: 'Community for BME students and enthusiasts — industry talks, research exposure and career development.', instagram: 'ntubmes' },
+  { name: 'NTU Corporate Banking Club', type: 'Academic', desc: 'Finance club focused on corporate and investment banking — case workshops, deal simulations and industry networking.', instagram: 'ntu.corporatebankingclub' },
+  { name: 'NTU Cybersecurity Club (root@NTU)', type: 'Academic', desc: 'CTF competitions, security workshops and hands-on hacking labs for students passionate about cybersecurity.', instagram: 'ntucybersec' },
+  { name: 'Blockchain @ NTU', type: 'Academic', desc: 'Blockchain and Web3 community running developer workshops, hackathons and industry talks on decentralised technologies.', instagram: 'blockchain.ntusg' },
 
   /* ── Community ── */
   { name: 'Earthlink NTU', type: 'Community', desc: 'NTU\'s largest environmental sustainability club — tree planting, eco-campaigns and community nature events.', instagram: 'earthlinkntu' },
@@ -156,6 +177,9 @@ const allClubs = [
   { name: 'Project Heartware', type: 'Community', desc: 'Student-run VWO connecting NTU students with regular community service placements around Singapore.', instagram: null },
   { name: 'Uni-Y NTU', type: 'Community', desc: 'University YMCA chapter running youth development, community service and leadership programmes.', instagram: null },
   { name: 'Engineers Without Borders NTU', type: 'Community', desc: 'Applies engineering skills to humanitarian projects in Singapore and developing communities overseas.', instagram: null },
+  { name: 'NTU Civil Defence Lionhearter Club', type: 'Community', desc: 'Civil defence awareness and community preparedness — partnered with SCDF to train student volunteers.', instagram: 'ntulionhearters' },
+  { name: 'Fastforward Board Games Society', type: 'Community', desc: 'Casual and competitive board gaming — game nights, tournaments and a growing library of tabletop titles.', instagram: 'ntu_fastforward' },
+  { name: 'NTU Wine Society', type: 'Community', desc: 'Wine appreciation society running tastings, pairing sessions and vineyard visits for curious palates.', instagram: 'ntuwinesociety' },
 
   /* ── Uniformed ── */
   { name: 'Red Cross Youth NTU Chapter', type: 'Uniformed', desc: 'Bi-annual blood donation drives, first aid coverage and community involvement programmes since 1994.', instagram: 'nturedcross' },
@@ -166,5 +190,5 @@ const allClubs = [
   /* ── Welfare ── */
   { name: "Students' Union (NTUSU)", type: 'Welfare', desc: "Representative body of all NTU undergraduates — student advocacy, campus-wide events and club governance.", instagram: 'ntu.su' },
   { name: 'Green Club', type: 'Welfare', desc: 'Campus sustainability drives, upcycling workshops and green-living awareness campaigns across NTU halls.', instagram: null },
-  { name: "Animal Lovers' Society (ALS)", type: 'Welfare', desc: 'Animal welfare advocacy, adoption drives and volunteering with local shelters and community cat programmes.', instagram: null },
+  { name: "Animal Lovers' Society (ALS)", type: 'Welfare', desc: 'Animal welfare advocacy, adoption drives and volunteering with local shelters and community cat programmes.', instagram: 'ntuals' },
 ];
