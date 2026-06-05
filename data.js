@@ -10,7 +10,7 @@ const allLinks = [
   { name: 'S/U Option', desc: 'Satisfactory/Unsatisfactory grading election', cat: 'Academics', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=1&p2=https://wis.ntu.edu.sg/pls/webexe/aus_su_opt.display&extra=&pg=' },
   { name: 'Class Schedule', desc: 'Browse available classes for any module', cat: 'Academics', url: 'https://wish.wis.ntu.edu.sg/webexe/owa/aus_schedule.main' },
   { name: 'LOA Form', desc: 'Leave of absence application form', cat: 'Academics', url: 'https://entuedu.sharepoint.com/sites/Student/dept/sasd/oas/Shared%20Documents/Forms/display.aspx?id=%2Fsites%2FStudent%2Fdept%2Fsasd%2Foas%2FShared%20Documents%2FCandidature%2FShort%20Leave%20Application%20Form0324%2Epdf' },
-  { name: 'Academic Calendar', desc: 'Semester dates, recess weeks, exam periods and public holidays', cat: 'Academics', url: 'https://www.ntu.edu.sg/education/academic-calendar' },
+  { name: 'Academic Calendar', desc: 'Semester dates, recess weeks, exam periods and public holidays', cat: 'Academics', url: 'https://www.ntu.edu.sg/admissions/matriculation/academic-calendars' },
   { name: 'Library Catalogue', desc: 'Search NTU library holdings — books, journals, databases and e-resources', cat: 'Academics', url: 'https://libportal.ntu.edu.sg/' },
   { name: 'Turnitin', desc: 'Plagiarism detection and originality checking tool, accessed through NTULearn course shells', cat: 'Academics', url: 'https://ntulearn.ntu.edu.sg/ultra/institution-page' },
   { name: 'MOOC Transfer', desc: 'Credit transfer portal for approved online MOOCs. Submit completed certificates for AU recognition.', cat: 'Academics', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=&p2=https://venus2.wis.ntu.edu.sg/MOOC/Student/Login.aspx&extra=&pg=' },
@@ -23,12 +23,12 @@ const allLinks = [
   { name: 'Course Matching', desc: 'Match overseas courses to NTU equivalents for credit transfer approval', cat: 'Exchange', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=1&p2=https://wis.ntu.edu.sg/pls/lms/instep_past_subj_matching.show_rec_INSTEP' },
   /* Facilities */
   { name: 'Library Booking', desc: "Study rooms and library spaces across NTU's library network", cat: 'Facilities', url: 'https://libcalendar.ntu.edu.sg/' },
-  { name: 'Facilities Booking', desc: 'Sports courts, function rooms and multi-purpose halls for club or personal use', cat: 'Facilities', url: 'https://ntu.facilitiesbooking.com/bookings.aspx' },
-  { name: 'Sports & Rec Centre', desc: 'Book facilities at the Sports & Recreation Centre — gym, pools, courts and fitness classes', cat: 'Facilities', url: 'https://www.ntu.edu.sg/life-at-ntu/sports-and-recreation' },
+  { name: 'Facilities Booking', desc: 'Sports courts, function rooms and multi-purpose halls for club or personal use', cat: 'Facilities', url: 'https://wis.ntu.edu.sg/pls/webexe88/srce_smain_s.srce$sel31_v_menu' },
+  { name: 'Sports & Rec Centre', desc: 'Book facilities at the Sports & Recreation Centre — gym, pools, courts and fitness classes', cat: 'Facilities', url: 'https://www.ntu.edu.sg/life-at-ntu/recreational-spaces-facilities/sports-recreation-centre' },
   /* Finance */
   { name: 'Financial Aid', desc: 'Scholarships, bursaries, tuition grants and financial assistance for undergraduates', cat: 'Finance', url: 'https://www.ntu.edu.sg/admissions/undergraduate/financial-matters/financial-aid' },
   /* Housing */
-  { name: 'Hall Portal', desc: 'Apply for on-campus housing, manage your hall room and submit maintenance requests', cat: 'Housing', url: 'https://ntusg.starrezhousing.com/StarRezStudentPortal/60E2C0B3/1/1/Home-Home?UrlToken=CFD12569' },
+  { name: 'Hall Portal', desc: 'Apply for on-campus housing, manage your hall room and submit maintenance requests', cat: 'Housing', url: 'https://ntusg.starrezhousing.com/StarRezStudentPortal' },
   /* Community */
   { name: 'NTU ConfessIt', desc: 'Anonymous confessions from the NTU student body — the unfiltered pulse of campus life', cat: 'Community', url: 'https://t.me/ntuconfessit' },
   { name: 'NTU Marketplace', desc: 'Student-to-student trading for textbooks, electronics, furniture and campus essentials', cat: 'Community', url: 'https://t.me/ntumarketplace' },
@@ -38,8 +38,8 @@ const allLinks = [
   { name: 'Campus Shuttle', desc: 'Real-time NTU campus bus timings and routes — also available as the NTU Campus Shuttle mobile app', cat: 'Campus Life', url: 'https://transport.ntu.edu.sg/' },
   { name: 'Campus Map', desc: 'Interactive NTU campus map — find buildings, bus stops, canteens and facilities', cat: 'Campus Life', url: 'https://maps.ntu.edu.sg/maps' },
   { name: 'Food & Beverage', desc: 'NTU canteen locations, operating hours and food options across the campus', cat: 'Campus Life', url: 'https://www.ntu.edu.sg/life-at-ntu/amenities/foodandbeverage' },
-  { name: 'Student Health Centre', desc: 'Book GP consultations, vaccinations and health screenings at the on-campus clinic', cat: 'Campus Life', url: 'https://www.ntu.edu.sg/life-at-ntu/student-health-services' },
-  { name: 'Counselling Services', desc: 'Free and confidential counselling and psychological support for all NTU students', cat: 'Campus Life', url: 'https://www.ntu.edu.sg/student-services/welfare-counselling-guidance' },
+  { name: 'Student Health Centre', desc: 'Book GP consultations, vaccinations and health screenings at the on-campus clinic', cat: 'Campus Life', url: 'https://www.ntu.edu.sg/life-at-ntu/health-and-safety/services/health-care' },
+  { name: 'Counselling Services', desc: 'Free and confidential counselling and psychological support for all NTU students', cat: 'Campus Life', url: 'https://www.ntu.edu.sg/life-at-ntu/student-life/campus-life-and-wellbeing/ntu-wellbeing/student-well-being/Counselling-and-Psychological-Services' },
   /* IT & Tech */
   { name: 'NTU VPN', desc: 'Access NTU intranet resources off-campus using the official Cisco AnyConnect VPN', cat: 'IT & Tech', url: 'https://ntuvpn.ntu.edu.sg/' },
   { name: 'eduroam Setup', desc: 'Connect to eduroam Wi-Fi on campus and at partner institutions worldwide', cat: 'IT & Tech', url: 'https://www.ntu.edu.sg/ntunetwork/eduroam' },
@@ -54,43 +54,115 @@ const allLinks = [
 ];
 
 /* ——— CLUBS DATA ——— */
-/* NOTE: Verify all Instagram handles and Telegram links before publishing.
-   instagram: handle only (no @, no URL) — null if unavailable
-   telegram: full URL — null if unavailable */
+/* NOTE: instagram: handle only (no @, no URL) — null if unverified
+         telegram: full t.me URL — null if unavailable */
 const allClubs = [
-  /* Sports */
-  { name: 'Badminton Club', type: 'Sports', desc: 'Competitive and recreational badminton for all skill levels, with inter-varsity training.', instagram: 'ntubadminton', telegram: null },
-  { name: 'Basketball Club', type: 'Sports', desc: "Men's and women's basketball teams competing in inter-varsity leagues and friendly tournaments.", instagram: 'ntu.basketball', telegram: null },
-  { name: 'Football Club', type: 'Sports', desc: "NTU's flagship football club, fielding teams in the Institute-Varsity-Polytechnic (IVP) league.", instagram: 'ntufootball', telegram: null },
-  { name: 'Swimming Club', type: 'Sports', desc: 'Competitive swimming and water polo, with training sessions in the NTU Olympic-size pool.', instagram: 'ntuswimmingclub', telegram: null },
+
+  /* ── Sports ── */
+  { name: 'Badminton Club', type: 'Sports', desc: 'Competitive and recreational badminton for all levels, with inter-varsity IVP training and representation.', instagram: 'ntubadminton', telegram: null },
+  { name: 'Basketball Club', type: 'Sports', desc: "Men's and women's varsity basketball teams competing in IVP leagues and friendly tournaments.", instagram: 'ntubball', telegram: null },
+  { name: 'Football Club', type: 'Sports', desc: "NTU's flagship football club, fielding men's and women's teams in the IVP league.", instagram: 'ntufootball', telegram: null },
+  { name: 'Swimming & Water Polo', type: 'Sports', desc: 'Competitive swimming and water polo, training in the NTU Olympic-size pool with IVP representation.', instagram: 'ntu_swim_polo', telegram: null },
   { name: 'Tennis Club', type: 'Sports', desc: 'Tennis training and inter-varsity competition for beginners through to advanced players.', instagram: 'ntutennisclub', telegram: null },
-  { name: 'Rock Climbing Club', type: 'Sports', desc: 'Bouldering, lead and top-rope climbing sessions at the NTU climbing wall and beyond.', instagram: 'nturockclimbing', telegram: null },
-  { name: 'Volleyball Club', type: 'Sports', desc: "Men's and women's volleyball teams with regular training and inter-varsity fixtures.", instagram: 'ntuvbc', telegram: null },
-  { name: 'Table Tennis Club', type: 'Sports', desc: 'Casual and competitive table tennis for all levels, with IVP representation.', instagram: 'ntutabletennis', telegram: null },
-  /* Arts */
-  { name: 'Choir', type: 'Arts', desc: "NTU's premier choral ensemble performing Western classical and Asian repertoire at local and international events.", instagram: 'ntuchoir', telegram: null },
-  { name: 'Symphonic Band', type: 'Arts', desc: 'Full concert band performing across Singapore and at international band festivals.', instagram: 'ntusymphonicband', telegram: null },
-  { name: 'Dance Ensemble', type: 'Arts', desc: 'Contemporary and traditional dance performances, open to dancers of all backgrounds.', instagram: 'ntudance', telegram: null },
-  { name: 'Drama Society', type: 'Arts', desc: 'English-language theatre productions, workshops and improv sessions throughout the year.', instagram: 'ntudrama', telegram: null },
-  { name: 'Guitar Ensemble', type: 'Arts', desc: 'Classical and fingerstyle guitar ensemble with regular public performances and masterclasses.', instagram: 'ntuguitarensemble', telegram: null },
-  /* Cultural */
-  { name: 'Chinese Society', type: 'Cultural', desc: 'Celebrating Chinese culture through language, arts, festivals and community events.', instagram: 'ntuchinesociety', telegram: null },
-  { name: 'Tamil Language Society', type: 'Cultural', desc: 'Promoting Tamil language, literature and South Indian culture within the NTU community.', instagram: 'ntutamilsociety', telegram: null },
-  { name: 'Malay Cultural Society', type: 'Cultural', desc: 'Preserving and promoting Malay language, arts and culture through performances and workshops.', instagram: 'ntumcs', telegram: null },
-  { name: 'Korean Cultural Club', type: 'Cultural', desc: 'Korean language classes, K-pop, food events and cultural exchange within NTU.', instagram: 'ntukcc', telegram: null },
-  { name: 'Japanese Cultural Club', type: 'Cultural', desc: 'Japanese language, anime, manga, food and cultural events for enthusiasts and learners.', instagram: 'ntujcc', telegram: null },
-  { name: 'Indian Cultural Society', type: 'Cultural', desc: 'Celebrating the diversity of Indian culture through dance, music, festivals and food.', instagram: 'ntuindian', telegram: null },
-  /* Academic */
-  { name: 'IEEE NTU Student Branch', type: 'Academic', desc: 'IEEE student chapter hosting technical workshops, industry talks and networking events for engineers.', instagram: 'ieeestu.ntu', telegram: null },
-  { name: 'NTU Computing Society', type: 'Academic', desc: 'Hackathons, coding competitions, tech talks and career networking for computing students.', instagram: 'ntucomputingsociety', telegram: 'https://t.me/NTUComputingSociety' },
-  { name: 'Entrepreneurship Society', type: 'Academic', desc: 'Startup pitches, founder talks and innovation bootcamps for aspiring student entrepreneurs.', instagram: 'ntues', telegram: null },
-  { name: 'Investment Club', type: 'Academic', desc: 'Stock pitching competitions, investment simulations and finance industry networking for NTU students.', instagram: 'ntuinvestmentclub', telegram: null },
-  /* Uniformed */
-  { name: 'Naval Volunteer Force', type: 'Uniformed', desc: "NTU's uniformed naval unit under NUSS — seamanship, leadership and community service.", instagram: 'ntunvf', telegram: null },
-  { name: "St John's Brigade", type: 'Uniformed', desc: 'First aid training, community service and emergency response as part of St John Brigade Singapore.', instagram: 'ntusjab', telegram: null },
-  { name: 'Red Cross Youth', type: 'Uniformed', desc: 'Humanitarian volunteering, disaster preparedness and blood donation drives on campus.', instagram: 'ntu_redcross', telegram: null },
-  /* Welfare */
-  { name: "Students' Union", type: 'Welfare', desc: "The official representative body of NTU students — advocating for student welfare and organising campus-wide events.", instagram: 'ntusu', telegram: null },
-  { name: 'Project Heartware', type: 'Welfare', desc: 'Student-run voluntary welfare organisation connecting NTU students with community service opportunities.', instagram: 'projectheartware', telegram: null },
-  { name: 'Green Club', type: 'Welfare', desc: 'Sustainability initiatives, eco-campaigns and green living advocacy across the NTU campus.', instagram: 'ntugreenclub', telegram: null },
+  { name: 'Volleyball Club', type: 'Sports', desc: "Men's and women's volleyball teams with regular training and IVP fixtures.", instagram: 'ntuvb', telegram: null },
+  { name: 'Table Tennis Club', type: 'Sports', desc: 'Casual and competitive table tennis for all levels, with IVP league representation.', instagram: 'ntu.tabletennis', telegram: null },
+  { name: 'Floorball Club', type: 'Sports', desc: 'Recreational and competitive floorball with training sessions and inter-varsity participation.', instagram: 'nturecrefloorball', telegram: null },
+  { name: 'Archery Club', type: 'Sports', desc: 'Recurve, compound and barebow archery for beginners and competitive archers on campus.', instagram: 'ntuarchery', telegram: null },
+  { name: 'Bowling Club', type: 'Sports', desc: 'Recreational and competitive ten-pin bowling, with training at nearby alleys and varsity competition.', instagram: 'ntubowlers', telegram: null },
+  { name: 'Aces Cheerleading', type: 'Sports', desc: 'NTU\'s cheerleading squad performing stunts, pyramids and routines at campus events and competitions.', instagram: 'ntuaces', telegram: null },
+  { name: 'Fencing Club', type: 'Sports', desc: 'Foil, épée and sabre fencing for all experience levels, with IVP competitive representation.', instagram: 'ntufencingclub', telegram: null },
+  { name: 'Golf Club', type: 'Sports', desc: 'Golf training and inter-varsity competition for students of all handicap levels.', instagram: 'ntugolfclub', telegram: null },
+  { name: 'Ice Skating Club', type: 'Sports', desc: 'Recreational ice skating sessions and beginner classes at rinks around Singapore.', instagram: 'ntuonice', telegram: null },
+  { name: 'Inline Skating Club', type: 'Sports', desc: 'Recreational and freestyle inline skating sessions and skill workshops.', instagram: 'ntu_inlineskateclub', telegram: null },
+  { name: 'Lifesaving Club', type: 'Sports', desc: 'Water safety, lifesaving skills and competitive lifesaving sport, affiliated with Singapore Lifesaving.', instagram: 'ntulifesaving', telegram: null },
+  { name: "Runners' Club", type: 'Sports', desc: 'Regular group runs, long-distance training and participation in local road races and fun runs.', instagram: 'nturunnersclub', telegram: null },
+  { name: 'Sailing Club', type: 'Sports', desc: 'Dinghy and keelboat sailing at Changi Sailing Club, open to complete beginners.', instagram: 'ntusailing', telegram: null },
+  { name: 'Scuba Diving Club', type: 'Sports', desc: 'PADI-certified scuba diving training and dive trips around Singapore and the region.', instagram: 'ntuscubaofficial', telegram: null },
+  { name: 'Snooker & Pool Club', type: 'Sports', desc: 'Casual and competitive billiards — snooker, 8-ball and 9-ball — at the on-campus pool hall.', instagram: 'ntu_spc', telegram: null },
+  { name: 'Sport Climbing Club', type: 'Sports', desc: 'Bouldering, lead and top-rope climbing at the NTU wall and external gyms, for all abilities.', instagram: 'ntu_scc', telegram: null },
+  { name: 'Wakeboarding Club', type: 'Sports', desc: 'Wakeboarding and waterskiing at cable parks — beginner packages and progression programmes available.', instagram: 'ntuwakeboardingclub', telegram: null },
+  { name: 'Windsurfing Club', type: 'Sports', desc: 'Windsurfing training at East Coast Park, catering to beginners and experienced sailors.', instagram: 'ntuwindsurf', telegram: null },
+  { name: 'Aikido Club', type: 'Sports', desc: 'Traditional Japanese martial art focusing on joint locks and throws, open to all experience levels.', instagram: 'ntuaikidoclub', telegram: null },
+  { name: 'Brazilian Jiu-Jitsu', type: 'Sports', desc: 'Ground grappling and submission wrestling, open to complete beginners through to competitors.', instagram: 'ntu.jiujitsu', telegram: null },
+  { name: 'Judo Club', type: 'Sports', desc: 'Olympic-style judo training with grading opportunities and IVP competitive representation.', instagram: 'ntujudo', telegram: null },
+  { name: 'Muay Thai Club', type: 'Sports', desc: 'Thai boxing training covering strikes, clinch work and pad work for fitness and competition.', instagram: 'ntumuaythai', telegram: null },
+  { name: 'Shitoryu Karate-Do', type: 'Sports', desc: 'Traditional Shitoryu-style karate with kata and kumite training, IVP competition participation.', instagram: 'ntukarate', telegram: null },
+  { name: 'Silat', type: 'Sports', desc: 'Malay martial art Pencak Silat, blending self-defence, performance and cultural heritage.', instagram: 'ntusilat', telegram: null },
+  { name: 'Taekwondo', type: 'Sports', desc: 'Olympic taekwondo with poomsae and sparring training, belt gradings and varsity competition.', instagram: 'ntutkd', telegram: null },
+  { name: 'Wushu', type: 'Sports', desc: 'Chinese martial art combining form and sparring disciplines, representing NTU at varsity level.', instagram: 'ntucacwushu', telegram: null },
+
+  /* ── Arts — Music ── */
+  { name: 'Choir', type: 'Arts', desc: "NTU's premier choral ensemble, performing Western classical and Asian repertoire locally and internationally.", instagram: 'ntuchoir', telegram: null },
+  { name: 'Chinese Orchestra (NTUCO)', type: 'Arts', desc: 'Full Chinese orchestra performing traditional and contemporary Chinese orchestral repertoire on concert stages.', instagram: 'ntu.chineseorchestra', telegram: null },
+  { name: 'Symphonic Band (NTUSB)', type: 'Arts', desc: 'Full concert band under Resident Conductor Takehiro Oura, competing internationally and staging annual Sojourn concerts.', instagram: 'ntusb', telegram: null },
+  { name: 'Symphony Orchestra (NTUSO)', type: 'Arts', desc: 'Western symphony orchestra giving full orchestral concerts each semester on and off campus.', instagram: 'ntusymphonyorchestra', telegram: null },
+  { name: 'Guitar Ensemble', type: 'Arts', desc: 'Classical and Niibori-system guitar orchestra, one of Singapore\'s first, with public performances and masterclasses.', instagram: 'ntuguitarensemble', telegram: null },
+  { name: 'Chinese Drums', type: 'Arts', desc: 'Chinese percussion ensemble performing traditional and fusion pieces at cultural events and competitions.', instagram: 'ntu_chinesedrums', telegram: null },
+  { name: 'Harmonica Band', type: 'Arts', desc: 'Ensemble performing classical and pop pieces on chromatic and diatonic harmonicas.', instagram: 'ntuhb', telegram: null },
+  { name: 'Harmonix (A Cappella)', type: 'Arts', desc: "NTU's a cappella group blending contemporary pop, jazz and original arrangements without instruments.", instagram: 'ntuharmonix', telegram: null },
+  { name: 'Jazz & Blues Society', type: 'Arts', desc: 'Jazz and blues jams, workshops and concerts bringing live improvised music to the NTU campus.', instagram: 'ntujazzandblues', telegram: null },
+  { name: 'Piano Ensemble', type: 'Arts', desc: 'Solo, duo and ensemble piano performances across classical, pop and contemporary genres.', instagram: 'ntupianoensemble', telegram: null },
+
+  /* ── Arts — Dance ── */
+  { name: 'Breakers', type: 'Arts', desc: 'B-boy/b-girl breakdancing crew competing at local and regional battles and events.', instagram: 'ntubreakers', telegram: null },
+  { name: 'Chinese Dance Club', type: 'Arts', desc: 'Classical and folk Chinese dance, representing NTU at competitions and cultural performances.', instagram: 'ntu.chinesedance', telegram: null },
+  { name: 'Contemp{minated}', type: 'Arts', desc: 'Contemporary dance collective pushing creative boundaries through experimental choreography and production.', instagram: 'contempminated', telegram: null },
+  { name: 'DanceSport Academy', type: 'Arts', desc: 'Ballroom and Latin competitive dance, training couples for university and national dancesport competitions.', instagram: 'ntu_dsa', telegram: null },
+  { name: 'Indian Dance Club (NTUID)', type: 'Arts', desc: 'NTU\'s first Indian dance club, showcasing Bharatanatyam and contemporary Indian dance forms since 2019.', instagram: 'ntuindiandance', telegram: null },
+  { name: 'Lindy Hop', type: 'Arts', desc: 'Swing dance community teaching Lindy Hop, Charleston and Blues in a social dance setting.', instagram: 'ntulindyhop', telegram: null },
+  { name: 'MJ (Hip Hop)', type: 'Arts', desc: 'Street dance club covering hip hop, popping, locking and new-style, with showcases and battles.', instagram: 'ntumj', telegram: null },
+  { name: 'Soul Funky Pop & Lock', type: 'Arts', desc: 'Popping and locking dance crew performing at campus events and local competitions.', instagram: 'ntusoulfunky', telegram: null },
+  { name: 'Dragon & Lion Dance Troupe', type: 'Arts', desc: 'Traditional Chinese dragon and lion dance performances at Chinese New Year and cultural events.', instagram: null, telegram: null },
+  { name: 'Salsa En Sync', type: 'Arts', desc: 'Latin social dance community teaching salsa, bachata and other Latin styles through weekly socials.', instagram: null, telegram: null },
+
+  /* ── Arts — Performing & Visual ── */
+  { name: 'Epiphany (NTU English Drama Society)', type: 'Arts', desc: 'English-language theatre productions, comedy improv, workshops and the annual Main Stage show.', instagram: 'ntudrama', telegram: null },
+  { name: 'Nanyang Arts Ensemble (NAE)', type: 'Arts', desc: 'Visual arts and crafts community running biweekly workshops — crochet, beadwork, painting and more.', instagram: 'ntu_nae', telegram: 'https://t.me/ntunae' },
+  { name: 'Film Society', type: 'Arts', desc: 'Film screenings, discussions and short film productions for cinephiles and aspiring filmmakers.', instagram: 'ntufilm', telegram: null },
+  { name: 'Photo-Videographic Society (NTUPVS)', type: 'Arts', desc: 'Photography and videography community across digital, film and video disciplines, founded in 1984.', instagram: 'ntupvs', telegram: null },
+  { name: 'Visual Arts Society (VAS)', type: 'Arts', desc: 'Painting, drawing, illustration and mixed-media art, running workshops and exhibitions on campus.', instagram: 'ntuvas', telegram: null },
+  { name: 'Emcee Club', type: 'Arts', desc: 'Develops student MCs for NTU events — public speaking, stage presence and event hosting skills.', instagram: 'ntuemcees', telegram: null },
+  { name: 'Concert Engineers', type: 'Arts', desc: 'Live sound, lighting and production crew behind NTU\'s major CAC concerts and performances.', instagram: 'ntuconcerteng', telegram: null },
+
+  /* ── Cultural ── */
+  { name: 'Chinese Society', type: 'Cultural', desc: 'Celebrates Chinese language, arts and festivals through cultural camps, performances and community events.', instagram: 'ntuchinesesoc', telegram: null },
+  { name: 'Tamil Literary Society (TLS)', type: 'Cultural', desc: 'Promotes Tamil language and South Indian culture through literature events, Deepavali celebrations and community programmes.', instagram: 'ntutls', telegram: null },
+  { name: 'Malay Language and Cultural Society (PERBAYU)', type: 'Cultural', desc: 'Preserves Malay language and culture through performances, cultural fests and language activities since 1991.', instagram: 'ntuperbayu', telegram: null },
+  { name: 'Korean Cultural Society', type: 'Cultural', desc: 'K-pop, K-drama, Korean language and food events for fans and learners of Korean culture.', instagram: 'ntukdp', telegram: null },
+  { name: 'Japanese Appreciation Club (JAC)', type: 'Cultural', desc: 'Japanese language, anime, food and cultural exchange between NTU students and Japanese exchange students.', instagram: 'ntujac', telegram: null },
+  { name: 'Indian Society (IndSoc)', type: 'Cultural', desc: 'A community celebrating Indian culture and heritage through Holi, Diwali and cultural exchange events.', instagram: 'indsoc_ntu', telegram: null },
+  { name: 'Heritage Club', type: 'Cultural', desc: 'Raises awareness of Singapore\'s cultural heritage through tours, talks and the annual Heritage Week.', instagram: 'ntu_heritage_club', telegram: null },
+
+  /* ── Academic ── */
+  { name: 'IEEE NTU Student Branch', type: 'Academic', desc: 'IEEE student chapter running iNTUition hackathon, technical workshops and industry networking events.', instagram: 'ieee_ntu', telegram: null },
+  { name: 'NTU Entrepreneurship Society', type: 'Academic', desc: 'NTU\'s premier student entrepreneurship body — startup pitches, incubation support and founder networking since 2000.', instagram: 'ntu_es', telegram: null },
+  { name: 'Investment Interactive Club (IIC)', type: 'Academic', desc: 'Stock pitch competitions, investment simulations and finance industry networking for aspiring investors.', instagram: 'ntu.iic', telegram: null },
+  { name: 'NTU Open Source Society (NTUOSS)', type: 'Academic', desc: 'Hacker club fostering open-source development through workshops, project nights and the Git community since 1998.', instagram: 'ntuoss', telegram: 'https://t.me/ntuoss' },
+  { name: 'NTU Computing Society', type: 'Academic', desc: 'Hackathons, coding competitions, tech talks and career networking for computing students.', instagram: null, telegram: 'https://t.me/NTUComputingSociety' },
+  { name: 'AIESEC NTU', type: 'Academic', desc: 'Global youth leadership organisation offering international internships, exchanges and leadership development.', instagram: 'aiesec_ntu', telegram: null },
+  { name: 'Debating Society', type: 'Academic', desc: 'Competitive parliamentary debating, public speaking workshops and Model UN preparation.', instagram: null, telegram: null },
+  { name: 'Toastmasters Club', type: 'Academic', desc: 'Public speaking and leadership development through structured speeches, table topics and peer evaluations.', instagram: null, telegram: null },
+  { name: 'Management Consulting Club', type: 'Academic', desc: 'Case competitions, consulting workshops and industry networking for students interested in management consulting.', instagram: null, telegram: null },
+  { name: 'Nanyang Capital', type: 'Academic', desc: 'Student-run investment fund combining finance education with real portfolio management experience.', instagram: null, telegram: null },
+  { name: 'NTU Esports Society', type: 'Academic', desc: 'Competitive and recreational gaming across popular titles, with tournaments and inter-varsity representation.', instagram: null, telegram: null },
+  { name: 'Women in Tech NTU', type: 'Academic', desc: 'Community empowering women in STEM through mentorship, networking and industry speaker events.', instagram: null, telegram: null },
+
+  /* ── Community ── */
+  { name: 'Earthlink NTU', type: 'Community', desc: 'NTU\'s largest environmental sustainability club — tree planting, eco-campaigns and community nature events.', instagram: 'earthlinkntu', telegram: null },
+  { name: 'Rotaract Club of NTU', type: 'Community', desc: 'Rotary-affiliated service club running community outreach, social projects and leadership development programmes.', instagram: 'racntu', telegram: null },
+  { name: 'Welfare Services Club (WSC)', type: 'Community', desc: 'Constituent club running 9 service projects for the deaf, elderly, disabled and other vulnerable communities.', instagram: 'ntuwsc', telegram: 'https://t.me/ntuwsc' },
+  { name: 'Project Heartware', type: 'Community', desc: 'Student-run VWO connecting NTU students with regular community service placements around Singapore.', instagram: null, telegram: null },
+  { name: 'Uni-Y NTU', type: 'Community', desc: 'University YMCA chapter running youth development, community service and leadership programmes.', instagram: null, telegram: null },
+  { name: 'Engineers Without Borders NTU', type: 'Community', desc: 'Applies engineering skills to humanitarian projects in Singapore and developing communities overseas.', instagram: null, telegram: null },
+
+  /* ── Uniformed ── */
+  { name: 'Red Cross Youth NTU Chapter', type: 'Uniformed', desc: 'Bi-annual blood donation drives, first aid coverage and community involvement programmes since 1994.', instagram: 'nturedcross', telegram: null },
+  { name: 'National Police Cadet Corps (NPCC)', type: 'Uniformed', desc: 'One of two open NPCC university units — crime prevention, police liaison and leadership training.', instagram: 'ntunpcc', telegram: null },
+  { name: 'Naval Volunteer Force (NVF)', type: 'Uniformed', desc: "NTU's uniformed naval unit under the Singapore Armed Forces — seamanship, leadership and community service.", instagram: null, telegram: null },
+  { name: "St John's Brigade (SJAB)", type: 'Uniformed', desc: 'First aid training, nursing skills and emergency response as part of St John Singapore\'s university unit.', instagram: null, telegram: null },
+
+  /* ── Welfare ── */
+  { name: "Students' Union (NTUSU)", type: 'Welfare', desc: "Representative body of all NTU undergraduates — student advocacy, campus-wide events and club governance.", instagram: 'ntu.su', telegram: null },
+  { name: 'Green Club', type: 'Welfare', desc: 'Campus sustainability drives, upcycling workshops and green-living awareness campaigns across NTU halls.', instagram: null, telegram: null },
+  { name: "Animal Lovers' Society (ALS)", type: 'Welfare', desc: 'Animal welfare advocacy, adoption drives and volunteering with local shelters and community cat programmes.', instagram: null, telegram: null },
 ];

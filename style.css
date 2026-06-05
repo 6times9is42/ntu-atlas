@@ -852,28 +852,6 @@ footer {
   color: var(--text-tertiary);
   line-height: 1.8;
 }
-.footer-ntu-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding: 8px 14px;
-  border: 1px solid var(--border);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  transition: all 0.2s;
-}
-.footer-ntu-badge:hover {
-  border-color: var(--ntu-red);
-  color: var(--ntu-red);
-}
-.footer-ntu-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--ntu-red);
-}
 
 /* ——— HOVER CARD TOOLTIP ——— */
 .hover-tooltip {
