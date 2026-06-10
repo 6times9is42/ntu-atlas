@@ -10,7 +10,7 @@ const allLinks = [
   { name: 'S/U Option', desc: 'Satisfactory/Unsatisfactory grading election', cat: 'Academics', tag: 'Grading', group: 'Results', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=1&p2=https://wis.ntu.edu.sg/pls/webexe/aus_su_opt.display&extra=&pg=' },
   { name: 'Class Schedule', desc: 'Browse available classes for any module', cat: 'Academics', tag: 'Timetable', group: 'Registration', url: 'https://wish.wis.ntu.edu.sg/webexe/owa/aus_schedule.main' },
   { name: 'LOA Form', desc: 'Leave of absence application form', cat: 'Academics', tag: 'Admin', group: 'Registration', url: 'https://entuedu.sharepoint.com/sites/Student/dept/sasd/oas/Shared%20Documents/Forms/display.aspx?id=%2Fsites%2FStudent%2Fdept%2Fsasd%2Foas%2FShared%20Documents%2FCandidature%2FShort%20Leave%20Application%20Form0324%2Epdf' },
-  { name: 'Academic Calendar', desc: 'Semester dates, recess weeks, exam periods and public holidays', cat: 'Academics', tag: 'Calendar', group: 'Resources', url: 'https://www.ntu.edu.sg/education/academic-calendar' },
+  { name: 'Academic Calendar', desc: 'Semester dates, recess weeks, exam periods and public holidays', cat: 'Academics', tag: 'Calendar', group: 'Resources', url: 'https://www.ntu.edu.sg/admissions/matriculation/academic-calendars' },
   { name: 'Library Catalogue', desc: 'Search NTU library holdings — books, journals, databases and e-resources', cat: 'Academics', tag: 'Library', group: 'Resources', url: 'https://libguides.ntu.edu.sg/OneSearch' },
   { name: 'MOOC Transfer', desc: 'Credit transfer portal for approved online MOOCs. Submit completed certificates for AU recognition.', cat: 'Academics', tag: 'Credit', group: 'MOOCs', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=&p2=https://venus2.wis.ntu.edu.sg/MOOC/Student/Login.aspx&extra=&pg=' },
   { name: 'MOOC Guide', desc: "Approved MOOC platforms and eligibility for AU credit under NTU's recognition programme", cat: 'Academics', tag: 'Info', group: 'MOOCs', url: 'https://www.ntu.edu.sg/admissions/matriculation/mooc' },
@@ -23,7 +23,7 @@ const allLinks = [
   /* Facilities */
   { name: 'Library Booking', desc: "Study rooms and library spaces across NTU's library network", cat: 'Facilities', tag: 'Study', group: null, url: 'https://libcalendar.ntu.edu.sg/' },
   { name: 'Facilities Booking', desc: 'Sports courts, function rooms and multi-purpose halls for club or personal use', cat: 'Facilities', tag: 'Spaces', group: null, url: 'https://ntu.facilitiesbooking.com/bookings.aspx' },
-  { name: 'Sports & Rec Centre', desc: 'Book facilities at the Sports & Recreation Centre — gym, pools, courts and fitness classes', cat: 'Facilities', tag: 'Sports', group: null, url: 'https://www.ntu.edu.sg/life-at-ntu/sports-and-recreation' },
+  { name: 'Sports & Rec Centre', desc: 'Book facilities at the Sports & Recreation Centre — gym, pools, courts and fitness classes', cat: 'Facilities', tag: 'Sports', group: null, url: 'https://www.ntu.edu.sg/life-at-ntu/recreational-spaces-facilities/sports-recreation-centre' },
   /* Finance */
   { name: 'Financial Aid', desc: 'Scholarships, bursaries, tuition grants and financial assistance for undergraduates', cat: 'Finance', tag: 'Aid', group: null, url: 'https://www.ntu.edu.sg/admissions/undergraduate/financial-matters/financial-aid' },
   /* Housing */
@@ -38,8 +38,8 @@ const allLinks = [
   { name: 'Campus Shuttle (Omnibus)', desc: 'NTU campus bus app guide — routes, timings and how to use the Omnibus mobile app', cat: 'Campus Life', tag: 'Transport', group: null, url: 'https://ebook.ntu.edu.sg/ntu-omnibus-app-user-guide.html' },
   { name: 'Campus Map', desc: 'Interactive NTU campus map — find buildings, bus stops, canteens and facilities', cat: 'Campus Life', tag: 'Navigation', group: null, url: 'https://maps.ntu.edu.sg/' },
   { name: 'Food & Beverage', desc: 'NTU canteen locations, operating hours and food options across the campus', cat: 'Campus Life', tag: 'Food', group: null, url: 'https://www.ntu.edu.sg/life-at-ntu/leisure-and-dining/general-directory' },
-  { name: 'Student Health Centre', desc: 'Book GP consultations, vaccinations and health screenings at the on-campus clinic', cat: 'Campus Life', tag: 'Health', group: null, url: 'https://www.ntu.edu.sg/life-at-ntu/student-health-services' },
-  { name: 'Counselling Services', desc: 'Free and confidential counselling and psychological support for all NTU students', cat: 'Campus Life', tag: 'Wellness', group: null, url: 'https://www.ntu.edu.sg/student-services/welfare-counselling-guidance' },
+  { name: 'Student Health Centre', desc: 'Book GP consultations, vaccinations and health screenings at the on-campus clinic', cat: 'Campus Life', tag: 'Health', group: null, url: 'https://www.ntu.edu.sg/life-at-ntu/health-and-safety/services/health-care' },
+  { name: 'Counselling Services', desc: 'Free and confidential counselling and psychological support for all NTU students', cat: 'Campus Life', tag: 'Wellness', group: null, url: 'https://www.ntu.edu.sg/life-at-ntu/student-life/campus-life-and-wellbeing/ntu-wellbeing/student-well-being/Counselling-and-Psychological-Services' },
   /* IT & Tech */
   { name: 'NTU VPN', desc: 'Access NTU intranet resources off-campus using GlobalProtect VPN', cat: 'IT & Tech', tag: 'Network', group: null, url: 'https://vpngate.ntu.edu.sg/global-protect/getsoftwarepage.esp' },
   { name: 'eduroam Setup', desc: 'Connect to eduroam Wi-Fi on campus and at partner institutions worldwide', cat: 'IT & Tech', tag: 'Wi-Fi', group: null, url: 'https://www.ntu.edu.sg/life-at-ntu/internet-account-and-policy/how-to-login-to-the-ntu-wireless-network' },
@@ -169,6 +169,48 @@ const allClubs = [
   { name: 'NTU Corporate Banking Club', type: 'Academic', desc: 'Finance club focused on corporate and investment banking — case workshops, deal simulations and industry networking.', instagram: 'ntu.corporatebankingclub' },
   { name: 'NTU Cybersecurity Club (root@NTU)', type: 'Academic', desc: 'CTF competitions, security workshops and hands-on hacking labs for students passionate about cybersecurity.', instagram: 'ntucybersec' },
   { name: 'Blockchain @ NTU', type: 'Academic', desc: 'Blockchain and Web3 community running developer workshops, hackathons and industry talks on decentralised technologies.', instagram: 'blockchain.ntusg' },
+
+  /* ── NBS ── */
+  { name: 'Accountancy and Business Club (ABC)', type: 'NBS', desc: 'Represents over 4,000 NBS undergraduates, advocating for student interest and their connection to the accountancy and business profession.', instagram: 'ntuabc' },
+  { name: 'Business Analytics Club (BAC)', type: 'NBS', desc: 'Empowers students with real-world analytics, problem-solving, and systems expertise through projects, workshops, and industry engagement.', instagram: 'nbsbac' },
+  { name: 'Banking and Finance Club (BAFC)', type: 'NBS', desc: 'Your gateway into the financial sector, offering industry exposure through networking, talks, and hands-on experiences with professionals across banking and finance.', instagram: 'nbsbafc' },
+  { name: 'Risk Advisory & Analytics Club (RAAC)', type: 'NBS', desc: 'Empowers students to understand and manage risk using data-driven insights, equipping members with practical skills in analytics, governance and strategy.', instagram: 'nbsraac' },
+  { name: 'NBS Accounting & Assurance Team (NAAT)', type: 'NBS', desc: 'Nurtures future accounting leaders by combining rigorous academic training with strong industry relevance, covering audit and assurance skills.', instagram: 'nbs_naat' },
+  { name: 'Human Resource Consulting Club (HRCC)', type: 'NBS', desc: 'Equips students with insights into key HR trends, from talent management and workforce analytics to organisational development and consulting.', instagram: 'nbshrcc' },
+  { name: 'Tax Advisory Club (TAC)', type: 'NBS', desc: 'Provides opportunities to gain valuable tax insights, industry networking and leadership experiences, partnering with Big 4 firms and IRAS.', instagram: 'ntutaxadvisoryclub' },
+  { name: 'MarkeTHINK', type: 'NBS', desc: 'Student-led marketing club where students explore real-world marketing, gain industry insights and connect through events designed to support professional growth.', instagram: 'nbsmarkethink' },
+  { name: 'Actuarial Science Club (ASC)', type: 'NBS', desc: "Student body of Singapore's only IFoA-accredited actuarial programme, connecting students through mentorship, networking and hands-on industry experiences.", instagram: 'nbs_asc' },
+  { name: 'NBS Mentoring Society (NMS)', type: 'NBS', desc: 'Leading mentorship community in NBS, supporting students through peer, alumni and industry mentoring — guiding minds, empowering leaders from day one.', instagram: 'nbsmentoringsociety' },
+  { name: 'Investment Banking Club (IBC)', type: 'NBS', desc: 'Nexus of high finance at NTU, building student expertise in Mergers & Acquisitions, Asset Management and Sales & Trading.', instagram: 'ntuibc' },
+  { name: 'International Trading Club (ITC)', type: 'NBS', desc: 'Introduces students to the fast-moving world of commodities trading, exploring energy, metals and agriculture markets through speaker series and site visits.', instagram: 'ntu.itpclub' },
+  { name: 'Nanyang FinTech Catalyst (NFC)', type: 'NBS', desc: "NBS's FinTech community bringing together students passionate about finance, technology, blockchain, AI, and quantitative finance.", instagram: 'ntu_nfc' },
+
+  /* ── Engineering ── */
+  { name: 'EEE Club', type: 'Engineering', desc: 'Student club representing all EEE and IEM undergraduates, enriching university life through events, leadership and community initiatives since 1982.', instagram: 'eeeclubntu' },
+  { name: 'MAE Club', type: 'Engineering', desc: "One of NTU's largest school clubs with 3,000 students, serving MAE undergraduates with leadership programmes, orientation and community events since 1981.", instagram: 'ntumaeclub' },
+  { name: 'MAE Robotics Club', type: 'Engineering', desc: 'Fosters passion for robotics through workshops and competitions, fielding teams in RoboMaster and SAUVC (autonomous underwater vehicle challenge).', instagram: 'mae.robotics' },
+  { name: 'CEE Club', type: 'Engineering', desc: 'Student club supporting CEE undergraduate life through events, engagement and community initiatives across civil and environmental engineering.', instagram: 'ntuceeclub' },
+  { name: 'Maritime Business Society', type: 'Engineering', desc: 'Engages NTU maritime studies students through industry exposure, networking events and student-led initiatives connecting them to the shipping and ports sector.', instagram: 'ntu_mbs' },
+  { name: 'CCEB Club', type: 'Engineering', desc: 'Community hub for School of Chemistry, Chemical Engineering and Biotechnology students, hosting Avogadro\'s Day and other events fostering cross-disciplinary collaboration.', instagram: 'ntuccebclub' },
+  { name: 'MSE Club', type: 'Engineering', desc: 'Student club for Materials Science and Engineering undergraduates, building community through academic, social and industry-exposure events.', instagram: 'ntumseclub' },
+
+  /* ── Science ── */
+  { name: 'Biological Sciences Club', type: 'Science', desc: 'Founded in 2002, bridges SBS school and students through orientation camps, welfare drives, Youth Expedition Projects and the four-Clade community system.', instagram: 'ntusbsclub' },
+  { name: 'SPMS Club', type: 'Science', desc: 'Student club for SPMS undergraduates organising sports, social events and community activities including inter-school games and College of Science Day.', instagram: 'spms_club' },
+  { name: 'ASE Club', type: 'Science', desc: 'Student club for the Asian School of the Environment, connecting environment-focused students through field trips, community events and academic initiatives.', instagram: 'aseclub' },
+
+  /* ── ADM ── */
+  { name: 'ADM Student Club', type: 'ADM', desc: 'Student-led club improving life at the School of Art, Design and Media through academic, social and welfare initiatives for the NTU art and design community.', instagram: 'ntu_admsc' },
+
+  /* ── WKWSCI ── */
+  { name: 'Communication & Information Club (CI Club)', type: 'WKWSCI', desc: "Student voice and representative body of WKWSCI, preserving school culture through twice-yearly Theme Week, freshmen orientation, the Paparazzi theatre production and WeeVolunteer.", instagram: 'wkwsci' },
+
+  /* ── COHASS ── */
+  { name: 'SoH Club', type: 'COHASS', desc: 'Student club for the School of Humanities, enhancing university life through SoH Day, !deas Fest and Exam Welfare Week across five subject areas — Chinese, English, History, Linguistics and Philosophy.', instagram: 'ntu.soh' },
+  { name: 'SSS Club', type: 'COHASS', desc: 'Student club for the School of Social Sciences, fostering traditions and community through school events and representing SSS students in the Students\' Union.', instagram: 'ntusssclub' },
+
+  /* ── LKCMed ── */
+  { name: "LKCMedicine Students' Medical Society (LKCMedSoc)", type: 'LKCMed', desc: 'Representative body for all LKCMedicine MBBS students, promoting student welfare, medical education, and cultural, social, sporting and professional interests across all five year levels.', instagram: 'lkc.purpleandsilver' },
 
   /* ── Community ── */
   { name: 'Earthlink NTU', type: 'Community', desc: 'NTU\'s largest environmental sustainability club — tree planting, eco-campaigns and community nature events.', instagram: 'earthlinkntu' },
