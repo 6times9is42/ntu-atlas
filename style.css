@@ -1220,6 +1220,7 @@ footer {
 
 @media (max-width: 600px) {
   .hero-title { font-size: 38px; }
+  .hero-scroll-hint { display: none; }
   .links-grid { grid-template-columns: 1fr; }
   .fresh-checklist { grid-template-columns: 1fr; }
   .clubs-grid { grid-template-columns: 1fr; }
@@ -1250,6 +1251,7 @@ footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   .link-card:hover, .club-card:hover {
     transform: none;
     box-shadow: none;

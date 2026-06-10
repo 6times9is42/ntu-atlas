@@ -71,7 +71,7 @@ function searchLinks(query) {
   allClubs.forEach(club => {
     if (!results.find(r => r.name === club.name)) {
       if (club.name.toLowerCase().includes(q) || club.desc.toLowerCase().includes(q) || club.type.toLowerCase().includes(q)) {
-        results.push({ name: escapeHtml(club.name), cat: 'Club', url: club.instagram ? `https://instagram.com/${escapeHtml(club.instagram)}` : '#' });
+        results.push({ name: club.name, cat: 'Club', url: club.instagram ? `https://instagram.com/${club.instagram}` : '#' });
       }
     }
   });
@@ -87,12 +87,23 @@ searchInput.addEventListener('input', () => {
     searchResults.classList.remove('active');
     return;
   }
-  searchResults.innerHTML = results.map(r => `
-    <a class="search-result-item" href="${r.url}" target="_blank" rel="noopener">
-      <span class="search-result-name">${r.name}</span>
-      <span class="search-result-cat">${r.cat}</span>
-    </a>
-  `).join('');
+  searchResults.innerHTML = '';
+  results.forEach(r => {
+    const a = document.createElement('a');
+    a.className = 'search-result-item';
+    a.href = r.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'search-result-name';
+    nameSpan.textContent = r.name;
+    const catSpan = document.createElement('span');
+    catSpan.className = 'search-result-cat';
+    catSpan.textContent = r.cat;
+    a.appendChild(nameSpan);
+    a.appendChild(catSpan);
+    searchResults.appendChild(a);
+  });
   searchResults.classList.add('active');
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!prefersReducedMotion) {
@@ -175,6 +186,15 @@ window.addEventListener('scroll', () => {
   navEl.classList.toggle('scrolled', window.scrollY > 60);
 }, { passive: true });
 
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /* ——— PORTALS ——— */
 const CAT_PANEL_MAP = {
   'Academics': 'panel-academics',
@@ -218,16 +238,6 @@ renderPortals();
 /* ——— CLUBS & SOCIETIES ——— */
 const clubsGrid = document.getElementById('clubsGrid');
 const clubsCount = document.getElementById('clubsCount');
-
-// Escapes text before inserting into innerHTML to prevent XSS.
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
 
 const instagramSVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`;
 function renderClubs(filter) {
