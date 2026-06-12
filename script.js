@@ -2,8 +2,8 @@
 const searchInput = document.getElementById('searchInput');
 const searchResults = document.getElementById('searchResults');
 const intentMap = {
-  'grades': ['Transcript', 'Degree Audit', 'S/U Option'],
-  'grade': ['Transcript', 'Degree Audit', 'S/U Option'],
+  'grades': ['Transcript', 'Degree Audit', 'FGO Option'],
+  'grade': ['Transcript', 'Degree Audit', 'FGO Option'],
   'gpa': ['Transcript', 'Degree Audit'],
   'housing': ['Hall Portal'],
   'hall': ['Hall Portal'],
@@ -36,13 +36,13 @@ const intentMap = {
   'mental': ['Counselling Services'],
   'vpn': ['NTU VPN'],
   'wifi': ['eduroam Setup'],
-  'email': ['NTU Email'],
-  'office': ['Microsoft 365'],
+  'email': ['IT Service Desk'],
+  'office': ['IT Service Desk'],
   'it': ['IT Service Desk'],
   'graduation': ['Graduation'],
-  'international': ['Global Relations Office'],
-  'osa': ['Office of Student Affairs'],
-  'ssc': ['Student Service Centre'],
+  'international': ['Global Education Office'],
+  'osa': ['One Stop @ SAC'],
+  'ssc': ['One Stop @ SAC'],
 };
 
 function searchLinks(query) {
@@ -158,8 +158,8 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
     const iconSunEl = document.getElementById('iconSun');
     const iconMoonEl = document.getElementById('iconMoon');
     if (iconSunEl && iconMoonEl) {
-      iconSunEl.style.display = saved === 'dark' ? 'none' : 'block';
-      iconMoonEl.style.display = saved === 'dark' ? 'block' : 'none';
+      iconSunEl.style.display = saved === 'dark' ? 'block' : 'none';
+      iconMoonEl.style.display = saved === 'dark' ? 'none' : 'block';
     }
   }
 })();
@@ -194,6 +194,17 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
+
+/* ——— SCROLL REVEAL ——— */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+const prefersReducedMotionReveal = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ——— PORTALS ——— */
 const CAT_PANEL_MAP = {
@@ -263,7 +274,13 @@ function renderClubs(filter) {
         <div class="club-card-links">${igLink}</div>
       </div>`;
   }).join('');
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!prefersReducedMotionReveal) {
+    clubsGrid.querySelectorAll('.club-card').forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(16px)';
+      el.style.transition = `opacity 0.5s ease ${(i % 8) * 0.06}s, transform 0.5s ease ${(i % 8) * 0.06}s`;
+      io.observe(el);
+    });
     clubsGrid.classList.remove('fade-in');
     void clubsGrid.offsetWidth;
     clubsGrid.classList.add('fade-in');
@@ -290,18 +307,8 @@ document.querySelectorAll('.club-tab').forEach(tab => {
 
 renderClubs('All');
 
-/* ——— SCROLL REVEAL ——— */
-const revealElements = document.querySelectorAll('.top-pick-card, .link-card, .fresh-item, .tool-item, .club-card, h2.section-title');
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.style.opacity = '1';
-      e.target.style.transform = 'translateY(0)';
-    }
-  });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-
-const prefersReducedMotionReveal = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* ——— SCROLL REVEAL (non-club elements) ——— */
+const revealElements = document.querySelectorAll('.top-pick-card, .link-card, .fresh-item, .tool-item, h2.section-title');
 revealElements.forEach((el, i) => {
   if (prefersReducedMotionReveal) return;
   el.style.opacity = '0';

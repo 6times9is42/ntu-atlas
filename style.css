@@ -11,7 +11,7 @@
   --bg-hover: #222222;
   --text-primary: #f0ede8;
   --text-secondary: #9a9590;
-  --text-tertiary: #5a5550;
+  --text-tertiary: #7a7570;
   --border: rgba(240,237,232,0.08);
   --border-hover: rgba(240,237,232,0.18);
   --grid-line: rgba(240,237,232,0.03);
@@ -40,7 +40,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'DM Mono', monospace;
+  font-family: 'DM Sans', sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
@@ -252,8 +252,8 @@ nav.scrolled {
 }
 
 .hero-desc {
-  font-size: 14px;
-  font-weight: 300;
+  font-size: 15px;
+  font-weight: 400;
   line-height: 1.7;
   color: var(--text-secondary);
   max-width: 560px;
@@ -460,8 +460,8 @@ nav.scrolled {
 }
 
 .top-pick-desc {
-  font-size: 12px;
-  font-weight: 300;
+  font-size: 13px;
+  font-weight: 400;
   color: var(--text-secondary);
   line-height: 1.6;
   max-width: 240px;
@@ -599,8 +599,8 @@ nav.scrolled {
 }
 
 .link-card-desc {
-  font-size: 12px;
-  font-weight: 300;
+  font-size: 13px;
+  font-weight: 400;
   color: var(--text-secondary);
   line-height: 1.6;
 }
@@ -690,8 +690,8 @@ nav.scrolled {
 }
 
 .fresh-banner-desc {
-  font-size: 13px;
-  font-weight: 300;
+  font-size: 14px;
+  font-weight: 400;
   color: var(--text-secondary);
   line-height: 1.7;
   max-width: 560px;
@@ -741,8 +741,8 @@ nav.scrolled {
   letter-spacing: -0.01em;
 }
 .fresh-item-hint {
-  font-size: 11px;
-  font-weight: 300;
+  font-size: 12px;
+  font-weight: 400;
   color: var(--text-secondary);
   line-height: 1.5;
 }
@@ -808,8 +808,8 @@ nav.scrolled {
   text-align: center;
 }
 .tool-desc {
-  font-size: 10px;
-  font-weight: 300;
+  font-size: 11px;
+  font-weight: 400;
   color: var(--text-tertiary);
   text-align: center;
   line-height: 1.5;
@@ -848,7 +848,7 @@ footer {
 }
 .footer-credit {
   font-size: 11px;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text-tertiary);
   line-height: 1.8;
 }
@@ -1004,7 +1004,7 @@ footer {
 }
 .modal-body p {
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text-secondary);
   line-height: 1.7;
 }
@@ -1157,8 +1157,8 @@ footer {
 }
 
 .club-card-desc {
-  font-size: 12px;
-  font-weight: 300;
+  font-size: 13px;
+  font-weight: 400;
   color: var(--text-secondary);
   line-height: 1.6;
   flex: 1;
