@@ -1205,6 +1205,7 @@ footer {
 
 [data-theme="light"] .club-social-link { color: var(--text-secondary); }
 [data-theme="light"] .club-social-link svg { color: #E1306C; }
+[data-theme="light"] .club-social-link:hover { color: #E1306C; }
 .club-social-link svg {
   width: 12px;
   height: 12px;
