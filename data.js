@@ -7,7 +7,7 @@ const allLinks = [
   { name: 'Exam Seating', desc: 'Exam venue and seat number', cat: 'Academics', tag: 'Exams', group: 'Core academic', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=1&p2=https://wis.ntu.edu.sg/webexe/owa/oes_main.main&extra=&pg=' },
   { name: 'Exam Timetable', desc: 'Exam schedule for current semester', cat: 'Academics', tag: 'Exams', group: 'Core academic', url: 'https://wis.ntu.edu.sg/webexe/owa/exam_timetable_und.main' },
   { name: 'Transcript', desc: 'View grades history', cat: 'Academics', tag: 'Grades', group: 'Results', url: 'https://wis.ntu.edu.sg/webexe/owa/request_transcript_und.LoginN?pType=SH' },
-  { name: 'S/U Option', desc: 'Satisfactory/Unsatisfactory grading election', cat: 'Academics', tag: 'Grading', group: 'Results', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=1&p2=https://wis.ntu.edu.sg/pls/webexe/aus_su_opt.display&extra=&pg=' },
+  { name: 'FGO Option', desc: 'Satisfactory/Unsatisfactory grading election', cat: 'Academics', tag: 'Grading', group: 'Results', url: 'https://sso.wis.ntu.edu.sg/webexe88/owa/sso_login1.asp?t=1&p2=https://wis.ntu.edu.sg/pls/webexe/aus_su_opt.display&extra=&pg=' },
   { name: 'Class Schedule', desc: 'Browse available classes for any module', cat: 'Academics', tag: 'Timetable', group: 'Registration', url: 'https://wish.wis.ntu.edu.sg/webexe/owa/aus_schedule.main' },
   { name: 'LOA Form', desc: 'Leave of absence application form', cat: 'Academics', tag: 'Admin', group: 'Registration', url: 'https://entuedu.sharepoint.com/sites/Student/dept/sasd/oas/Shared%20Documents/Forms/display.aspx?id=%2Fsites%2FStudent%2Fdept%2Fsasd%2Foas%2FShared%20Documents%2FCandidature%2FShort%20Leave%20Application%20Form0324%2Epdf' },
   { name: 'Academic Calendar', desc: 'Semester dates, recess weeks, exam periods and public holidays', cat: 'Academics', tag: 'Calendar', group: 'Resources', url: 'https://www.ntu.edu.sg/admissions/matriculation/academic-calendars' },
@@ -95,6 +95,7 @@ const allClubs = [
   { name: 'Squash Club', type: 'Sports', desc: 'Competitive and recreational squash with varsity representation in IVP leagues and local tournaments.', instagram: 'ntusquashers' },
   { name: 'Aquathlon Club', type: 'Sports', desc: 'Combined swim-and-run multisport, training for aquathlon races and triathlon events around Singapore.', instagram: 'ntuaquathlon' },
   { name: "Men's Touch Football", type: 'Sports', desc: 'Non-contact touch football with regular training sessions and inter-varsity competition.', instagram: 'ntu_menstouchfootball' },
+  { name: 'Cricket Club', type: 'Sports', desc: 'Cricket training and competitive matches for all skill levels, representing NTU in inter-varsity tournaments.', instagram: 'ntu.cricket' },
 
   /* ── Arts — Music ── */
   { name: 'Choir', type: 'Arts', desc: "NTU's premier choral ensemble, performing Western classical and Asian repertoire locally and internationally.", instagram: 'ntuchoir' },
