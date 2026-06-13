@@ -56,7 +56,7 @@ const allLinks = [
 const allClubs = [
 
   /* ── Sports ── */
-  { name: 'Badminton Club', type: 'Sports', desc: 'Competitive and recreational badminton for all levels, with inter-varsity IVP training and representation.', instagram: 'ntubadminton' },
+  { name: 'Badminton Club', type: 'Sports', desc: 'Competitive and recreational badminton for all levels, with inter-varsity IVP training and representation.', instagram: 'ntusgbadminton' },
   { name: 'Basketball Club', type: 'Sports', desc: "Men's and women's varsity basketball teams competing in IVP leagues and friendly tournaments.", instagram: 'ntubball' },
   { name: 'Football Club', type: 'Sports', desc: "NTU's flagship football club, fielding men's and women's teams in the IVP league.", instagram: 'ntufootball' },
   { name: 'Swimming & Water Polo', type: 'Sports', desc: 'Competitive swimming and water polo, training in the NTU Olympic-size pool with IVP representation.', instagram: 'ntu_swim_polo' },
