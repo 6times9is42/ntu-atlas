@@ -106,6 +106,7 @@ searchInput.addEventListener('input', () => {
     searchResults.appendChild(a);
   });
   searchResults.classList.add('active');
+  if (window.setHeading) setHeading(results[0].cat);
 });
 
 searchInput.addEventListener('keydown', e => {
@@ -168,7 +169,9 @@ syncToggleLabel();
 toggle.addEventListener('click', () => {
   const html = document.documentElement;
   const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', next);
+  const apply = () => html.setAttribute('data-theme', next);
+  if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(apply);
+  else apply();
   try { localStorage.setItem('theme', next); } catch (e) {}
   syncToggleLabel();
 });
@@ -260,7 +263,7 @@ function renderClubs(filter) {
   clubsCount.setAttribute('aria-label', `${count} ${count === 1 ? 'club' : 'clubs'}`);
 
   const shown = clubsExpanded ? filtered : filtered.slice(0, CLUBS_PREVIEW);
-  clubsGrid.innerHTML = shown.map(club => {
+  clubsGrid.innerHTML = shown.map((club, i) => {
     const name = escapeHtml(club.name);
     const type = escapeHtml(club.type);
     const desc = escapeHtml(club.desc);
@@ -270,7 +273,7 @@ function renderClubs(filter) {
       ? `<a class="club-social-link" href="https://instagram.com/${handle}" target="_blank" rel="noopener" aria-label="${name} on Instagram">${instagramSVG}@${handle}</a>`
       : '';
     return `
-      <div class="club-card" role="listitem" data-type="${type}">
+      <div class="club-card" role="listitem" data-type="${type}" style="--i:${i}">
         <span class="club-card-tag">${type}</span>
         <span class="club-card-name">${name}</span>
         <span class="club-card-desc">${desc}</span>
@@ -398,3 +401,103 @@ legalModal.addEventListener('click', e => {
   if (e.target === legalModal) closeModal();
 });
 
+
+
+/* ——— SEGMENTED TAB INDICATOR ——— */
+function moveInk(list, animate) {
+  const ink = list.querySelector('.tab-ink');
+  const active = list.querySelector('.active');
+  if (!ink || !active) return;
+  ink.classList.toggle('no-anim', !animate);
+  ink.style.width = active.offsetWidth + 'px';
+  ink.style.transform = `translateX(${active.offsetLeft}px)`;
+}
+const tabLists = document.querySelectorAll('.cat-tabs, .club-tabs');
+tabLists.forEach(list => {
+  list.insertAdjacentHTML('afterbegin', '<span class="tab-ink" aria-hidden="true"></span>');
+  list.addEventListener('click', e => {
+    const tab = e.target.closest('[role="tab"]');
+    if (!tab) return;
+    moveInk(list, true);
+    tab.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+  });
+});
+const placeInk = () => tabLists.forEach(l => moveInk(l, false));
+placeInk();
+if (document.fonts) document.fonts.ready.then(placeInk);
+window.addEventListener('resize', placeInk);
+
+/* ——— COMPASS DIAL ——— */
+const DIAL_CATS = Object.keys(CAT_PANEL_MAP);
+const dialEl = document.querySelector('.dial');
+let heading = 0;
+function setHeading(cat) {
+  const idx = DIAL_CATS.indexOf(cat);
+  if (!dialEl || idx === -1) return;
+  const target = idx * 36;
+  const delta = ((target - heading) % 360 + 540) % 360 - 180;
+  heading += delta;
+  dialEl.querySelector('.dial-needle').style.transform = `rotate(${heading}deg)`;
+  dialEl.querySelectorAll('.dial-label').forEach((l, i) => l.classList.toggle('is-on', i === idx));
+  dialEl.querySelectorAll('.dial-marks circle').forEach((c, i) => c.classList.toggle('is-on', i === idx));
+  dialEl.querySelector('.dial-readout-deg').textContent = String(target).padStart(3, '0') + '°';
+  dialEl.querySelector('.dial-readout-name').textContent = cat;
+}
+window.setHeading = setHeading;
+
+if (dialEl) {
+  const NS = 'http://www.w3.org/2000/svg';
+  const ticks = dialEl.querySelector('.dial-ticks');
+  for (let d = 0; d < 360; d += 5) {
+    const major = d % 30 === 0, mid = d % 10 === 0;
+    const r1 = 148 - (major ? 16 : mid ? 11 : 6);
+    const a = d * Math.PI / 180;
+    const line = document.createElementNS(NS, 'line');
+    line.setAttribute('x1', (Math.sin(a) * r1).toFixed(2));
+    line.setAttribute('y1', (-Math.cos(a) * r1).toFixed(2));
+    line.setAttribute('x2', (Math.sin(a) * 144).toFixed(2));
+    line.setAttribute('y2', (-Math.cos(a) * 144).toFixed(2));
+    line.setAttribute('class', d === 0 ? 'is-north' : major ? 'is-major' : mid ? 'is-mid' : '');
+    ticks.appendChild(line);
+  }
+  const marks = dialEl.querySelector('.dial-marks');
+  const labels = dialEl.querySelector('.dial-labels');
+  DIAL_CATS.forEach((cat, i) => {
+    const a = i * 36 * Math.PI / 180;
+    const x = Math.sin(a), y = -Math.cos(a);
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', (x * 157).toFixed(2));
+    c.setAttribute('cy', (y * 157).toFixed(2));
+    c.setAttribute('r', '3');
+    marks.appendChild(c);
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.tabIndex = -1;
+    b.className = 'dial-label';
+    b.style.cssText = `--x:${x.toFixed(3)};--y:${y.toFixed(3)};--n:${i};` +
+      `--tx:${x > .2 ? '0%' : x < -.2 ? '-100%' : '-50%'};--ty:${Math.abs(x) <= .2 ? (y < 0 ? '-100%' : '0%') : '-50%'}`;
+    b.innerHTML = `<span class="dial-label-deg">${String(i * 36).padStart(3, '0')}°</span><span>${escapeHtml(cat)}</span>`;
+    b.addEventListener('mouseenter', () => setHeading(cat));
+    b.addEventListener('click', () => {
+      document.getElementById('tab-' + CAT_PANEL_MAP[cat].replace('panel-', '')).click();
+      document.getElementById('portals').scrollIntoView();
+    });
+    labels.appendChild(b);
+  });
+  const needle = dialEl.querySelector('.dial-needle');
+  needle.style.transition = 'none';
+  needle.style.transform = 'rotate(-140deg)';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    needle.style.transition = '';
+    needle.style.transform = 'rotate(0deg)';
+  }));
+}
+
+/* ——— "/" FOCUSES SEARCH ——— */
+document.addEventListener('keydown', e => {
+  if (e.key !== '/' || e.metaKey || e.ctrlKey) return;
+  const t = e.target;
+  if (t.matches('input, textarea, [contenteditable]')) return;
+  e.preventDefault();
+  searchInput.focus();
+});

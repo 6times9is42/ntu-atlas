@@ -6,7 +6,7 @@
 <title>NTU Atlas — Your Campus, Mapped</title>
 <meta name="description" content="Every NTU student portal, club, and campus resource in one place. Built by an NTU student.">
 <link rel="canonical" href="https://ntuatlas.com/">
-<link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -23,9 +23,9 @@
 <meta name="twitter:image" content="https://ntuatlas.com/NTU%20Atlas.jpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2">
-<script src="theme-init.js?v=2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=3">
+<script src="theme-init.js?v=3"></script>
 </head>
 <body>
 
@@ -35,8 +35,7 @@
 <nav role="navigation" aria-label="Main navigation">
   <a class="nav-logo" href="#" aria-label="NTU Atlas home">
     <svg class="nav-logo-mark" viewBox="0 0 32 32" aria-hidden="true">
-      <path class="m-red" d="M2 11 H30"/><path class="m-sky" d="M2 21 H30"/>
-      <rect x="11" y="5" width="10" height="22" rx="5"/>
+      <polygon class="m-n" points="16,3 20,16 12,16"/><polygon class="m-s" points="16,29 20,16 12,16"/>
     </svg>
     <span class="nav-logo-word">NTU Atlas</span>
   </a>
@@ -82,59 +81,33 @@
           aria-autocomplete="list"
           aria-controls="searchResults"
         >
+        <kbd class="search-kbd" aria-hidden="true">/</kbd>
         <div class="search-results" id="searchResults" role="listbox" aria-label="Search results"></div>
       </div>
     </section>
   </div>
 
-  <!-- Network map: every line meets at one interchange -->
-  <figure class="hero-map" aria-hidden="true">
-    <svg viewBox="0 0 800 560" preserveAspectRatio="xMidYMid slice">
-      <g class="map-lines" fill="none" stroke-linejoin="round" stroke-linecap="round">
-        <path class="ln ln-red"    style="--d:0"  d="M240,-20 V190 L300,250 H520 L600,170 V-20"/>
-        <path class="ln ln-amber"  style="--d:1"  d="M-20,184 H200 L280,264 H540 L640,164 H820"/>
-        <path class="ln ln-sky"    style="--d:2"  d="M-20,238 H220 L260,278 H560 L620,218 H820"/>
-        <path class="ln ln-green"  style="--d:3"  d="M-20,332 H220 L260,292 H560 L620,352 H820"/>
-        <path class="ln ln-purple" style="--d:4"  d="M-20,386 H200 L280,306 H540 L640,406 H820"/>
-        <path class="ln ln-pink"   style="--d:5"  d="M240,580 V380 L300,320 H520 L600,400 V580"/>
+  <!-- Compass: each category sits on its own bearing -->
+  <figure class="dial" aria-hidden="true">
+    <div class="dial-stage">
+    <svg class="dial-svg" viewBox="-165 -165 330 330">
+      <circle class="dial-face" r="148"/>
+      <circle class="dial-ring" r="118"/>
+      <circle class="dial-ring dial-ring-inner" r="62"/>
+      <g class="dial-ticks"></g>
+      <g class="dial-marks"></g>
+      <g class="dial-cardinals">
+        <text class="is-north" y="-96">N</text><text x="98" y="4">E</text><text y="104">S</text><text x="-98" y="4">W</text>
       </g>
-      <g class="map-stations">
-        <circle class="st st-red" cx="240" cy="60" r="7"/>
-        <circle class="st st-red" cx="240" cy="130" r="7"/>
-        <circle class="st st-red" cx="600" cy="90" r="7"/>
-        <circle class="st st-amber" cx="90" cy="184" r="7"/>
-        <circle class="st st-amber" cx="720" cy="164" r="7"/>
-        <circle class="st st-sky" cx="100" cy="238" r="7"/>
-        <circle class="st st-sky" cx="720" cy="218" r="7"/>
-        <circle class="st st-green" cx="100" cy="332" r="7"/>
-        <circle class="st st-green" cx="720" cy="352" r="7"/>
-        <circle class="st st-purple" cx="90" cy="386" r="7"/>
-        <circle class="st st-purple" cx="720" cy="406" r="7"/>
-        <circle class="st st-pink" cx="240" cy="450" r="7"/>
-        <circle class="st st-pink" cx="600" cy="470" r="7"/>
-        <circle class="st st-pink" cx="600" cy="530" r="7"/>
-      </g>
-      <g class="map-labels">
-        <text x="224" y="65" text-anchor="end">NTULearn</text>
-        <text x="224" y="135" text-anchor="end">Exam Timetable</text>
-        <text x="616" y="95">Degree Audit</text>
-        <text x="90" y="168" text-anchor="middle">CareerAxis</text>
-        <text x="720" y="148" text-anchor="middle">Work Study Scheme</text>
-        <text x="100" y="222" text-anchor="middle">Exchange Portal</text>
-        <text x="720" y="202" text-anchor="middle">Library Booking</text>
-        <text x="100" y="361" text-anchor="middle">Hall Portal</text>
-        <text x="720" y="381" text-anchor="middle">Financial Aid</text>
-        <text x="90" y="415" text-anchor="middle">STARS Registration</text>
-        <text x="720" y="435" text-anchor="middle">Clubs Directory</text>
-        <text x="224" y="455" text-anchor="end">One Stop @ SAC</text>
-        <text x="616" y="475">Campus Shuttle</text>
-        <text x="616" y="535">Student Health</text>
-      </g>
-      <g class="map-interchange">
-        <rect x="394" y="236" width="32" height="98" rx="16"/>
+      <g class="dial-needle">
+        <polygon class="needle-n" points="0,-104 10,0 -10,0"/>
+        <polygon class="needle-s" points="0,104 10,0 -10,0"/>
+        <circle class="needle-pin" r="5"/>
       </g>
     </svg>
-    <figcaption class="hero-map-caption">Nanyang Technological University</figcaption>
+    <div class="dial-labels"></div>
+    </div>
+    <figcaption class="dial-readout"><span class="dial-readout-deg">000°</span><span class="dial-readout-name">Nanyang Technological University</span></figcaption>
   </figure>
 </header>
 
@@ -146,7 +119,7 @@
   </div>
   <div class="top-picks-grid">
       <a class="top-pick-card" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener" aria-label="NTULearn - Access course materials and lectures">
-        <svg class="top-pick-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16 H30"/><rect x="11" y="5" width="10" height="22" rx="5"/></svg>
+        <span class="top-pick-tag">Course materials</span>
         <span class="top-pick-name">NTULearn</span>
         <span class="top-pick-desc">Your central hub for course materials, lecture recordings, assignment submissions, and announcements from all your enrolled modules.</span>
         <span class="top-pick-arrow">
@@ -155,7 +128,7 @@
         </span>
       </a>
       <a class="top-pick-card" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener" aria-label="Degree Audit - View grades and track AU progress">
-        <svg class="top-pick-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16 H30"/><rect x="11" y="5" width="10" height="22" rx="5"/></svg>
+        <span class="top-pick-tag">Academic progress</span>
         <span class="top-pick-name">Degree Audit</span>
         <span class="top-pick-desc">Track your academic progress, view your grades, monitor outstanding AU requirements, and ensure you're on track to graduate.</span>
         <span class="top-pick-arrow">
@@ -164,7 +137,7 @@
         </span>
       </a>
       <a class="top-pick-card" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener" aria-label="STARS - Register for courses and plan your timetable">
-        <svg class="top-pick-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16 H30"/><rect x="11" y="5" width="10" height="22" rx="5"/></svg>
+        <span class="top-pick-tag">Registration</span>
         <span class="top-pick-name">STARS</span>
         <span class="top-pick-desc">Register for modules each semester, plan your timetable, manage waitlists, and add or drop courses during the registration window.</span>
         <span class="top-pick-arrow">
@@ -256,7 +229,6 @@
   </div>
   <div class="fresh-banner">
     <div class="fresh-intro">
-      <p class="fresh-banner-label" aria-hidden="true">Orientation checklist</p>
       <h3 class="fresh-banner-title">New to NTU?<br>Start here.</h3>
       <p class="fresh-banner-desc">
         Your first few weeks involve a lot of portals you've never heard of. These are the eight things worth getting done before classes start — in roughly the right order.
@@ -417,9 +389,8 @@
     <div class="footer-left">
       <div class="footer-logo">
         <svg class="nav-logo-mark" viewBox="0 0 32 32" aria-hidden="true">
-          <path class="m-red" d="M2 11 H30"/><path class="m-sky" d="M2 21 H30"/>
-          <rect x="11" y="5" width="10" height="22" rx="5"/>
-        </svg>
+      <polygon class="m-n" points="16,3 20,16 12,16"/><polygon class="m-s" points="16,29 20,16 12,16"/>
+    </svg>
         NTU Atlas
       </div>
       <div class="footer-tagline">
@@ -452,7 +423,7 @@
   </div>
 </div>
 
-<script src="data.js?v=2"></script>
-<script src="script.js?v=2"></script>
+<script src="data.js?v=3"></script>
+<script src="script.js?v=3"></script>
 </body>
 </html>
