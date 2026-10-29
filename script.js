@@ -97,6 +97,7 @@ searchInput.addEventListener('input', () => {
     const nameSpan = document.createElement('span');
     nameSpan.className = 'search-result-name';
     nameSpan.textContent = r.name;
+    a.style.setProperty('--line', `var(--l-${CAT_LINE[r.cat] || 'slate'})`);
     const catSpan = document.createElement('span');
     catSpan.className = 'search-result-cat';
     catSpan.textContent = r.cat;
@@ -105,18 +106,23 @@ searchInput.addEventListener('input', () => {
     searchResults.appendChild(a);
   });
   searchResults.classList.add('active');
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!prefersReducedMotion) {
-    searchResults.querySelectorAll('.search-result-item').forEach((item, i) => {
-      item.style.opacity = '0';
-      item.style.transform = 'translateY(6px)';
-      item.style.transition = `opacity 0.2s ease ${i * 30}ms, transform 0.2s ease ${i * 30}ms`;
-      requestAnimationFrame(() => {
-        item.style.opacity = '1';
-        item.style.transform = 'translateY(0)';
-      });
-    });
+});
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { searchResults.classList.remove('active'); return; }
+  if (e.key === 'ArrowDown') {
+    const first = searchResults.querySelector('.search-result-item');
+    if (first && searchResults.classList.contains('active')) { e.preventDefault(); first.focus(); }
   }
+});
+
+searchResults.addEventListener('keydown', e => {
+  const items = Array.from(searchResults.querySelectorAll('.search-result-item'));
+  const idx = items.indexOf(document.activeElement);
+  if (idx === -1) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); (items[idx + 1] || items[0]).focus(); }
+  if (e.key === 'ArrowUp') { e.preventDefault(); idx === 0 ? searchInput.focus() : items[idx - 1].focus(); }
+  if (e.key === 'Escape') { searchResults.classList.remove('active'); searchInput.focus(); }
 });
 
 document.addEventListener('click', e => {
@@ -150,34 +156,21 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
   });
 });
 
-/* ——— THEME PERSISTENCE ——— */
-(function() {
-  const saved = localStorage.getItem('theme');
-  if (saved) {
-    document.documentElement.setAttribute('data-theme', saved);
-    const iconSunEl = document.getElementById('iconSun');
-    const iconMoonEl = document.getElementById('iconMoon');
-    if (iconSunEl && iconMoonEl) {
-      iconSunEl.style.display = saved === 'dark' ? 'block' : 'none';
-      iconMoonEl.style.display = saved === 'dark' ? 'none' : 'block';
-    }
-  }
-})();
-
 /* ——— THEME TOGGLE ——— */
 const toggle = document.getElementById('themeToggle');
-const iconSun = document.getElementById('iconSun');
-const iconMoon = document.getElementById('iconMoon');
+
+function syncToggleLabel() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+}
+syncToggleLabel();
 
 toggle.addEventListener('click', () => {
   const html = document.documentElement;
-  const isDark = html.getAttribute('data-theme') === 'dark';
-  const next = isDark ? 'light' : 'dark';
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   html.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-  iconSun.style.display = isDark ? 'none' : 'block';
-  iconMoon.style.display = isDark ? 'block' : 'none';
-  toggle.setAttribute('aria-label', isDark ? 'Switch to dark mode' : 'Switch to light mode');
+  try { localStorage.setItem('theme', next); } catch (e) {}
+  syncToggleLabel();
 });
 
 /* ——— NAV SCROLL STATE ——— */
@@ -195,17 +188,6 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-/* ——— SCROLL REVEAL ——— */
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.style.opacity = '1';
-      e.target.style.transform = 'translateY(0)';
-    }
-  });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-const prefersReducedMotionReveal = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
 /* ——— PORTALS ——— */
 const CAT_PANEL_MAP = {
   'Academics': 'panel-academics',
@@ -219,6 +201,19 @@ const CAT_PANEL_MAP = {
   'IT & Tech': 'panel-ittech',
   'Student Services': 'panel-services',
 };
+const CAT_LINE = {
+  'Academics': 'red',
+  'Career': 'amber',
+  'Exchange': 'sky',
+  'Facilities': 'green',
+  'Finance': 'olive',
+  'Housing': 'brown',
+  'Community': 'purple',
+  'Campus Life': 'pink',
+  'IT & Tech': 'teal',
+  'Student Services': 'slate',
+  'Club': 'yellow',
+};
 const ACADEMICS_GROUP_ORDER = ['Core academic', 'Results', 'Registration', 'Resources', 'MOOCs'];
 
 function renderPortals() {
@@ -228,19 +223,21 @@ function renderPortals() {
     const catLinks = allLinks.filter(l => l.cat === cat);
     const groups = cat === 'Academics' ? ACADEMICS_GROUP_ORDER : [null];
     let html = '';
+    let i = 0;
     for (const group of groups) {
       const groupLinks = catLinks.filter(l => l.group === group);
       if (!groupLinks.length) continue;
-      if (group !== null) html += `<div class="links-subgroup-label" aria-hidden="true">${escapeHtml(group)}</div>`;
+      if (group !== null) html += `<div class="links-subgroup-label" aria-hidden="true" style="--i:${i++}"><span>${escapeHtml(group)}</span></div>`;
       for (const link of groupLinks) {
         const name = escapeHtml(link.name);
         const tag = escapeHtml(link.tag);
         const desc = escapeHtml(link.desc);
         const url = escapeHtml(link.url);
-        html += `<a class="link-card" href="${url}" target="_blank" rel="noopener" aria-label="${name}"><span class="link-card-tag">${tag}</span><span class="link-card-name">${name}</span><span class="link-card-desc">${desc}</span><div class="link-card-footer"><span class="link-card-go">Go <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span></div></a>`;
+        html += `<a class="link-card" href="${url}" target="_blank" rel="noopener" style="--i:${i++}"><span class="link-card-tag">${tag}</span><span class="link-card-name">${name}</span><span class="link-card-desc">${desc}</span></a>`;
       }
     }
     grid.innerHTML = html;
+    grid.classList.toggle('is-long', catLinks.length > 6);
   }
 }
 
@@ -250,6 +247,11 @@ renderPortals();
 const clubsGrid = document.getElementById('clubsGrid');
 const clubsCount = document.getElementById('clubsCount');
 
+const clubsMore = document.getElementById('clubsMore');
+const CLUBS_PREVIEW = 24;
+let clubFilter = 'All';
+let clubsExpanded = false;
+
 const instagramSVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`;
 function renderClubs(filter) {
   const filtered = filter === 'All' ? allClubs : allClubs.filter(c => c.type === filter);
@@ -257,7 +259,8 @@ function renderClubs(filter) {
   clubsCount.textContent = `${count} ${count === 1 ? 'club' : 'clubs'}`;
   clubsCount.setAttribute('aria-label', `${count} ${count === 1 ? 'club' : 'clubs'}`);
 
-  clubsGrid.innerHTML = filtered.map(club => {
+  const shown = clubsExpanded ? filtered : filtered.slice(0, CLUBS_PREVIEW);
+  clubsGrid.innerHTML = shown.map(club => {
     const name = escapeHtml(club.name);
     const type = escapeHtml(club.type);
     const desc = escapeHtml(club.desc);
@@ -267,27 +270,33 @@ function renderClubs(filter) {
       ? `<a class="club-social-link" href="https://instagram.com/${handle}" target="_blank" rel="noopener" aria-label="${name} on Instagram">${instagramSVG}@${handle}</a>`
       : '';
     return `
-      <div class="club-card" role="listitem">
+      <div class="club-card" role="listitem" data-type="${type}">
         <span class="club-card-tag">${type}</span>
         <span class="club-card-name">${name}</span>
         <span class="club-card-desc">${desc}</span>
         <div class="club-card-links">${igLink}</div>
       </div>`;
   }).join('');
-  if (!prefersReducedMotionReveal) {
-    clubsGrid.querySelectorAll('.club-card').forEach((el, i) => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(16px)';
-      el.style.transition = `opacity 0.5s ease ${(i % 8) * 0.06}s, transform 0.5s ease ${(i % 8) * 0.06}s`;
-      io.observe(el);
-    });
-    clubsGrid.classList.remove('fade-in');
-    void clubsGrid.offsetWidth;
-    clubsGrid.classList.add('fade-in');
-  }
+
+  const hiddenCount = count - shown.length;
+  clubsMore.hidden = hiddenCount <= 0;
+  clubsMore.textContent = `Show all ${count} ${filter === 'All' ? '' : filter.toLowerCase() + ' '}clubs`;
 }
 
+clubsMore.addEventListener('click', () => {
+  const firstNew = clubsGrid.children.length;
+  clubsExpanded = true;
+  renderClubs(clubFilter);
+  const next = clubsGrid.children[firstNew];
+  const link = next && next.querySelector('a');
+  if (link) link.focus({ preventScroll: true });
+});
+
 document.querySelectorAll('.club-tab').forEach(tab => {
+  const filter = tab.dataset.filter;
+  const n = filter === 'All' ? allClubs.length : allClubs.filter(c => c.type === filter).length;
+  if (filter !== 'All') tab.dataset.type = filter;
+  tab.insertAdjacentHTML('beforeend', ` <span class="club-tab-count" aria-hidden="true">${n}</span>`);
   tab.addEventListener('click', () => {
     document.querySelectorAll('.club-tab').forEach(t => {
       t.classList.remove('active');
@@ -295,7 +304,9 @@ document.querySelectorAll('.club-tab').forEach(tab => {
     });
     tab.classList.add('active');
     tab.setAttribute('aria-selected', 'true');
-    renderClubs(tab.dataset.filter);
+    clubFilter = filter;
+    clubsExpanded = false;
+    renderClubs(filter);
   });
   tab.addEventListener('keydown', e => {
     const tabs = Array.from(document.querySelectorAll('.club-tab'));
@@ -306,16 +317,6 @@ document.querySelectorAll('.club-tab').forEach(tab => {
 });
 
 renderClubs('All');
-
-/* ——— SCROLL REVEAL (non-club elements) ——— */
-const revealElements = document.querySelectorAll('.top-pick-card, .link-card, .fresh-item, .tool-item, h2.section-title');
-revealElements.forEach((el, i) => {
-  if (prefersReducedMotionReveal) return;
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(16px)';
-  el.style.transition = `opacity 0.5s ease ${(i % 8) * 0.06}s, transform 0.5s ease ${(i % 8) * 0.06}s, background 0.2s ease`;
-  io.observe(el);
-});
 
 /* ——— LEGAL MODAL ——— */
 const legalModal = document.getElementById('legalModal');

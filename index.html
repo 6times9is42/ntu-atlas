@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,137 +23,130 @@
 <meta name="twitter:image" content="https://ntuatlas.com/NTU%20Atlas.jpeg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<script src="theme-init.js"></script>
 </head>
 <body>
 
-<!-- Grid background -->
-<div class="grid-bg" aria-hidden="true"></div>
-
-<!-- Radial glow background -->
-<div class="bg-glow" aria-hidden="true"></div>
-
-<!-- Topographic SVG -->
-<svg class="topo-svg" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <g fill="none" stroke="currentColor" stroke-width="1">
-    <!-- Topographic contour lines — hand-crafted organic curves -->
-    <path d="M650,100 Q580,80 520,130 Q460,180 400,160 Q340,140 280,190 Q220,240 160,210 Q100,180 40,220"/>
-    <path d="M650,160 Q590,130 530,175 Q470,220 410,200 Q350,180 290,235 Q230,290 170,260 Q110,230 50,270"/>
-    <path d="M650,225 Q600,190 540,225 Q480,260 420,245 Q360,230 300,280 Q240,330 180,305 Q120,280 60,315"/>
-    <path d="M650,300 Q610,260 555,290 Q500,320 445,305 Q390,290 335,335 Q280,380 220,358 Q160,335 100,368"/>
-    <path d="M650,380 Q615,345 565,368 Q515,390 460,380 Q405,370 355,410 Q305,450 248,432 Q191,414 135,445"/>
-    <path d="M650,460 Q618,430 572,450 Q526,470 475,462 Q424,454 376,490 Q328,526 272,510 Q216,494 162,522"/>
-    <path d="M650,545 Q621,518 577,535 Q533,552 483,547 Q433,542 387,574 Q341,606 285,593 Q229,580 176,604"/>
-    <path d="M650,630 Q624,605 582,620 Q540,635 490,632 Q440,629 396,658 Q352,687 296,677 Q240,667 188,688"/>
-    <path d="M650,715 Q627,692 587,705 Q547,718 496,718 Q445,718 402,744 Q359,770 302,762 Q245,754 192,773"/>
-    <!-- Horizontal accent lines -->
-    <path d="M0,350 Q80,320 160,360 Q240,400 320,370 Q400,340 480,380 Q560,420 650,400" stroke-width="0.5"/>
-    <path d="M0,480 Q80,455 160,490 Q240,525 320,500 Q400,475 480,508 Q560,541 650,520" stroke-width="0.5"/>
-  </g>
-</svg>
+<a class="skip-link" href="#portals">Skip to all portals</a>
 
 <!-- Navigation -->
 <nav role="navigation" aria-label="Main navigation">
   <a class="nav-logo" href="#" aria-label="NTU Atlas home">
+    <svg class="nav-logo-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="m-red" d="M2 11 H30"/><path class="m-sky" d="M2 21 H30"/>
+      <rect x="11" y="5" width="10" height="22" rx="5"/>
+    </svg>
     <span class="nav-logo-word">NTU Atlas</span>
   </a>
-  <div class="nav-right">
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode" title="Toggle theme">
-      <!-- Sun icon (shown in dark mode) -->
-      <svg id="iconSun" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-      <!-- Moon icon (shown in light mode) -->
-      <svg id="iconMoon" viewBox="0 0 24 24" aria-hidden="true" style="display:none">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-    </button>
-  </div>
+  <ul class="nav-links">
+    <li><a href="#portals">Portals</a></li>
+    <li><a href="#freshmen">Freshmen</a></li>
+    <li><a href="#clubs">Clubs</a></li>
+    <li><a href="#direct">Direct access</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light/dark mode" title="Toggle theme">
+    <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+    <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  </button>
 </nav>
 
 <main>
 
 <!-- Hero -->
 <header class="hero">
-  <p class="hero-label" aria-hidden="true">Nanyang Technological University</p>
-  <h1 class="hero-title">Every portal.<br>One <em>place.</em></h1>
-  <div class="hero-sub-row">
+  <div class="hero-copy">
+    <h1 class="hero-title">Every portal.<br>One place.</h1>
     <p class="hero-desc">
       A curated directory of NTU's digital ecosystem — portals, campus services, clubs and societies. Built for students, especially those navigating university for the first time.
     </p>
+
+    <!-- Search -->
+    <section class="search-section" aria-label="Search portals">
+      <div class="search-wrap">
+        <label for="searchInput" class="sr-only">Search NTU portals</label>
+        <span class="search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <input
+          type="search"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search portals — try 'grades', 'housing', 'career'..."
+          autocomplete="off"
+          aria-autocomplete="list"
+          aria-controls="searchResults"
+        >
+        <div class="search-results" id="searchResults" role="listbox" aria-label="Search results"></div>
+      </div>
+    </section>
   </div>
-  <div class="hero-scroll-hint" aria-hidden="true">
-    <div class="scroll-line"></div>
-    <span>scroll</span>
-  </div>
+
+  <!-- Network map: every line meets at one interchange -->
+  <figure class="hero-map" aria-hidden="true">
+    <svg viewBox="0 0 800 560" preserveAspectRatio="xMidYMid slice">
+      <g class="map-lines" fill="none" stroke-linejoin="round" stroke-linecap="round">
+        <path class="ln ln-red"    style="--d:0"  pathLength="1" d="M240,-20 V190 L300,250 H520 L600,170 V-20"/>
+        <path class="ln ln-amber"  style="--d:1"  pathLength="1" d="M-20,184 H200 L280,264 H540 L640,164 H820"/>
+        <path class="ln ln-sky"    style="--d:2"  pathLength="1" d="M-20,238 H220 L260,278 H560 L620,218 H820"/>
+        <path class="ln ln-green"  style="--d:3"  pathLength="1" d="M-20,332 H220 L260,292 H560 L620,352 H820"/>
+        <path class="ln ln-purple" style="--d:4"  pathLength="1" d="M-20,386 H200 L280,306 H540 L640,406 H820"/>
+        <path class="ln ln-pink"   style="--d:5"  pathLength="1" d="M240,580 V380 L300,320 H520 L600,400 V580"/>
+      </g>
+      <g class="map-stations">
+        <circle class="st st-red" cx="240" cy="60" r="7"/>
+        <circle class="st st-red" cx="240" cy="130" r="7"/>
+        <circle class="st st-red" cx="600" cy="90" r="7"/>
+        <circle class="st st-amber" cx="90" cy="184" r="7"/>
+        <circle class="st st-amber" cx="720" cy="164" r="7"/>
+        <circle class="st st-sky" cx="100" cy="238" r="7"/>
+        <circle class="st st-sky" cx="720" cy="218" r="7"/>
+        <circle class="st st-green" cx="100" cy="332" r="7"/>
+        <circle class="st st-green" cx="720" cy="352" r="7"/>
+        <circle class="st st-purple" cx="90" cy="386" r="7"/>
+        <circle class="st st-purple" cx="720" cy="406" r="7"/>
+        <circle class="st st-pink" cx="240" cy="450" r="7"/>
+        <circle class="st st-pink" cx="600" cy="470" r="7"/>
+        <circle class="st st-pink" cx="600" cy="530" r="7"/>
+      </g>
+      <g class="map-labels">
+        <text x="224" y="65" text-anchor="end">NTULearn</text>
+        <text x="224" y="135" text-anchor="end">Exam Timetable</text>
+        <text x="616" y="95">Degree Audit</text>
+        <text x="90" y="168" text-anchor="middle">CareerAxis</text>
+        <text x="720" y="148" text-anchor="middle">Work Study Scheme</text>
+        <text x="100" y="222" text-anchor="middle">Exchange Portal</text>
+        <text x="720" y="202" text-anchor="middle">Library Booking</text>
+        <text x="100" y="361" text-anchor="middle">Hall Portal</text>
+        <text x="720" y="381" text-anchor="middle">Financial Aid</text>
+        <text x="90" y="415" text-anchor="middle">STARS Registration</text>
+        <text x="720" y="435" text-anchor="middle">Clubs Directory</text>
+        <text x="224" y="455" text-anchor="end">One Stop @ SAC</text>
+        <text x="616" y="475">Campus Shuttle</text>
+        <text x="616" y="535">Student Health</text>
+      </g>
+      <g class="map-interchange">
+        <rect x="394" y="236" width="32" height="98" rx="16"/>
+      </g>
+    </svg>
+    <figcaption class="hero-map-caption">Nanyang Technological University</figcaption>
+  </figure>
 </header>
 
-<!-- Marquee -->
-<div class="marquee-wrap" aria-hidden="true">
-  <div class="marquee-track" id="marqueeTrack">
-    <div class="marquee-item"><span class="marquee-dot"></span>NTULearn</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>STARS Registration</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Degree Audit</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>CareerAxis</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Exchange Portal</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Library Booking</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Hall Portal</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Financial Aid</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Exam Timetable</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Work Study Scheme</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>One Stop @ SAC</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Campus Shuttle</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Student Health</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Clubs Directory</div>
-    <!-- Duplicate for seamless loop -->
-    <div class="marquee-item"><span class="marquee-dot"></span>NTULearn</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>STARS Registration</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Degree Audit</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>CareerAxis</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Exchange Portal</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Library Booking</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Hall Portal</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Financial Aid</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Exam Timetable</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Work Study Scheme</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>One Stop @ SAC</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Campus Shuttle</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Student Health</div>
-    <div class="marquee-item"><span class="marquee-dot"></span>Clubs Directory</div>
-  </div>
-</div>
-
-<!-- Search -->
-<section class="search-section" aria-label="Search portals">
-  <div class="search-wrap">
-    <label for="searchInput" class="sr-only">Search NTU portals</label>
-    <input
-      type="search"
-      id="searchInput"
-      class="search-input"
-      placeholder="Search portals — try 'grades', 'housing', 'career'..."
-      autocomplete="off"
-      aria-autocomplete="list"
-      aria-controls="searchResults"
-    >
-    <span class="search-icon" aria-hidden="true">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    </span>
-    <div class="search-results" id="searchResults" role="listbox" aria-label="Search results"></div>
-  </div>
-</section>
-
 <!-- Top 3 picks -->
-<section aria-labelledby="topPicksHeading">
+<section class="block" aria-labelledby="topPicksHeading">
   <div class="section-header">
     <h2 class="section-title" id="topPicksHeading">Most visited</h2>
-    <span class="section-count" aria-label="3 links">03 links</span>
+    <span class="section-count" aria-label="3 links">3 links</span>
   </div>
-  <div class="top-picks">
-    <div class="top-picks-grid">
+  <div class="top-picks-grid">
       <a class="top-pick-card" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener" aria-label="NTULearn - Access course materials and lectures">
-        <span class="top-pick-num" aria-hidden="true">01</span>
+        <svg class="top-pick-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16 H30"/><rect x="11" y="5" width="10" height="22" rx="5"/></svg>
         <span class="top-pick-name">NTULearn</span>
         <span class="top-pick-desc">Your central hub for course materials, lecture recordings, assignment submissions, and announcements from all your enrolled modules.</span>
         <span class="top-pick-arrow">
@@ -162,7 +155,7 @@
         </span>
       </a>
       <a class="top-pick-card" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener" aria-label="Degree Audit - View grades and track AU progress">
-        <span class="top-pick-num" aria-hidden="true">02</span>
+        <svg class="top-pick-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16 H30"/><rect x="11" y="5" width="10" height="22" rx="5"/></svg>
         <span class="top-pick-name">Degree Audit</span>
         <span class="top-pick-desc">Track your academic progress, view your grades, monitor outstanding AU requirements, and ensure you're on track to graduate.</span>
         <span class="top-pick-arrow">
@@ -171,7 +164,7 @@
         </span>
       </a>
       <a class="top-pick-card" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener" aria-label="STARS - Register for courses and plan your timetable">
-        <span class="top-pick-num" aria-hidden="true">03</span>
+        <svg class="top-pick-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M2 16 H30"/><rect x="11" y="5" width="10" height="22" rx="5"/></svg>
         <span class="top-pick-name">STARS</span>
         <span class="top-pick-desc">Register for modules each semester, plan your timetable, manage waitlists, and add or drop courses during the registration window.</span>
         <span class="top-pick-arrow">
@@ -179,12 +172,11 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </span>
       </a>
-    </div>
-  </div>
+</div>
 </section>
 
 <!-- All categories -->
-<section aria-labelledby="allLinksHeading">
+<section class="block" id="portals" aria-labelledby="allLinksHeading">
   <div class="section-header">
     <h2 class="section-title" id="allLinksHeading">All portals</h2>
     <span class="section-count" aria-label="10 categories">10 categories</span>
@@ -201,7 +193,7 @@
       <button class="cat-tab" role="tab" aria-selected="false" aria-controls="panel-campuslife" id="tab-campuslife">Campus Life</button>
       <button class="cat-tab" role="tab" aria-selected="false" aria-controls="panel-ittech" id="tab-ittech">IT &amp; Tech</button>
       <button class="cat-tab" role="tab" aria-selected="false" aria-controls="panel-services" id="tab-services">Student Services</button>
-    </div>
+</div>
 
     <!-- Academics -->
     <div class="cat-panel active" id="panel-academics" role="tabpanel" aria-labelledby="tab-academics">
@@ -257,86 +249,87 @@
 </section>
 
 <!-- Freshmen Section -->
-<section class="fresh-section" aria-labelledby="freshHeading">
-  <div class="section-header" style="padding: 0; margin-bottom: 28px;">
+<section class="block fresh-section" id="freshmen" aria-labelledby="freshHeading">
+  <div class="section-header">
     <h2 class="section-title" id="freshHeading">For freshmen</h2>
     <span class="section-count">Day 1 essentials</span>
   </div>
   <div class="fresh-banner">
-    <p class="fresh-banner-label" aria-hidden="true">Orientation checklist</p>
-    <h3 class="fresh-banner-title">New to NTU?<br>Start here.</h3>
-    <p class="fresh-banner-desc">
-      Your first few weeks involve a lot of portals you've never heard of. These are the eight things worth getting done before classes start — in roughly the right order.
-    </p>
+    <div class="fresh-intro">
+      <p class="fresh-banner-label" aria-hidden="true">Orientation checklist</p>
+      <h3 class="fresh-banner-title">New to NTU?<br>Start here.</h3>
+      <p class="fresh-banner-desc">
+        Your first few weeks involve a lot of portals you've never heard of. These are the eight things worth getting done before classes start — in roughly the right order.
+      </p>
+    </div>
     <div class="fresh-checklist" role="list">
       <a class="fresh-item" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener" role="listitem" aria-label="Step 1: Register your modules in STARS">
-        <div class="fresh-item-dot" aria-hidden="true"></div>
+        <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
           <div class="fresh-item-name">Register your modules</div>
           <div class="fresh-item-hint">STARS opens in waves — log in early and have backup modules ready.</div>
         </div>
       </a>
       <a class="fresh-item" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener" role="listitem" aria-label="Step 2: Check NTULearn for pre-course materials">
-        <div class="fresh-item-dot" aria-hidden="true"></div>
+        <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
           <div class="fresh-item-name">Check NTULearn</div>
           <div class="fresh-item-hint">Professors often post pre-reading and syllabus before Week 1.</div>
         </div>
       </a>
       <a class="fresh-item" href="https://ntusg.starrezhousing.com/StarRezStudentPortal/60E2C0B3/1/1/Home-Home?UrlToken=CFD12569" target="_blank" rel="noopener" role="listitem" aria-label="Step 3: Sort out your housing">
-        <div class="fresh-item-dot" aria-hidden="true"></div>
+        <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
           <div class="fresh-item-name">Sort housing early</div>
           <div class="fresh-item-hint">Halls fill up fast. Apply through the Hall Portal as soon as applications open.</div>
         </div>
       </a>
       <a class="fresh-item" href="https://www.ntu.edu.sg/admissions/undergraduate/financial-matters/financial-aid" target="_blank" rel="noopener" role="listitem" aria-label="Step 4: Explore financial aid options">
-        <div class="fresh-item-dot" aria-hidden="true"></div>
+        <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
           <div class="fresh-item-name">Explore financial aid</div>
           <div class="fresh-item-hint">Bursary deadlines are often missed by freshmen who don't know they qualify.</div>
         </div>
       </a>
       <a class="fresh-item" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener" role="listitem" aria-label="Step 5: Check your degree audit requirements">
-        <div class="fresh-item-dot" aria-hidden="true"></div>
+        <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
           <div class="fresh-item-name">Read your degree audit</div>
           <div class="fresh-item-hint">Understand graduation requirements from Day 1 to avoid scrambling in Year 4.</div>
         </div>
       </a>
       <a class="fresh-item" href="https://careeraxis.ntu.edu.sg/students" target="_blank" rel="noopener" role="listitem" aria-label="Step 6: Create your CareerAxis profile early">
-        <div class="fresh-item-dot" aria-hidden="true"></div>
+        <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
           <div class="fresh-item-name">Set up CareerAxis</div>
           <div class="fresh-item-hint">Even in Year 1 — internship positions close months before the start date.</div>
         </div>
       </a>
       <a class="fresh-item" href="https://libcalendar.ntu.edu.sg/" target="_blank" rel="noopener" role="listitem" aria-label="Step 7: Learn how to book library spaces">
-        <div class="fresh-item-dot" aria-hidden="true"></div>
+        <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
           <div class="fresh-item-name">Bookmark library booking</div>
           <div class="fresh-item-hint">Good rooms fill by 8 AM during exam season. Bookmark and book early.</div>
         </div>
       </a>
       <a class="fresh-item" href="https://t.me/+vuhtJw7fENg5OTll" target="_blank" rel="noopener" role="listitem" aria-label="Step 8: Join the NTU student community">
-        <div class="fresh-item-dot" aria-hidden="true"></div>
+        <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
           <div class="fresh-item-name">Join the community</div>
           <div class="fresh-item-hint">The NTU Atlas Telegram has seniors ready to answer questions you're embarrassed to Google.</div>
         </div>
       </a>
-    </div>
+</div>
   </div>
 </section>
 
 <!-- Clubs & Societies -->
-<section class="clubs-section" aria-labelledby="clubsHeading">
-  <div class="section-header" style="padding: 0; margin-bottom: 28px;">
+<section class="block clubs-section" id="clubs" aria-labelledby="clubsHeading">
+  <div class="section-header">
     <h2 class="section-title" id="clubsHeading">Clubs &amp; Societies</h2>
     <span class="section-count" id="clubsCount" aria-live="polite"></span>
   </div>
-  <div class="clubs-section-wrap">
-    <div class="club-tabs" role="tablist" aria-label="CCA categories">
+  <div class="club-tabs" role="tablist" aria-label="CCA categories">
       <button class="club-tab active" role="tab" aria-selected="true" data-filter="All" id="club-tab-all" aria-controls="clubsGrid">All</button>
       <button class="club-tab" role="tab" aria-selected="false" data-filter="Sports" id="club-tab-sports" aria-controls="clubsGrid">Sports</button>
       <button class="club-tab" role="tab" aria-selected="false" data-filter="Arts" id="club-tab-arts" aria-controls="clubsGrid">Arts</button>
@@ -345,16 +338,14 @@
       <button class="club-tab" role="tab" aria-selected="false" data-filter="Community" id="club-tab-community" aria-controls="clubsGrid">Community</button>
       <button class="club-tab" role="tab" aria-selected="false" data-filter="Uniformed" id="club-tab-uniformed" aria-controls="clubsGrid">Uniformed</button>
       <button class="club-tab" role="tab" aria-selected="false" data-filter="Welfare" id="club-tab-welfare" aria-controls="clubsGrid">Welfare</button>
-    </div>
-    <div class="clubs-grid-wrap">
-      <div class="clubs-grid" id="clubsGrid" role="list" aria-label="Clubs and societies"></div>
-    </div>
-  </div>
+</div>
+  <div class="clubs-grid" id="clubsGrid" role="list" aria-label="Clubs and societies"></div>
+  <button type="button" class="clubs-more" id="clubsMore" hidden></button>
 </section>
 
 <!-- Quick tools row -->
-<section class="tools-section" aria-labelledby="quickToolsHeading">
-  <div class="section-header" style="padding: 0; margin-bottom: 28px;">
+<section class="block tools-section" id="direct" aria-labelledby="quickToolsHeading">
+  <div class="section-header">
     <h2 class="section-title" id="quickToolsHeading">Direct access</h2>
     <span class="section-count">Always-on</span>
   </div>
@@ -415,32 +406,37 @@
       <span class="tool-name">Housing</span>
       <span class="tool-desc">Hall application</span>
     </a>
-  </div>
+</div>
 </section>
 
 </main>
 
 <!-- Footer -->
 <footer role="contentinfo">
-  <div class="footer-left">
-    <div class="footer-logo">NTU Atlas</div>
-    <div class="footer-tagline">
-      Every portal. One place.<br>
-      Built for NTU students, by an NTU student.
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="footer-logo">
+        <svg class="nav-logo-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <path class="m-red" d="M2 11 H30"/><path class="m-sky" d="M2 21 H30"/>
+          <rect x="11" y="5" width="10" height="22" rx="5"/>
+        </svg>
+        NTU Atlas
+      </div>
+      <div class="footer-tagline">
+        Every portal. One place.<br>
+        Built for NTU students, by an NTU student.
+      </div>
     </div>
-  </div>
-  <div class="footer-right">
-    <div class="footer-credit">
-      Not affiliated with Nanyang Technological University.<br>
-      Maintained by the student community.
-    </div>
-
-    <div class="footer-legal">
-      <button type="button" class="footer-legal-link" data-modal="about">About</button>
-      <span aria-hidden="true">·</span>
-      <button type="button" class="footer-legal-link" data-modal="disclaimer">Disclaimer</button>
-      <span aria-hidden="true">·</span>
-      <button type="button" class="footer-legal-link" data-modal="privacy">Privacy Policy</button>
+    <div class="footer-right">
+      <div class="footer-credit">
+        Not affiliated with Nanyang Technological University.<br>
+        Maintained by the student community.
+      </div>
+      <div class="footer-legal">
+        <button type="button" class="footer-legal-link" data-modal="about">About</button>
+        <button type="button" class="footer-legal-link" data-modal="disclaimer">Disclaimer</button>
+        <button type="button" class="footer-legal-link" data-modal="privacy">Privacy Policy</button>
+      </div>
     </div>
   </div>
 </footer>
@@ -448,7 +444,9 @@
 <!-- Legal Modal -->
 <div id="legalModal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle" hidden aria-hidden="true">
   <div class="modal-panel">
-    <button type="button" class="modal-close" id="legalModalClose" aria-label="Close">&times;</button>
+    <button type="button" class="modal-close" id="legalModalClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+    </button>
     <h2 class="modal-title" id="legalModalTitle" tabindex="-1"></h2>
     <div class="modal-body" id="legalModalBody"></div>
   </div>
