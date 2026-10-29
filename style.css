@@ -187,13 +187,14 @@ nav.scrolled { border-bottom-color: var(--rule); }
 
 /* Map */
 .hero-map { position: relative; margin: 0; }
-.hero-map svg {
-  width: 100%; height: auto; aspect-ratio: 800 / 560;
-  /* Lines run off the edge of the sheet rather than stopping */
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
-  mask-composite: intersect;
+.hero-map svg { width: 100%; height: auto; aspect-ratio: 800 / 560; }
+/* Lines run off the edge of the sheet: paper-coloured fades over the edges */
+.hero-map::before {
+  content: ''; position: absolute; inset: 0 0 auto; z-index: 1; pointer-events: none;
+  aspect-ratio: 800 / 560;
+  background:
+    linear-gradient(to right, var(--paper), transparent 7%, transparent 93%, var(--paper)),
+    linear-gradient(to bottom, var(--paper), transparent 9%, transparent 91%, var(--paper));
 }
 
 .ln { stroke-width: 9; }
@@ -223,7 +224,7 @@ nav.scrolled { border-bottom-color: var(--rule); }
 
 /* The one orchestrated moment: the network draws itself on load */
 @media (prefers-reduced-motion: no-preference) {
-  .ln { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s cubic-bezier(.65, 0, .35, 1) forwards; animation-delay: calc(var(--d) * 90ms + 150ms); }
+  .ln { stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: draw 1.4s cubic-bezier(.65, 0, .35, 1) forwards; animation-delay: calc(var(--d) * 90ms + 150ms); }
   .map-stations, .map-labels { opacity: 0; animation: appear .5s ease-out 1.25s forwards; }
   .map-interchange { opacity: 0; transform-origin: 410px 285px; animation: pop .45s cubic-bezier(.34, 1.56, .64, 1) 1.1s forwards; }
 }
@@ -651,9 +652,7 @@ footer { background: var(--sign); color: var(--sign-ink); }
 
 @media (max-width: 960px) {
   .hero { grid-template-columns: 1fr; }
-  .hero-map { order: -1; margin: 0 calc(var(--gutter) * -1); overflow: hidden; }
-  .hero-map svg { aspect-ratio: auto; height: clamp(240px, 52vw, 420px); }
-  .hero-map-caption { padding: 0 var(--gutter); }
+  .hero-map { order: -1; width: 100%; max-width: 720px; margin: 0 auto; }
   .search-wrap { max-width: none; }
   .top-picks-grid { grid-template-columns: 1fr; }
   .top-pick-card { min-height: 0; }
@@ -669,6 +668,10 @@ footer { background: var(--sign); color: var(--sign-ink); }
   .theme-toggle { margin-left: auto; }
   .links-grid.is-long { columns: 1; }
   .map-labels { display: none; }
+  /* Phones: crop the map to a band around the interchange */
+  .hero-map { max-width: none; margin: 0 calc(var(--gutter) * -1); width: auto; overflow: hidden; }
+  .hero-map svg, .hero-map::before { aspect-ratio: auto; height: clamp(220px, 60vw, 340px); }
+  .hero-map-caption { padding: 0 var(--gutter); }
 }
 
 @media (max-width: 560px) {
