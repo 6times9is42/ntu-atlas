@@ -106,7 +106,6 @@ searchInput.addEventListener('input', () => {
     searchResults.appendChild(a);
   });
   searchResults.classList.add('active');
-  if (window.setHeading) setHeading(results[0].cat);
 });
 
 searchInput.addEventListener('keydown', e => {
@@ -427,72 +426,6 @@ placeInk();
 if (document.fonts) document.fonts.ready.then(placeInk);
 window.addEventListener('resize', placeInk);
 
-/* ——— COMPASS DIAL ——— */
-const DIAL_CATS = Object.keys(CAT_PANEL_MAP);
-const dialEl = document.querySelector('.dial');
-let heading = 0;
-function setHeading(cat) {
-  const idx = DIAL_CATS.indexOf(cat);
-  if (!dialEl || idx === -1) return;
-  const target = idx * 36;
-  const delta = ((target - heading) % 360 + 540) % 360 - 180;
-  heading += delta;
-  dialEl.querySelector('.dial-needle').style.transform = `rotate(${heading}deg)`;
-  dialEl.querySelectorAll('.dial-label').forEach((l, i) => l.classList.toggle('is-on', i === idx));
-  dialEl.querySelectorAll('.dial-marks circle').forEach((c, i) => c.classList.toggle('is-on', i === idx));
-  dialEl.querySelector('.dial-readout-deg').textContent = String(target).padStart(3, '0') + '°';
-  dialEl.querySelector('.dial-readout-name').textContent = cat;
-}
-window.setHeading = setHeading;
-
-if (dialEl) {
-  const NS = 'http://www.w3.org/2000/svg';
-  const ticks = dialEl.querySelector('.dial-ticks');
-  for (let d = 0; d < 360; d += 5) {
-    const major = d % 30 === 0, mid = d % 10 === 0;
-    const r1 = 148 - (major ? 16 : mid ? 11 : 6);
-    const a = d * Math.PI / 180;
-    const line = document.createElementNS(NS, 'line');
-    line.setAttribute('x1', (Math.sin(a) * r1).toFixed(2));
-    line.setAttribute('y1', (-Math.cos(a) * r1).toFixed(2));
-    line.setAttribute('x2', (Math.sin(a) * 144).toFixed(2));
-    line.setAttribute('y2', (-Math.cos(a) * 144).toFixed(2));
-    line.setAttribute('class', d === 0 ? 'is-north' : major ? 'is-major' : mid ? 'is-mid' : '');
-    ticks.appendChild(line);
-  }
-  const marks = dialEl.querySelector('.dial-marks');
-  const labels = dialEl.querySelector('.dial-labels');
-  DIAL_CATS.forEach((cat, i) => {
-    const a = i * 36 * Math.PI / 180;
-    const x = Math.sin(a), y = -Math.cos(a);
-    const c = document.createElementNS(NS, 'circle');
-    c.setAttribute('cx', (x * 157).toFixed(2));
-    c.setAttribute('cy', (y * 157).toFixed(2));
-    c.setAttribute('r', '3');
-    marks.appendChild(c);
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.tabIndex = -1;
-    b.className = 'dial-label';
-    b.style.cssText = `--x:${x.toFixed(3)};--y:${y.toFixed(3)};--n:${i};` +
-      `--tx:${x > .2 ? '0%' : x < -.2 ? '-100%' : '-50%'};--ty:${Math.abs(x) <= .2 ? (y < 0 ? '-100%' : '0%') : '-50%'}`;
-    b.innerHTML = `<span class="dial-label-deg">${String(i * 36).padStart(3, '0')}°</span><span>${escapeHtml(cat)}</span>`;
-    b.addEventListener('mouseenter', () => setHeading(cat));
-    b.addEventListener('click', () => {
-      document.getElementById('tab-' + CAT_PANEL_MAP[cat].replace('panel-', '')).click();
-      document.getElementById('portals').scrollIntoView();
-    });
-    labels.appendChild(b);
-  });
-  const needle = dialEl.querySelector('.dial-needle');
-  needle.style.transition = 'none';
-  needle.style.transform = 'rotate(-140deg)';
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    needle.style.transition = '';
-    needle.style.transform = 'rotate(0deg)';
-  }));
-}
-
 /* ——— "/" FOCUSES SEARCH ——— */
 document.addEventListener('keydown', e => {
   if (e.key !== '/' || e.metaKey || e.ctrlKey) return;
@@ -501,3 +434,289 @@ document.addEventListener('keydown', e => {
   e.preventDefault();
   searchInput.focus();
 });
+
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+/* ——— HERO CONTOUR FIELD ———
+   Animated topographic lines (marching squares over 3D Perlin noise).
+   The pointer raises a hill in the field, so the contours swirl around it. */
+(function () {
+  const canvas = document.querySelector('.hero-canvas');
+  if (!canvas) return;
+  const hero = canvas.parentElement;
+  const ctx = canvas.getContext('2d');
+
+  const perm = new Uint8Array(512);
+  const base = Array.from({ length: 256 }, (_, i) => i);
+  for (let i = 255; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [base[i], base[j]] = [base[j], base[i]]; }
+  for (let i = 0; i < 512; i++) perm[i] = base[i & 255];
+  const fade = t => t * t * t * (t * (t * 6 - 15) + 10);
+  const lerp = (a, b, t) => a + t * (b - a);
+  function grad(h, x, y, z) {
+    h &= 15;
+    const u = h < 8 ? x : y, v = h < 4 ? y : (h === 12 || h === 14 ? x : z);
+    return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
+  }
+  function noise(x, y, z) {
+    const X = Math.floor(x) & 255, Y = Math.floor(y) & 255, Z = Math.floor(z) & 255;
+    x -= Math.floor(x); y -= Math.floor(y); z -= Math.floor(z);
+    const u = fade(x), v = fade(y), w = fade(z);
+    const A = perm[X] + Y, AA = perm[A] + Z, AB = perm[A + 1] + Z, B = perm[X + 1] + Y, BA = perm[B] + Z, BB = perm[B + 1] + Z;
+    return lerp(
+      lerp(lerp(grad(perm[AA], x, y, z), grad(perm[BA], x - 1, y, z), u), lerp(grad(perm[AB], x, y - 1, z), grad(perm[BB], x - 1, y - 1, z), u), v),
+      lerp(lerp(grad(perm[AA + 1], x, y, z - 1), grad(perm[BA + 1], x - 1, y, z - 1), u), lerp(grad(perm[AB + 1], x, y - 1, z - 1), grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v),
+      w);
+  }
+
+  const CELL = 12, STEP = 0.075, LEVELS = 13;
+  // marching-squares segments per case: pairs of edges (0 top, 1 right, 2 bottom, 3 left)
+  const CASES = [[], [3, 2], [2, 1], [3, 1], [0, 1], [3, 0, 2, 1], [0, 2], [3, 0], [3, 0], [0, 2], [0, 1, 3, 2], [0, 1], [3, 1], [2, 1], [3, 2], []];
+  let W = 0, H = 0, cols = 0, rows = 0, field, dpr = 1;
+  let colors = {};
+  const pointer = { x: 0, y: 0, tx: 0, ty: 0, amp: 0, tAmp: 0 };
+
+  function readColors() {
+    const cs = getComputedStyle(document.documentElement);
+    colors = { line: cs.getPropertyValue('--ink-3').trim(), hot: cs.getPropertyValue('--needle').trim() };
+    colors.dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  }
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = hero.clientWidth; H = hero.clientHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    cols = Math.ceil(W / CELL) + 1; rows = Math.ceil(H / CELL) + 1;
+    field = new Float32Array(cols * rows);
+    if (!pointer.x) { pointer.x = pointer.tx = W * .72; pointer.y = pointer.ty = H * .45; }
+  }
+
+  function draw(t) {
+    pointer.x += (pointer.tx - pointer.x) * .07;
+    pointer.y += (pointer.ty - pointer.y) * .07;
+    pointer.amp += (pointer.tAmp - pointer.amp) * .04;
+    const z = t * .00006, r2 = 2 * 150 * 150;
+    for (let j = 0; j < rows; j++) {
+      const y = j * CELL;
+      for (let i = 0; i < cols; i++) {
+        const x = i * CELL;
+        const dx = x - pointer.x, dy = y - pointer.y;
+        field[j * cols + i] = noise(x * .0021, y * .0021, z) + .4 * noise(x * .005 + 7.1, y * .005 + 3.3, z * 1.7)
+          + pointer.amp * Math.exp(-(dx * dx + dy * dy) / r2);
+      }
+    }
+    const paths = Array.from({ length: LEVELS * 2 + 1 }, () => new Path2D());
+    for (let j = 0; j < rows - 1; j++) {
+      for (let i = 0; i < cols - 1; i++) {
+        const a = field[j * cols + i], b = field[j * cols + i + 1], c = field[(j + 1) * cols + i + 1], d = field[(j + 1) * cols + i];
+        const lo = Math.min(a, b, c, d), hi = Math.max(a, b, c, d);
+        let k0 = Math.ceil(lo / STEP), k1 = Math.floor(hi / STEP);
+        if (k0 > k1) continue;
+        k0 = Math.max(k0, -LEVELS); k1 = Math.min(k1, LEVELS);
+        const x0 = i * CELL, y0 = j * CELL;
+        for (let k = k0; k <= k1; k++) {
+          const L = k * STEP;
+          const idx = (a > L ? 8 : 0) | (b > L ? 4 : 0) | (c > L ? 2 : 0) | (d > L ? 1 : 0);
+          const segs = CASES[idx];
+          const path = paths[k + LEVELS];
+          for (let s = 0; s < segs.length; s += 2) {
+            for (let e = 0; e < 2; e++) {
+              const edge = segs[s + e];
+              let px, py;
+              if (edge === 0) { px = x0 + CELL * (L - a) / (b - a); py = y0; }
+              else if (edge === 1) { px = x0 + CELL; py = y0 + CELL * (L - b) / (c - b); }
+              else if (edge === 2) { px = x0 + CELL * (L - d) / (c - d); py = y0 + CELL; }
+              else { px = x0; py = y0 + CELL * (L - a) / (d - a); }
+              e === 0 ? path.moveTo(px, py) : path.lineTo(px, py);
+            }
+          }
+        }
+      }
+    }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const glow = ctx.createRadialGradient(pointer.x, pointer.y, 0, pointer.x, pointer.y, 340);
+    glow.addColorStop(0, colors.hot);
+    glow.addColorStop(1, colors.line);
+    ctx.strokeStyle = glow;
+    paths.forEach((p, n) => {
+      const index = (n - LEVELS) % 4 === 0;
+      ctx.lineWidth = index ? 1.1 : .7;
+      ctx.globalAlpha = (index ? .55 : .26) * (colors.dark ? 1 : .85);
+      ctx.stroke(p);
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  let running = false, visible = true, raf = 0;
+  function frame(t) { draw(t); raf = running ? requestAnimationFrame(frame) : 0; }
+  function setRunning(on) {
+    on = on && !reduceMotion && visible && !document.hidden;
+    if (on === running) return;
+    running = on;
+    if (on) raf = requestAnimationFrame(frame); else cancelAnimationFrame(raf);
+  }
+
+  readColors(); resize(); draw(performance.now());
+  requestAnimationFrame(() => canvas.classList.add('is-on'));
+  setRunning(true);
+
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; setRunning(true); }).observe(hero);
+  document.addEventListener('visibilitychange', () => setRunning(true));
+  new MutationObserver(() => { readColors(); if (!running) draw(performance.now()); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { resize(); draw(performance.now()); }, 120); });
+
+  const lat = document.getElementById('coordLat'), lon = document.getElementById('coordLon');
+  hero.addEventListener('pointermove', e => {
+    const r = hero.getBoundingClientRect();
+    pointer.tx = e.clientX - r.left; pointer.ty = e.clientY - r.top; pointer.tAmp = .55;
+    lat.textContent = (1.3483 + (.5 - pointer.ty / H) * .012).toFixed(4) + '° N';
+    lon.textContent = (103.6831 + (pointer.tx / W - .5) * .018).toFixed(4) + '° E';
+  });
+  hero.addEventListener('pointerleave', () => { pointer.tAmp = 0; });
+})();
+
+/* ——— MARQUEE ——— speed follows scroll velocity */
+(function () {
+  const wrap = document.querySelector('.marquee');
+  const track = wrap && wrap.querySelector('.marquee-track');
+  if (!track) return;
+  const names = ['NTULearn', 'STARS', 'Degree Audit', 'CareerAxis', 'Exam Timetable', 'Library Booking', 'Hall Portal', 'Exchange Portal', 'Financial Aid', 'Campus Shuttle'];
+  const items = names.map(n => allLinks.find(l => l.name === n)).filter(Boolean);
+  const set = hidden => items.map(l =>
+    `<a class="marquee-item" href="${escapeHtml(l.url)}" target="_blank" rel="noopener"${hidden ? ' tabindex="-1" aria-hidden="true"' : ''}>${escapeHtml(l.name)}</a>`).join('');
+  track.innerHTML = set(false) + set(true);
+  if (reduceMotion) return;
+
+  let x = 0, v = 0, lastY = scrollY, half = 0, on = false, hover = false;
+  const measure = () => { half = track.scrollWidth / 2; };
+  measure();
+  window.addEventListener('resize', measure);
+  if (document.fonts) document.fonts.ready.then(measure);
+  wrap.addEventListener('pointerenter', () => { hover = true; });
+  wrap.addEventListener('pointerleave', () => { hover = false; });
+  function tick() {
+    const dy = scrollY - lastY; lastY = scrollY;
+    v += (Math.max(-40, Math.min(40, dy)) * .25 - v) * .1;
+    x -= (hover ? .15 : .6) + v;
+    if (x <= -half) x += half;
+    if (x > 0) x -= half;
+    track.style.transform = `translate3d(${x}px,0,0)`;
+    if (on) requestAnimationFrame(tick);
+  }
+  new IntersectionObserver(([e]) => {
+    const was = on; on = e.isIntersecting;
+    if (on && !was) { lastY = scrollY; requestAnimationFrame(tick); }
+  }).observe(wrap);
+})();
+
+/* ——— SCROLL REVEALS ——— */
+(function () {
+  document.querySelectorAll('.section-title').forEach(h => {
+    h.innerHTML = `<span class="line"><span>${h.innerHTML}</span></span>`;
+  });
+  const targets = [];
+  document.querySelectorAll('.section-header').forEach(h => targets.push(h));
+  document.querySelectorAll('.section-count, .cat-section, .club-tabs, .clubs-grid, .marquee').forEach(el => { el.dataset.reveal = ''; targets.push(el); });
+  document.querySelectorAll('.top-pick-card, .tool-item').forEach(el => {
+    el.dataset.reveal = '';
+    el.style.setProperty('--rd', Array.from(el.parentElement.children).indexOf(el) % 4);
+    targets.push(el);
+  });
+  if (!('IntersectionObserver' in window)) { targets.forEach(t => t.classList.add('is-in')); return; }
+  const io = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('is-in');
+    e.target.querySelectorAll('[data-reveal]').forEach(c => { if (!c.closest('.clubs-grid, .cat-section') || c === e.target) c.classList.add('is-in'); });
+    io.unobserve(e.target);
+  }), { rootMargin: '0px 0px -12% 0px' });
+  targets.forEach(t => io.observe(t));
+})();
+
+/* ——— FRESHMEN: vertical scroll drives the horizontal route ——— */
+(function () {
+  const section = document.querySelector('.fresh-section');
+  const pin = section && section.querySelector('.fresh-pin');
+  const track = section && section.querySelector('.fresh-banner');
+  const bar = section && section.querySelector('.fresh-progress i');
+  if (!track) return;
+  const mq = matchMedia('(min-width: 761px)');
+  let dist = 0, top = 0;
+
+  function update() {
+    if (!section.classList.contains('is-pinned')) {
+      bar.style.transform = `scaleX(${track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth)})`;
+      return;
+    }
+    const p = Math.min(1, Math.max(0, (scrollY - top) / dist));
+    track.style.transform = `translate3d(${-p * dist}px,0,0)`;
+    bar.style.transform = `scaleX(${p})`;
+  }
+  function layout() {
+    const pinned = mq.matches && !reduceMotion;
+    section.classList.toggle('is-pinned', pinned);
+    track.style.transform = '';
+    section.style.height = '';
+    if (pinned) {
+      dist = Math.max(0, track.scrollWidth - pin.clientWidth);
+      section.style.height = `${pin.offsetHeight + dist + parseFloat(getComputedStyle(section).paddingTop)}px`;
+      top = section.getBoundingClientRect().top + scrollY + parseFloat(getComputedStyle(section).paddingTop);
+    }
+    update();
+  }
+  layout();
+  if (document.fonts) document.fonts.ready.then(layout);
+  window.addEventListener('resize', layout);
+  window.addEventListener('scroll', update, { passive: true });
+  track.addEventListener('scroll', update, { passive: true });
+})();
+
+/* ——— POINTER: spotlight, magnetic buttons, trailing cursor ——— */
+(function () {
+  if (!finePointer) return;
+  document.querySelectorAll('.tool-item, .club-card, .links-grid, .fresh-item').forEach(el => el.classList.add('spot'));
+  new MutationObserver(() => clubsGrid.querySelectorAll('.club-card:not(.spot)').forEach(el => el.classList.add('spot')))
+    .observe(clubsGrid, { childList: true });
+
+  document.addEventListener('pointermove', e => {
+    const s = e.target.closest && e.target.closest('.spot');
+    if (!s) return;
+    const r = s.getBoundingClientRect();
+    s.style.setProperty('--mx', `${e.clientX - r.left}px`);
+    s.style.setProperty('--my', `${e.clientY - r.top}px`);
+  }, { passive: true });
+
+  if (reduceMotion) return;
+  document.querySelectorAll('.top-pick-arrow, .theme-toggle, .clubs-more').forEach(el => {
+    const host = el.closest('.top-pick-card') || el;
+    host.addEventListener('pointermove', e => {
+      const r = el.getBoundingClientRect();
+      const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+      el.style.translate = `${dx * .18}px ${dy * .18}px`;
+    });
+    host.addEventListener('pointerleave', () => { el.style.translate = ''; });
+    el.style.transition += ', translate .5s cubic-bezier(.23,1,.32,1)';
+  });
+
+  const cur = document.createElement('div');
+  cur.className = 'cursor';
+  cur.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(cur);
+  let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, moving = false;
+  function loop() {
+    x += (tx - x) * .2; y += (ty - y) * .2;
+    cur.style.transform = `translate3d(${x}px,${y}px,0)`;
+    moving = Math.abs(tx - x) + Math.abs(ty - y) > .1;
+    if (moving) requestAnimationFrame(loop);
+  }
+  document.addEventListener('pointermove', e => {
+    tx = e.clientX; ty = e.clientY;
+    cur.classList.add('is-on');
+    const t = e.target;
+    cur.classList.toggle('is-text', !!(t.closest && t.closest('input')));
+    cur.classList.toggle('is-link', !!(t.closest && t.closest('a, button')) && !cur.classList.contains('is-text'));
+    if (!moving) { moving = true; requestAnimationFrame(loop); }
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => cur.classList.remove('is-on'));
+})();

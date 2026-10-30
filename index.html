@@ -6,7 +6,7 @@
 <title>NTU Atlas — Your Campus, Mapped</title>
 <meta name="description" content="Every NTU student portal, club, and campus resource in one place. Built by an NTU student.">
 <link rel="canonical" href="https://ntuatlas.com/">
-<link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -24,8 +24,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
-<script src="theme-init.js?v=3"></script>
+<link rel="stylesheet" href="style.css?v=4">
+<script src="theme-init.js?v=4"></script>
 </head>
 <body>
 
@@ -59,12 +59,13 @@
 
 <!-- Hero -->
 <header class="hero">
+  <canvas class="hero-canvas" aria-hidden="true"></canvas>
   <div class="hero-copy">
-    <h1 class="hero-title">Every portal.<br>One place.</h1>
+    <h1 class="hero-title"><span class="line"><span>Every portal.</span></span><span class="line"><span>One place.</span></span></h1>
+    <div class="hero-row">
     <p class="hero-desc">
       A curated directory of NTU's digital ecosystem — portals, campus services, clubs and societies. Built for students, especially those navigating university for the first time.
     </p>
-
     <!-- Search -->
     <section class="search-section" aria-label="Search portals">
       <div class="search-wrap">
@@ -85,31 +86,19 @@
         <div class="search-results" id="searchResults" role="listbox" aria-label="Search results"></div>
       </div>
     </section>
-  </div>
-
-  <!-- Compass: each category sits on its own bearing -->
-  <figure class="dial" aria-hidden="true">
-    <div class="dial-stage">
-    <svg class="dial-svg" viewBox="-165 -165 330 330">
-      <circle class="dial-face" r="148"/>
-      <circle class="dial-ring" r="118"/>
-      <circle class="dial-ring dial-ring-inner" r="62"/>
-      <g class="dial-ticks"></g>
-      <g class="dial-marks"></g>
-      <g class="dial-cardinals">
-        <text class="is-north" y="-96">N</text><text x="98" y="4">E</text><text y="104">S</text><text x="-98" y="4">W</text>
-      </g>
-      <g class="dial-needle">
-        <polygon class="needle-n" points="0,-104 10,0 -10,0"/>
-        <polygon class="needle-s" points="0,104 10,0 -10,0"/>
-        <circle class="needle-pin" r="5"/>
-      </g>
-    </svg>
-    <div class="dial-labels"></div>
     </div>
-    <figcaption class="dial-readout"><span class="dial-readout-deg">000°</span><span class="dial-readout-name">Nanyang Technological University</span></figcaption>
-  </figure>
+  </div>
+  <div class="hero-meta">
+    <div class="hero-meta-inner">
+      <span class="hero-coords" aria-hidden="true"><span id="coordLat">1.3483° N</span><span id="coordLon">103.6831° E</span></span>
+      <a class="hero-scroll" href="#portals">Scroll to explore<span class="hero-scroll-line" aria-hidden="true"></span></a>
+    </div>
+  </div>
 </header>
+
+<div class="marquee" aria-label="Popular portals">
+  <div class="marquee-track"></div>
+</div>
 
 <!-- Top 3 picks -->
 <section class="block" aria-labelledby="topPicksHeading">
@@ -223,6 +212,7 @@
 
 <!-- Freshmen Section -->
 <section class="block fresh-section" id="freshmen" aria-labelledby="freshHeading">
+  <div class="fresh-pin">
   <div class="section-header">
     <h2 class="section-title" id="freshHeading">For freshmen</h2>
     <span class="section-count">Day 1 essentials</span>
@@ -292,6 +282,8 @@
         </div>
       </a>
 </div>
+  </div>
+  <div class="fresh-progress" aria-hidden="true"><span><i></i></span></div>
   </div>
 </section>
 
@@ -410,6 +402,7 @@
       </div>
     </div>
   </div>
+  <div class="footer-mark" aria-hidden="true">NTU Atlas</div>
 </footer>
 
 <!-- Legal Modal -->
@@ -423,7 +416,7 @@
   </div>
 </div>
 
-<script src="data.js?v=3"></script>
-<script src="script.js?v=3"></script>
+<script src="data.js?v=4"></script>
+<script src="script.js?v=4"></script>
 </body>
 </html>

@@ -4,4 +4,5 @@
   try { saved = localStorage.getItem('theme'); } catch (e) {}
   var theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.classList.add('js');
 })();
