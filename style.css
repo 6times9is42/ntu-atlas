@@ -5,7 +5,7 @@
   --surface-2: #E6EAF0;
   --ink: #0C1A2E;
   --ink-2: #4A586D;
-  --ink-3: #7F8AA0;
+  --ink-3: #66728A;
   --line: #DCE2EA;
   --line-2: #C3CCD8;
   --needle: #C1272D;
@@ -34,7 +34,7 @@ html[data-theme="dark"] {
   --surface-2: #16243B;
   --ink: #E8EDF4;
   --ink-2: #A0ACBF;
-  --ink-3: #6B7890;
+  --ink-3: #8090A8;
   --line: #1B2940;
   --line-2: #2A3A55;
   --needle: #F0525A;
@@ -404,7 +404,7 @@ footer { margin-top: clamp(72px, 10vw, 128px); border-top: 1px solid var(--line)
   display: inline-flex; align-items: center; gap: .42em; padding-right: .42em; white-space: nowrap;
   font-size: clamp(38px, 6.2vw, 92px); line-height: 1.05; font-weight: 600;
   font-variation-settings: 'wdth' 78; letter-spacing: -.04em;
-  color: transparent; -webkit-text-stroke: 1px var(--ink-3);
+  color: transparent; -webkit-text-stroke: 1.2px var(--ink-3);
   transition: color .35s ease, -webkit-text-stroke-color .35s ease;
 }
 .marquee-item::after {
@@ -501,7 +501,7 @@ html.js [data-reveal].is-in { animation: revealUp 1s var(--ease-out) both; anima
 .fresh-item-dot {
   font-size: clamp(96px, 9.5vw, 144px); line-height: .8; font-weight: 600;
   font-variation-settings: 'wdth' 75; letter-spacing: -.06em;
-  color: transparent; -webkit-text-stroke: 1.2px var(--line-2);
+  color: color-mix(in srgb, var(--ink) 4%, transparent); -webkit-text-stroke: 1.4px var(--ink-3);
   transition: color .45s ease, -webkit-text-stroke-color .45s ease, transform .6s var(--ease-out);
   transform-origin: left top;
 }
@@ -510,9 +510,22 @@ html.js [data-reveal].is-in { animation: revealUp 1s var(--ease-out) both; anima
 .fresh-item-text { margin-top: auto; padding-top: 28px; }
 .fresh-item-name { font-weight: 600; font-size: 21px; letter-spacing: -.015em; line-height: 1.2; }
 .fresh-item-hint { margin-top: 8px; font-size: 15px; color: var(--ink-2); }
-.fresh-progress { width: 100%; max-width: var(--max); margin: 32px auto 0; padding: 0 var(--gutter); }
-.fresh-progress span { position: relative; display: block; height: 2px; border-radius: 2px; background: var(--line); overflow: hidden; }
-.fresh-progress i { position: absolute; inset: 0; background: var(--needle); transform: scaleX(0); transform-origin: left; }
+.fresh-progress { width: 100%; max-width: var(--max); margin: 40px auto 0; padding: 0 var(--gutter); }
+/* The route: a dashed track, the travelled leg in red, and a compass marker riding along it */
+.fresh-progress span {
+  --p: 0; position: relative; display: block; height: 2px;
+  background: repeating-linear-gradient(to right, var(--line-2) 0 6px, transparent 6px 12px);
+}
+.fresh-progress i { position: absolute; inset: 0; border-radius: 2px; background: var(--needle); transform: scaleX(var(--p)); transform-origin: left; }
+.fresh-marker {
+  position: absolute; top: 50%; left: calc(var(--p) * 100%);
+  width: 32px; height: 32px; margin: -16px 0 0 -16px; border-radius: 999px;
+  display: grid; place-items: center;
+  background: var(--surface); border: 1px solid var(--line-2); box-shadow: var(--shadow);
+}
+.fresh-marker svg { width: 18px; height: 18px; transform: rotate(90deg); }
+.fresh-marker .m-n { fill: var(--needle); }
+.fresh-marker .m-s { fill: var(--steel); }
 
 html.js .fresh-section.is-pinned .fresh-pin {
   position: sticky; top: 0; height: 100svh; overflow: hidden;
@@ -582,11 +595,55 @@ html.js .fresh-section.is-pinned .fresh-banner { overflow: visible; width: max-c
   .top-pick-card:hover .top-pick-desc { color: var(--ink-2); }
 }
 
+/* ——— COMPASS: back to top ———
+   North is the top of the page: the needle turns with scroll progress
+   and swings home on hover. */
+.compass-top {
+  position: fixed; right: max(16px, calc((100vw - var(--max)) / 2 - 72px)); bottom: 24px; z-index: 60;
+  width: 58px; height: 58px; border-radius: 999px;
+  display: grid; place-items: center;
+  background: color-mix(in srgb, var(--surface) 86%, transparent);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border: 1px solid var(--line); box-shadow: var(--shadow-lg);
+  opacity: 0; transform: translateY(14px) scale(.92); pointer-events: none;
+  transition: opacity .3s ease, transform .45s var(--ease-out);
+}
+.compass-top.is-on { opacity: 1; transform: none; pointer-events: auto; }
+.compass-top.is-on:active { transform: scale(.93); }
+.compass-top svg { width: 58px; height: 58px; overflow: visible; }
+.ct-track { fill: none; stroke: var(--line); stroke-width: 2; }
+.ct-progress { fill: none; stroke: var(--needle); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 150.8; stroke-dashoffset: 150.8; transform: rotate(-90deg); }
+.ct-ticks line { stroke: var(--ink-3); stroke-width: 1; }
+.ct-needle { transition: transform .7s var(--ease-needle); }
+.ct-needle .m-n { fill: var(--needle); }
+.ct-needle .m-s { fill: var(--steel); }
+.ct-pin { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1; }
+.compass-top:hover .ct-needle { transform: rotate(0deg) !important; }
+
+/* Over the map, the cursor becomes a bearing bezel whose needle follows your heading */
+.cursor-needle { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; opacity: 0; transition: opacity .3s ease, transform .4s var(--ease-out); }
+.cursor-needle .m-n { fill: var(--needle); }
+.cursor-needle .m-s { fill: var(--steel); }
+.cursor::before {
+  content: ''; position: absolute; inset: 3px; border-radius: inherit; opacity: 0;
+  background: repeating-conic-gradient(from -1deg, color-mix(in srgb, var(--ink) 45%, transparent) 0 2deg, transparent 2deg 30deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+  transition: opacity .3s ease;
+}
+.cursor.is-map { width: 80px; height: 80px; margin: -40px 0 0 -40px; border-color: color-mix(in srgb, var(--ink) 22%, transparent); }
+.cursor.is-map::before, .cursor.is-map .cursor-needle { opacity: 1; }
+
+/* The nav needle finds north once on load */
+.nav-logo .nav-logo-mark { animation: findNorth 1.8s var(--ease-needle) both .3s; }
+@keyframes findNorth { 0% { rotate: -210deg; } 55% { rotate: 18deg; } 80% { rotate: -6deg; } 100% { rotate: 0deg; } }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
   .tab-ink, .nav-logo-mark { transition: none !important; }
   html.js .section-title .line > span { transform: none; transition: none; }
   .tool-item:hover { transform: none; }
+  .cursor, .compass-top .ct-needle { transition: none; }
   .cursor { display: none; }
 }

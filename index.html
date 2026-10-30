@@ -6,7 +6,7 @@
 <title>NTU Atlas — Your Campus, Mapped</title>
 <meta name="description" content="Every NTU student portal, club, and campus resource in one place. Built by an NTU student.">
 <link rel="canonical" href="https://ntuatlas.com/">
-<link rel="icon" href="/favicon.svg?v=4" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=5" type="image/svg+xml">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -24,8 +24,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=4">
-<script src="theme-init.js?v=4"></script>
+<link rel="stylesheet" href="style.css?v=5">
+<script src="theme-init.js?v=5"></script>
 </head>
 <body>
 
@@ -283,7 +283,7 @@
       </a>
 </div>
   </div>
-  <div class="fresh-progress" aria-hidden="true"><span><i></i></span></div>
+  <div class="fresh-progress" aria-hidden="true"><span><i></i><b class="fresh-marker"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="m-n" points="16,3 20,16 12,16"/><polygon class="m-s" points="16,29 20,16 12,16"/></svg></b></span></div>
   </div>
 </section>
 
@@ -405,6 +405,14 @@
   <div class="footer-mark" aria-hidden="true">NTU Atlas</div>
 </footer>
 
+<button type="button" class="compass-top" id="compassTop" aria-label="Back to top">
+  <svg viewBox="-29 -29 58 58" aria-hidden="true">
+    <circle class="ct-track" r="24"/><circle class="ct-progress" r="24"/>
+    <g class="ct-ticks"><line x1="0" y1="-20" x2="0" y2="-17" transform="rotate(0)"/><line x1="0" y1="-20" x2="0" y2="-17" transform="rotate(45)"/><line x1="0" y1="-20" x2="0" y2="-17" transform="rotate(90)"/><line x1="0" y1="-20" x2="0" y2="-17" transform="rotate(135)"/><line x1="0" y1="-20" x2="0" y2="-17" transform="rotate(180)"/><line x1="0" y1="-20" x2="0" y2="-17" transform="rotate(225)"/><line x1="0" y1="-20" x2="0" y2="-17" transform="rotate(270)"/><line x1="0" y1="-20" x2="0" y2="-17" transform="rotate(315)"/></g>
+    <g class="ct-needle"><polygon class="m-n" points="0,-13 4,0 -4,0"/><polygon class="m-s" points="0,13 4,0 -4,0"/><circle class="ct-pin" r="2"/></g>
+  </svg>
+</button>
+
 <!-- Legal Modal -->
 <div id="legalModal" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle" hidden aria-hidden="true">
   <div class="modal-panel">
@@ -416,7 +424,7 @@
   </div>
 </div>
 
-<script src="data.js?v=4"></script>
-<script src="script.js?v=4"></script>
+<script src="data.js?v=5"></script>
+<script src="script.js?v=5"></script>
 </body>
 </html>

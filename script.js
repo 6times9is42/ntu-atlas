@@ -639,19 +639,19 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const section = document.querySelector('.fresh-section');
   const pin = section && section.querySelector('.fresh-pin');
   const track = section && section.querySelector('.fresh-banner');
-  const bar = section && section.querySelector('.fresh-progress i');
+  const bar = section && section.querySelector('.fresh-progress span');
   if (!track) return;
   const mq = matchMedia('(min-width: 761px)');
   let dist = 0, top = 0;
 
   function update() {
     if (!section.classList.contains('is-pinned')) {
-      bar.style.transform = `scaleX(${track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth)})`;
+      bar.style.setProperty('--p', (track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth)).toFixed(4));
       return;
     }
     const p = Math.min(1, Math.max(0, (scrollY - top) / dist));
     track.style.transform = `translate3d(${-p * dist}px,0,0)`;
-    bar.style.transform = `scaleX(${p})`;
+    bar.style.setProperty('--p', p.toFixed(4));
   }
   function layout() {
     const pinned = mq.matches && !reduceMotion;
@@ -702,6 +702,10 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const cur = document.createElement('div');
   cur.className = 'cursor';
   cur.setAttribute('aria-hidden', 'true');
+  cur.innerHTML = '<svg class="cursor-needle" viewBox="0 0 32 32"><polygon class="m-n" points="16,3 20,16 12,16"/><polygon class="m-s" points="16,29 20,16 12,16"/></svg>';
+  const curNeedle = cur.firstChild;
+  const heroEl = document.querySelector('.hero');
+  let heading = 0, lastX = null, lastY = null;
   document.body.appendChild(cur);
   let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, moving = false;
   function loop() {
@@ -716,7 +720,42 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     const t = e.target;
     cur.classList.toggle('is-text', !!(t.closest && t.closest('input')));
     cur.classList.toggle('is-link', !!(t.closest && t.closest('a, button')) && !cur.classList.contains('is-text'));
+    cur.classList.toggle('is-map', !!(heroEl && heroEl.contains(t)) && !cur.classList.contains('is-text') && !cur.classList.contains('is-link'));
+    if (lastX !== null) {
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      if (dx * dx + dy * dy > 9) {
+        const target = Math.atan2(dx, -dy) * 180 / Math.PI;
+        heading += ((target - heading) % 360 + 540) % 360 - 180;
+        curNeedle.style.transform = `rotate(${heading}deg)`;
+      }
+    }
+    lastX = e.clientX; lastY = e.clientY;
     if (!moving) { moving = true; requestAnimationFrame(loop); }
   }, { passive: true });
   document.addEventListener('pointerleave', () => cur.classList.remove('is-on'));
+})();
+
+/* ——— COMPASS: back to top ——— */
+(function () {
+  const btn = document.getElementById('compassTop');
+  if (!btn) return;
+  const needle = btn.querySelector('.ct-needle');
+  const ring = btn.querySelector('.ct-progress');
+  const C = 2 * Math.PI * 24;
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const p = max > 0 ? Math.min(1, scrollY / max) : 0;
+    btn.classList.toggle('is-on', scrollY > innerHeight * .8);
+    ring.style.strokeDashoffset = (C * (1 - p)).toFixed(2);
+    needle.style.transform = `rotate(${(p * 360).toFixed(1)}deg)`;
+  }
+  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+  btn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    document.querySelector('.nav-logo').focus({ preventScroll: true });
+  });
 })();
