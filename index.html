@@ -6,7 +6,7 @@
 <title>NTU Atlas — Your Campus, Mapped</title>
 <meta name="description" content="Every NTU student portal, club, and campus resource in one place. Built by an NTU student.">
 <link rel="canonical" href="https://ntuatlas.com/">
-<link rel="icon" href="/favicon.svg?v=5" type="image/svg+xml">
+<link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
@@ -24,8 +24,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=5">
-<script src="theme-init.js?v=5"></script>
+<link rel="stylesheet" href="style.css?v=6">
+<script src="theme-init.js?v=6"></script>
 </head>
 <body>
 
@@ -61,11 +61,14 @@
 <header class="hero">
   <canvas class="hero-canvas" aria-hidden="true"></canvas>
   <div class="hero-copy">
-    <h1 class="hero-title"><span class="line"><span>Every portal.</span></span><span class="line"><span>One place.</span></span></h1>
+    <h1 class="hero-title"><span class="line"><span class="hero-word">NTU Atlas</span></span><span class="sr-only">: every NTU portal in one place</span></h1>
     <div class="hero-row">
+    <div class="hero-lede">
+    <p class="hero-tagline">Every portal. One place.</p>
     <p class="hero-desc">
       A curated directory of NTU's digital ecosystem — portals, campus services, clubs and societies. Built for students, especially those navigating university for the first time.
     </p>
+    </div>
     <!-- Search -->
     <section class="search-section" aria-label="Search portals">
       <div class="search-wrap">
@@ -107,7 +110,7 @@
     <span class="section-count" aria-label="3 links">3 links</span>
   </div>
   <div class="top-picks-grid">
-      <a class="top-pick-card" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener" aria-label="NTULearn - Access course materials and lectures">
+      <a class="top-pick-card" data-img="img/campus/library.jpg" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener" aria-label="NTULearn - Access course materials and lectures">
         <span class="top-pick-tag">Course materials</span>
         <span class="top-pick-name">NTULearn</span>
         <span class="top-pick-desc">Your central hub for course materials, lecture recordings, assignment submissions, and announcements from all your enrolled modules.</span>
@@ -116,7 +119,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </span>
       </a>
-      <a class="top-pick-card" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener" aria-label="Degree Audit - View grades and track AU progress">
+      <a class="top-pick-card" data-img="img/campus/north-spine.jpg" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener" aria-label="Degree Audit - View grades and track AU progress">
         <span class="top-pick-tag">Academic progress</span>
         <span class="top-pick-name">Degree Audit</span>
         <span class="top-pick-desc">Track your academic progress, view your grades, monitor outstanding AU requirements, and ensure you're on track to graduate.</span>
@@ -125,7 +128,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </span>
       </a>
-      <a class="top-pick-card" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener" aria-label="STARS - Register for courses and plan your timetable">
+      <a class="top-pick-card" data-img="img/campus/hive.jpg" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener" aria-label="STARS - Register for courses and plan your timetable">
         <span class="top-pick-tag">Registration</span>
         <span class="top-pick-name">STARS</span>
         <span class="top-pick-desc">Register for modules each semester, plan your timetable, manage waitlists, and add or drop courses during the registration window.</span>
@@ -287,6 +290,64 @@
   </div>
 </section>
 
+<!-- Around campus -->
+<section class="block campus-section" id="campus" aria-labelledby="campusHeading">
+  <div class="section-header">
+    <h2 class="section-title" id="campusHeading">Around campus</h2>
+    <span class="section-count">Six landmarks</span>
+  </div>
+  <div class="campus-grid">
+    <figure class="campus-shot shot-hive">
+      <div class="campus-frame"><img src="img/campus/hive.jpg" alt="The Hive, a learning hub of stacked rounded towers wrapped in greenery" width="1400" height="999" loading="lazy" decoding="async"></div>
+      <figcaption>
+        <span class="campus-name">The Hive</span>
+        <span class="campus-what">Learning Hub, home to tutorial rooms</span>
+        <a class="campus-credit" href="https://commons.wikimedia.org/wiki/File:The_Hive,_NTU_(II).jpg" target="_blank" rel="noopener">Photo: Supanut Arunoprayote, CC BY 4.0</a>
+      </figcaption>
+    </figure>
+    <figure class="campus-shot shot-adm">
+      <div class="campus-frame"><img src="img/campus/adm.jpg" alt="The School of Art, Design and Media with its sloping grass-covered roof" width="1400" height="932" loading="lazy" decoding="async"></div>
+      <figcaption>
+        <span class="campus-name">School of Art, Design and Media</span>
+        <span class="campus-what">The grass roof you can walk up</span>
+        <a class="campus-credit" href="https://commons.wikimedia.org/wiki/File:ADM2.jpg" target="_blank" rel="noopener">Photo: Kumakumakumame, CC BY-SA 4.0</a>
+      </figcaption>
+    </figure>
+    <figure class="campus-shot shot-library">
+      <div class="campus-frame"><img src="img/campus/library.jpg" alt="The entrance atrium of Lee Wee Nam Library" width="1400" height="787" loading="lazy" decoding="async"></div>
+      <figcaption>
+        <span class="campus-name">Lee Wee Nam Library</span>
+        <span class="campus-what">Study spaces, rooms you can book</span>
+        <a class="campus-credit" href="https://commons.wikimedia.org/wiki/File:Lee_Wee_Nam_Library_entrance_-_20260807_-_RSKY.jpg" target="_blank" rel="noopener">Photo: Robert Sim, CC BY-SA 4.0</a>
+      </figcaption>
+    </figure>
+    <figure class="campus-shot shot-north-spine">
+      <div class="campus-frame"><img src="img/campus/north-spine.jpg" alt="Sunset over the North Spine" width="1050" height="1400" loading="lazy" decoding="async"></div>
+      <figcaption>
+        <span class="campus-name">North Spine</span>
+        <span class="campus-what">Lecture theatres, food and shops</span>
+        <a class="campus-credit" href="https://commons.wikimedia.org/wiki/File:View_of_sunset_along_North_Spine.jpg" target="_blank" rel="noopener">Photo: Wsoon002, CC BY-SA 4.0</a>
+      </figcaption>
+    </figure>
+    <figure class="campus-shot shot-halls">
+      <div class="campus-frame"><img src="img/campus/halls.jpg" alt="Curved residential hall blocks around a courtyard" width="1400" height="932" loading="lazy" decoding="async"></div>
+      <figcaption>
+        <span class="campus-name">Halls of residence</span>
+        <span class="campus-what">Where most students live on campus</span>
+        <a class="campus-credit" href="https://commons.wikimedia.org/wiki/File:Residential_Hall_day.jpg" target="_blank" rel="noopener">Photo: Kumakumakumame, CC BY-SA 4.0</a>
+      </figcaption>
+    </figure>
+    <figure class="campus-shot shot-admin-night">
+      <div class="campus-frame"><img src="img/campus/admin-night.jpg" alt="The administration building and a lecture theatre lit up at night, reflected in a pool" width="1400" height="789" loading="lazy" decoding="async"></div>
+      <figcaption>
+        <span class="campus-name">Administration Building</span>
+        <span class="campus-what">Campus after dark</span>
+        <a class="campus-credit" href="https://commons.wikimedia.org/wiki/File:NTU_administration_building_and_TCT-LT.jpg" target="_blank" rel="noopener">Photo: Kenrick95, CC BY-SA 4.0</a>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
 <!-- Clubs & Societies -->
 <section class="block clubs-section" id="clubs" aria-labelledby="clubsHeading">
   <div class="section-header">
@@ -402,7 +463,6 @@
       </div>
     </div>
   </div>
-  <div class="footer-mark" aria-hidden="true">NTU Atlas</div>
 </footer>
 
 <button type="button" class="compass-top" id="compassTop" aria-label="Back to top">
@@ -424,7 +484,7 @@
   </div>
 </div>
 
-<script src="data.js?v=5"></script>
-<script src="script.js?v=5"></script>
+<script src="data.js?v=6"></script>
+<script src="script.js?v=6"></script>
 </body>
 </html>

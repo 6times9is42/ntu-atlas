@@ -392,6 +392,67 @@ footer { margin-top: clamp(72px, 10vw, 128px); border-top: 1px solid var(--line)
 }
 @keyframes scrollCue { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }
 
+/* Wordmark: rises in outlined, then fills with ink */
+.hero-title { font-size: clamp(76px, 19.6vw, 300px); line-height: .8; letter-spacing: -.055em; font-variation-settings: 'wdth' 75; white-space: nowrap; margin-left: -.045em; }
+.hero-title .line { padding-bottom: .1em; margin-bottom: -.1em; }
+.hero-title .line > .hero-word {
+  color: transparent; -webkit-text-stroke: 1.5px var(--ink);
+  background: linear-gradient(var(--ink), var(--ink)) no-repeat 0 100% / 100% 0%;
+  -webkit-background-clip: text; background-clip: text;
+  animation: lineUp 1.2s var(--ease-out) both .1s, inkFill 1.5s var(--ease-move) forwards 1s;
+}
+@keyframes inkFill { to { background-size: 100% 100%; } }
+.hero-lede { max-width: 34em; }
+.hero-tagline {
+  font-size: clamp(26px, 2.8vw, 40px); line-height: 1.05; font-weight: 600;
+  font-variation-settings: 'wdth' 84; letter-spacing: -.025em; margin-bottom: 14px;
+  animation: fadeUp 1s var(--ease-out) both .45s;
+}
+
+/* ——— AROUND CAMPUS ——— */
+.campus-grid {
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(16px, 2.2vw, 32px); row-gap: clamp(32px, 4vw, 56px); align-items: start;
+}
+.campus-shot { --ar: 4 / 3; }
+.shot-hive { grid-column: 1 / 8; --ar: 7 / 5; }
+.shot-adm { grid-column: 8 / 13; margin-top: clamp(48px, 9vw, 140px); }
+.shot-library { grid-column: 1 / 6; --ar: 16 / 11; }
+.shot-north-spine { grid-column: 6 / 9; margin-top: clamp(32px, 6vw, 96px); --ar: 3 / 4; }
+.shot-halls { grid-column: 9 / 13; --ar: 4 / 5; }
+.shot-admin-night { grid-column: 1 / -1; --ar: 21 / 8; }
+.campus-frame {
+  position: relative; overflow: hidden; aspect-ratio: var(--ar);
+  border-radius: var(--r-lg); background: var(--surface-2);
+}
+.campus-frame img {
+  position: absolute; left: 0; top: -9%; width: 100%; height: 118%; object-fit: cover;
+  scale: 1.02; transition: scale 1.2s var(--ease-out);
+}
+.campus-shot:hover .campus-frame img { scale: 1.07; }
+html.js .campus-frame { clip-path: inset(100% 0 0 0 round var(--r-lg)); }
+html.js .campus-shot.is-in .campus-frame { animation: frameIn 1.4s var(--ease-out) forwards; }
+@keyframes frameIn { to { clip-path: inset(0 0 0 0 round var(--r-lg)); } }
+.campus-shot figcaption { display: flex; flex-direction: column; padding-top: 14px; }
+.campus-name { font-weight: 600; font-size: 17px; display: flex; align-items: center; gap: 10px; }
+.campus-name::before { content: ''; width: 7px; height: 7px; flex: none; background: var(--needle); transform: rotate(45deg); }
+.campus-what { margin-top: 2px; padding-left: 17px; font-size: 15px; color: var(--ink-2); }
+.campus-credit {
+  align-self: flex-start; margin-top: 8px; padding-left: 17px;
+  font-size: 13px; color: var(--ink-3); transition: color .15s ease;
+}
+.campus-credit:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+/* Most visited: a photo floats with the pointer while hovering a row */
+.pick-preview {
+  position: fixed; left: 0; top: 0; z-index: 70; pointer-events: none;
+  width: clamp(220px, 22vw, 320px); aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden;
+  box-shadow: var(--shadow-lg); opacity: 0; scale: .8;
+  transition: opacity .3s ease, scale .5s var(--ease-out);
+}
+.pick-preview.is-on { opacity: 1; scale: 1; }
+.pick-preview img { width: 100%; height: 100%; object-fit: cover; }
+
 /* ——— MARQUEE ——— */
 .marquee {
   overflow: hidden; padding: clamp(14px, 2vw, 22px) 0;
@@ -577,6 +638,11 @@ html.js .fresh-section.is-pinned .fresh-banner { overflow: visible; width: max-c
   .footer-credit { text-align: left; }
   .footer-legal { justify-content: flex-start; margin-left: -12px; }
   .top-pick-arrow { width: 44px; height: 44px; }
+}
+@media (max-width: 760px) {
+  .campus-grid { grid-template-columns: 1fr; }
+  .campus-shot { grid-column: 1 / -1 !important; margin-top: 0 !important; --ar: 4 / 3 !important; }
+  .shot-north-spine { --ar: 4 / 5 !important; }
 }
 @media (max-width: 600px) {
   .search-kbd { display: none; }

@@ -331,6 +331,7 @@ const legalContent = {
     title: 'About NTU Atlas',
     body: `<p>NTU Atlas is a student-built directory of NTU's digital ecosystem — portals, campus services, clubs and societies — all in one place.</p>
 <p>Built and maintained by an NTU student. Not affiliated with or endorsed by Nanyang Technological University.</p>
+<p>Campus photos come from Wikimedia Commons under Creative Commons licences. Each photographer is credited beneath their photo.</p>
 <p>Want to suggest a link, report a broken one, or contribute? <a class="modal-link" href="https://t.me/+vuhtJw7fENg5OTll" target="_blank" rel="noopener">Join the community on Telegram →</a></p>`
   },
   disclaimer: {
@@ -618,6 +619,7 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   });
   const targets = [];
   document.querySelectorAll('.section-header').forEach(h => targets.push(h));
+  document.querySelectorAll('.campus-shot').forEach(el => targets.push(el));
   document.querySelectorAll('.section-count, .cat-section, .club-tabs, .clubs-grid, .marquee').forEach(el => { el.dataset.reveal = ''; targets.push(el); });
   document.querySelectorAll('.top-pick-card, .tool-item').forEach(el => {
     el.dataset.reveal = '';
@@ -642,14 +644,16 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const bar = section && section.querySelector('.fresh-progress span');
   if (!track) return;
   const mq = matchMedia('(min-width: 761px)');
-  let dist = 0, top = 0;
+  let dist = 0, padTop = 0;
 
   function update() {
     if (!section.classList.contains('is-pinned')) {
       bar.style.setProperty('--p', (track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth)).toFixed(4));
       return;
     }
-    const p = Math.min(1, Math.max(0, (scrollY - top) / dist));
+    // Measured live: content above (e.g. a shorter portal tab) can move this section at any time
+    const start = section.getBoundingClientRect().top + padTop;
+    const p = dist > 0 ? Math.min(1, Math.max(0, -start / dist)) : 0;
     track.style.transform = `translate3d(${-p * dist}px,0,0)`;
     bar.style.setProperty('--p', p.toFixed(4));
   }
@@ -659,9 +663,10 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     track.style.transform = '';
     section.style.height = '';
     if (pinned) {
-      dist = Math.max(0, track.scrollWidth - pin.clientWidth);
-      section.style.height = `${pin.offsetHeight + dist + parseFloat(getComputedStyle(section).paddingTop)}px`;
-      top = section.getBoundingClientRect().top + scrollY + parseFloat(getComputedStyle(section).paddingTop);
+      padTop = parseFloat(getComputedStyle(section).paddingTop);
+      dist = Math.max(0, track.offsetWidth - pin.clientWidth);
+      // a short hold at the end so the last steps settle before the page moves on
+      section.style.height = `${pin.offsetHeight + dist + padTop + innerHeight * .3}px`;
     }
     update();
   }
@@ -757,5 +762,57 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   btn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     document.querySelector('.nav-logo').focus({ preventScroll: true });
+  });
+})();
+
+/* ——— CAMPUS PHOTOS: gentle parallax inside each frame ——— */
+(function () {
+  const frames = Array.from(document.querySelectorAll('.campus-frame'));
+  if (!frames.length || reduceMotion) return;
+  const live = new Set();
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? live.add(e.target) : live.delete(e.target)));
+  frames.forEach(f => io.observe(f));
+  let ticking = false;
+  function update() {
+    ticking = false;
+    const vh = innerHeight;
+    live.forEach(frame => {
+      const r = frame.getBoundingClientRect();
+      const p = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2); // -1 → 1 across the viewport
+      frame.firstElementChild.style.translate = `0 ${(-p * 7).toFixed(2)}%`;
+    });
+  }
+  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  update();
+})();
+
+/* ——— MOST VISITED: floating photo preview ——— */
+(function () {
+  if (!finePointer || reduceMotion) return;
+  const cards = document.querySelectorAll('.top-pick-card[data-img]');
+  if (!cards.length) return;
+  const box = document.createElement('div');
+  box.className = 'pick-preview';
+  box.setAttribute('aria-hidden', 'true');
+  box.innerHTML = '<img alt="">';
+  document.body.appendChild(box);
+  const img = box.firstChild;
+  let x = 0, y = 0, tx = 0, ty = 0, tilt = 0, raf = 0, on = false;
+  function loop() {
+    const dx = tx - x;
+    x += dx * .14; y += (ty - y) * .14;
+    tilt += (Math.max(-12, Math.min(12, dx * .12)) - tilt) * .15;
+    box.style.transform = `translate3d(${x + 28}px,${y - 90}px,0) rotate(${tilt.toFixed(2)}deg)`;
+    raf = on || Math.abs(dx) > .5 ? requestAnimationFrame(loop) : 0;
+  }
+  cards.forEach(card => {
+    card.addEventListener('pointerenter', e => {
+      img.src = card.dataset.img;
+      if (!on) { x = tx = e.clientX; y = ty = e.clientY; }
+      on = true; box.classList.add('is-on');
+      if (!raf) raf = requestAnimationFrame(loop);
+    });
+    card.addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; });
+    card.addEventListener('pointerleave', () => { on = false; box.classList.remove('is-on'); });
   });
 })();
