@@ -20,9 +20,8 @@ id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
 # Public Telegram channels to read (comma-separated usernames)
 TELEGRAM_CHANNELS = "ntusu"
 GROQ_MODEL = "llama-3.3-70b-versatile"
-# Addresses allowed to forward event emails (comma-separated). Mail from anyone else is rejected.
-ALLOWED_FORWARDERS = "your-ntu-email@e.ntu.edu.sg"
 
 # Secrets (set with `npx wrangler secret put NAME`, never commit them):
 #   GROQ_API_KEY  – from console.groq.com
 #   ADMIN_TOKEN   – any long random string; lets you trigger a refresh by hand
+#   ALLOWED_FORWARDERS – addresses allowed to forward event emails, comma-separated (only needed for email)

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "wrangler dev --test-scheduled",
     "deploy": "wrangler deploy",
+    "test": "node test/safety.test.js",
     "test:telegram": "node test/telegram.test.js"
   },
   "dependencies": {

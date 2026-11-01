@@ -911,9 +911,9 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
           ${e.description ? `<p class="event-desc">${escapeHtml(e.description)}</p>` : ''}
         </div>
         <div class="event-actions">
-          ${e.link ? `<a class="event-btn is-primary fill" href="${escapeHtml(e.link)}" target="_blank" rel="noopener">Sign up</a>` : ''}
+          ${httpUrl(e.link) ? `<a class="event-btn is-primary fill" href="${escapeHtml(httpUrl(e.link))}" target="_blank" rel="noopener">Sign up</a>` : ''}
           <button type="button" class="event-btn fill" data-ics>Add to calendar</button>
-          ${e.source && e.source.url ? `<a class="event-src" href="${escapeHtml(e.source.url)}" target="_blank" rel="noopener">Source</a>` : ''}
+          ${e.source && httpUrl(e.source.url) ? `<a class="event-src" href="${escapeHtml(httpUrl(e.source.url))}" target="_blank" rel="noopener">Source</a>` : ''}
         </div>
       </li>`;
     }).join('');
@@ -934,16 +934,20 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
   /* ——— add to calendar ——— */
   const icsDate = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-  const icsText = t => String(t || '').replace(/\\/g, '\\\\').replace(/[,;]/g, m => '\\' + m).replace(/\r?\n/g, '\\n');
+  const icsText = t => String(t || '').replace(/\\/g, '\\\\').replace(/[,;]/g, m => '\\' + m).replace(/\r\n|\r|\n/g, '\\n').replace(/[\u0000-\u001f\u007f]/g, '');
+  const httpUrl = link => {
+    if (typeof link !== 'string' || /[\u0000-\u001f\u007f]/.test(link)) return '';
+    try { const u = new URL(link); return /^https?:$/.test(u.protocol) ? u.href : ''; } catch { return ''; }
+  };
   list.addEventListener('click', e => {
     const btn = e.target.closest('[data-ics]');
     if (!btn) return;
     const ev = events[btn.closest('.event').dataset.idx];
     const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//NTU Atlas//Events//EN', 'BEGIN:VEVENT',
-      `UID:${ev.id || icsDate(new Date(ev.start))}@ntuatlas.com`, `DTSTAMP:${icsDate(new Date())}`,
+      `UID:${icsText(ev.id) || icsDate(new Date(ev.start))}@ntuatlas.com`, `DTSTAMP:${icsDate(new Date())}`,
       `DTSTART:${icsDate(new Date(ev.start))}`, `DTEND:${icsDate(endOf(ev))}`,
       `SUMMARY:${icsText(ev.title)}`, ev.venue ? `LOCATION:${icsText(ev.venue)}, NTU Singapore` : '',
-      ev.description ? `DESCRIPTION:${icsText(ev.description)}` : '', ev.link ? `URL:${ev.link}` : '',
+      ev.description ? `DESCRIPTION:${icsText(ev.description)}` : '', httpUrl(ev.link) ? `URL:${httpUrl(ev.link)}` : '',
       'END:VEVENT', 'END:VCALENDAR'].filter(Boolean).join('\r\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));

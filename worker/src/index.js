@@ -5,6 +5,7 @@
 import PostalMime from 'postal-mime';
 import { fetchChannel } from './telegram.js';
 import { extractEvents } from './extract.js';
+import { senderVerified } from './safety.js';
 
 const STORE_KEY = 'events';
 const FIRST_RUN_POSTS = 15;
@@ -68,6 +69,14 @@ async function ingestEmail(message, env) {
     return;
   }
   const mail = await new PostalMime().parse(message.raw);
+  // A From address can be forged, so the header must match and its domain must pass authentication
+  const headerFrom = String(mail.from && mail.from.address || '').toLowerCase();
+  const authResults = (mail.headers || []).find(h => h.key === 'authentication-results');
+  if (!list(env.ALLOWED_FORWARDERS).includes(headerFrom) || !senderVerified(authResults && authResults.value, headerFrom)) {
+    console.log('Email rejected: sender failed authentication', authResults ? authResults.value : 'no Authentication-Results header');
+    message.setReject('This address only accepts forwards from NTU Atlas maintainers.');
+    return;
+  }
   const text = (mail.text || (mail.html || '').replace(/<[^>]+>/g, ' ')).replace(/\s+\n/g, '\n').trim();
   const events = await extractEvents(env, [{ ref: 'email', postedAt: mail.date || new Date().toISOString(), text: `Subject: ${mail.subject || ''}\n\n${text}` }]);
   events.forEach(e => { delete e.ref; e.source = { type: 'email' }; });

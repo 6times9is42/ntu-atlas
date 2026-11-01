@@ -7,7 +7,8 @@ A Cloudflare Worker that keeps `ntuatlas.com/api/events` filled with upcoming NT
 - **Forwarded emails** sent to an address you set up are processed the same way.
 - The site fetches `/api/events`. Until this Worker is live, the Events section simply stays hidden.
 
-Nothing is reviewed before it's published, so the site links every event to its source.
+Nothing is reviewed before it's published, so the site links every event to its source. A sign-up link is
+only kept if that exact URL appears in the original announcement.
 
 ## One-time setup
 
@@ -57,20 +58,28 @@ This lets you forward event announcements from your school inbox.
 
 1. In the Cloudflare dashboard: **ntuatlas.com → Email → Email Routing → Get started**
    (it adds the DNS records for you).
-2. **Routing rules → Create address**, e.g. `events@ntuatlas.com`, action **Send to a Worker** →
-   `ntu-atlas-events`.
-3. Put the address(es) you'll forward from in `ALLOWED_FORWARDERS` in `wrangler.toml` and redeploy.
-   Mail from anyone else is rejected.
-4. Forward announcements to `events@ntuatlas.com`, by hand or with an Outlook rule
+2. **Routing rules → Create address** with a hard-to-guess name, e.g. `events-k7q2xm9f@ntuatlas.com`,
+   action **Send to a Worker** → `ntu-atlas-events`. Keep the address private, and out of this repo.
+3. Store the address(es) you'll forward from as a secret, comma-separated. The repo is public, so don't
+   put them in `wrangler.toml`:
+   ```bash
+   npx wrangler secret put ALLOWED_FORWARDERS
+   ```
+   Mail is rejected unless the sender is on that list and their domain passes DKIM or DMARC.
+4. Forward announcements to that address, by hand or with an Outlook rule
    (Settings → Mail → Rules → "Forward to"). NTU's mail system may block automatic forwarding to
    outside addresses; if a rule doesn't go through, forwarding by hand still works.
 
 Only forward mass announcements (clubs, offices, the SU), never personal mail. The Worker keeps
 only the extracted event details, not the email itself.
 
+If a genuine forward gets rejected, run `npx wrangler tail` and send it again. The log shows the
+authentication result Cloudflare saw.
+
 ## Local testing
 
 ```bash
+npm test                  # checks the email sender and link rules
 npm run test:telegram     # fetches the live NTUSU channel and prints what the parser sees
 npm run dev               # runs the Worker locally; visit http://localhost:8787/__scheduled to fire the cron
 ```
@@ -78,4 +87,5 @@ Put local secrets in `worker/.dev.vars` (git-ignored):
 ```
 GROQ_API_KEY=...
 ADMIN_TOKEN=...
+ALLOWED_FORWARDERS=...
 ```
