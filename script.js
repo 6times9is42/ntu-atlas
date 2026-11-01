@@ -331,7 +331,6 @@ const legalContent = {
     title: 'About NTU Atlas',
     body: `<p>NTU Atlas is a student-built directory of NTU's digital ecosystem — portals, campus services, clubs and societies — all in one place.</p>
 <p>Built and maintained by an NTU student. Not affiliated with or endorsed by Nanyang Technological University.</p>
-<p>Campus photos come from Wikimedia Commons under Creative Commons licences. Each photographer is credited beneath their photo.</p>
 <p>Want to suggest a link, report a broken one, or contribute? <a class="modal-link" href="https://t.me/+vuhtJw7fENg5OTll" target="_blank" rel="noopener">Join the community on Telegram →</a></p>`
   },
   disclaimer: {
@@ -363,6 +362,7 @@ function openModal(type) {
   legalModal.setAttribute('aria-hidden', 'false');
   document.querySelectorAll('body > *:not(#legalModal)').forEach(el => el.setAttribute('inert', ''));
   document.body.style.overflow = 'hidden';
+  if (window.lenis) window.lenis.stop();
   legalModalTitle.focus();
 }
 
@@ -371,6 +371,7 @@ function closeModal() {
   legalModal.setAttribute('aria-hidden', 'true');
   document.querySelectorAll('body > *:not(#legalModal)').forEach(el => el.removeAttribute('inert'));
   document.body.style.overflow = '';
+  if (window.lenis) window.lenis.start();
   if (modalTrigger) { modalTrigger.focus(); modalTrigger = null; }
 }
 
@@ -412,7 +413,7 @@ function moveInk(list, animate) {
   ink.style.width = active.offsetWidth + 'px';
   ink.style.transform = `translateX(${active.offsetLeft}px)`;
 }
-const tabLists = document.querySelectorAll('.cat-tabs, .club-tabs');
+const tabLists = document.querySelectorAll('.cat-tabs, .club-tabs, .events-tabs');
 tabLists.forEach(list => {
   list.insertAdjacentHTML('afterbegin', '<span class="tab-ink" aria-hidden="true"></span>');
   list.addEventListener('click', e => {
@@ -495,7 +496,7 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     pointer.x += (pointer.tx - pointer.x) * .07;
     pointer.y += (pointer.ty - pointer.y) * .07;
     pointer.amp += (pointer.tAmp - pointer.amp) * .04;
-    const z = t * .00006, r2 = 2 * 150 * 150;
+    const z = t * .00006 + (window.__flow || 0), r2 = 2 * 150 * 150; // scrolling stirs the contours
     for (let j = 0; j < rows; j++) {
       const y = j * CELL;
       for (let i = 0; i < cols; i++) {
@@ -603,7 +604,7 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     x -= (hover ? .15 : .6) + v;
     if (x <= -half) x += half;
     if (x > 0) x -= half;
-    track.style.transform = `translate3d(${x}px,0,0)`;
+    track.style.transform = `translate3d(${x}px,0,0) skewX(${Math.max(-14, Math.min(14, -v * 1.6)).toFixed(2)}deg)`;
     if (on) requestAnimationFrame(tick);
   }
   new IntersectionObserver(([e]) => {
@@ -619,7 +620,6 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   });
   const targets = [];
   document.querySelectorAll('.section-header').forEach(h => targets.push(h));
-  document.querySelectorAll('.campus-shot').forEach(el => targets.push(el));
   document.querySelectorAll('.section-count, .cat-section, .club-tabs, .clubs-grid, .marquee').forEach(el => { el.dataset.reveal = ''; targets.push(el); });
   document.querySelectorAll('.top-pick-card, .tool-item').forEach(el => {
     el.dataset.reveal = '';
@@ -698,7 +698,8 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     host.addEventListener('pointermove', e => {
       const r = el.getBoundingClientRect();
       const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-      el.style.translate = `${dx * .18}px ${dy * .18}px`;
+      const pull = v => Math.max(-14, Math.min(14, v * .18));
+      el.style.translate = `${pull(dx)}px ${pull(dy)}px`;
     });
     host.addEventListener('pointerleave', () => { el.style.translate = ''; });
     el.style.transition += ', translate .5s cubic-bezier(.23,1,.32,1)';
@@ -714,9 +715,14 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   document.body.appendChild(cur);
   let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, moving = false;
   function loop() {
-    x += (tx - x) * .2; y += (ty - y) * .2;
-    cur.style.transform = `translate3d(${x}px,${y}px,0)`;
-    moving = Math.abs(tx - x) + Math.abs(ty - y) > .1;
+    const dx = tx - x, dy = ty - y;
+    x += dx * .2; y += dy * .2;
+    moving = Math.abs(dx) + Math.abs(dy) > .1;
+    // Squash and stretch along the direction of travel, like a drop of ink
+    const stretch = moving && !cur.classList.contains('is-map') && !cur.classList.contains('is-text') ? Math.min(Math.hypot(dx, dy) / 110, .45) : 0;
+    cur.style.transform = stretch > .01
+      ? `translate3d(${x}px,${y}px,0) rotate(${Math.atan2(dy, dx)}rad) scale(${1 + stretch},${1 - stretch * .55})`
+      : `translate3d(${x}px,${y}px,0)`;
     if (moving) requestAnimationFrame(loop);
   }
   document.addEventListener('pointermove', e => {
@@ -760,59 +766,314 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   window.addEventListener('resize', update);
   update();
   btn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    if (window.lenis) window.lenis.scrollTo(0, { duration: 1.6 });
+    else window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     document.querySelector('.nav-logo').focus({ preventScroll: true });
   });
 })();
 
-/* ——— CAMPUS PHOTOS: gentle parallax inside each frame ——— */
+/* ——— EVENTS ———
+   Reads /api/events (served by the Cloudflare Worker in /worker). If the feed
+   isn't reachable the whole section stays hidden, so the page never shows a
+   broken block. */
 (function () {
-  const frames = Array.from(document.querySelectorAll('.campus-frame'));
-  if (!frames.length || reduceMotion) return;
-  const live = new Set();
-  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? live.add(e.target) : live.delete(e.target)));
-  frames.forEach(f => io.observe(f));
-  let ticking = false;
-  function update() {
-    ticking = false;
-    const vh = innerHeight;
-    live.forEach(frame => {
-      const r = frame.getBoundingClientRect();
-      const p = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2); // -1 → 1 across the viewport
-      frame.firstElementChild.style.translate = `0 ${(-p * 7).toFixed(2)}%`;
-    });
+  const section = document.getElementById('events');
+  if (!section) return;
+  const list = document.getElementById('eventsList');
+  const meta = document.getElementById('eventsMeta');
+  const map = document.getElementById('eventsMap');
+  const placeEl = document.getElementById('eventsMapPlace');
+  const bearingEl = document.getElementById('eventsMapBearing');
+  const TZ = 'Asia/Singapore';
+  const HOUR = 36e5;
+  let events = [];
+  let range = 'week';
+
+  const dayKey = d => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(d);
+  const fmtDay = d => new Intl.DateTimeFormat('en-SG', { timeZone: TZ, day: 'numeric' }).format(d);
+  const fmtMon = d => new Intl.DateTimeFormat('en-SG', { timeZone: TZ, month: 'short' }).format(d);
+  const fmtWd = d => new Intl.DateTimeFormat('en-SG', { timeZone: TZ, weekday: 'short' }).format(d);
+  const fmtTime = d => new Intl.DateTimeFormat('en-SG', { timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: true })
+    .format(d).replace(':00', '').replace(/\s?(am|pm)/i, (m, p) => p.toLowerCase());
+  const endOf = e => e.end ? new Date(e.end) : new Date(new Date(e.start).getTime() + (e.allDay ? 24 : 2) * HOUR);
+
+  /* venue text → known venue */
+  function findVenue(text) {
+    if (!text || typeof NTU_VENUES === 'undefined') return null;
+    const t = ` ${text.toLowerCase()} `;
+    let best = null, bestLen = 0;
+    NTU_VENUES.forEach(v => v.aliases.forEach(a => {
+      const hit = a.length <= 3 ? new RegExp(`[^a-z]${a}[^a-z]`).test(t) : t.includes(a);
+      if (hit && a.length > bestLen) { best = v; bestLen = a.length; }
+    }));
+    return best;
   }
-  window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-  update();
+  const PX_PER_M = 0.19;
+  function project(v) {
+    const dx = (v.lon - NTU_CENTRE.lon) * 111320 * Math.cos(NTU_CENTRE.lat * Math.PI / 180);
+    const dy = (v.lat - NTU_CENTRE.lat) * 110574;
+    return { x: dx * PX_PER_M, y: -dy * PX_PER_M, metres: Math.hypot(dx, dy), bearing: (Math.atan2(dx, dy) * 180 / Math.PI + 360) % 360 };
+  }
+
+  /* ——— map ——— */
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (tag, attrs, parent) => {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  };
+  const venueNodes = {};
+  let needle, heading = 0;
+  function buildMap() {
+    el('circle', { class: 'em-face', r: 178 }, map);
+    [250, 500, 750].forEach(m => {
+      el('circle', { class: 'em-ring', r: m * PX_PER_M }, map);
+      el('text', { class: 'em-ring-label', x: 4, y: -m * PX_PER_M - 4 }, map).textContent = `${m} m`;
+    });
+    const ticks = el('g', { class: 'em-ticks' }, map);
+    for (let d = 0; d < 360; d += 5) {
+      const a = d * Math.PI / 180, r1 = d % 45 === 0 ? 164 : 170;
+      el('line', {
+        x1: (Math.sin(a) * r1).toFixed(1), y1: (-Math.cos(a) * r1).toFixed(1),
+        x2: (Math.sin(a) * 176).toFixed(1), y2: (-Math.cos(a) * 176).toFixed(1),
+        class: d === 0 ? 'is-north' : d % 45 === 0 ? 'is-major' : ''
+      }, ticks);
+    }
+    el('text', { class: 'em-north', y: -186 }, map).textContent = 'N';
+    (typeof NTU_VENUES === 'undefined' ? [] : NTU_VENUES).forEach(v => {
+      const p = project(v);
+      const g = el('g', { class: 'em-venue', transform: `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})` }, map);
+      el('circle', { class: 'em-ripple', r: 7 }, g);
+      el('circle', { class: 'dot', r: 4.5 }, g);
+      const label = el('text', { class: 'em-label', y: -12, 'text-anchor': p.x > 60 ? 'end' : p.x < -60 ? 'start' : 'middle' }, g);
+      label.textContent = v.name;
+      venueNodes[v.key] = g;
+    });
+    needle = el('g', { class: 'em-needle' }, map);
+    el('polygon', { class: 'm-n', points: '0,-46 6,0 -6,0' }, needle);
+    el('polygon', { class: 'm-s', points: '0,46 6,0 -6,0' }, needle);
+    el('circle', { class: 'em-pin', r: 4 }, map);
+  }
+  function focusVenue(v, venueText) {
+    Object.values(venueNodes).forEach(n => n.classList.remove('is-on'));
+    if (!v) {
+      placeEl.textContent = venueText ? venueText : 'Point at an event to find it';
+      bearingEl.textContent = venueText ? 'Not on the map' : '';
+      return;
+    }
+    venueNodes[v.key].classList.add('is-on');
+    const p = project(v);
+    heading += ((p.bearing - heading) % 360 + 540) % 360 - 180;
+    needle.style.transform = `rotate(${heading.toFixed(1)}deg)`;
+    placeEl.textContent = v.name;
+    bearingEl.textContent = `${Math.round(p.metres / 10) * 10} m, ${String(Math.round(p.bearing)).padStart(3, '0')}°`;
+  }
+
+  /* ——— list ——— */
+  function inRange(e, now) {
+    const s = new Date(e.start), en = endOf(e);
+    if (en < now) return false;
+    if (range === 'now') return s <= now;
+    if (range === 'today') return dayKey(s) <= dayKey(now) && dayKey(en) >= dayKey(now);
+    if (range === 'week') return s < new Date(now.getTime() + 7 * 24 * HOUR);
+    return true;
+  }
+  const EMPTY = {
+    now: ['Nothing live right now', 'Check today or this week for what’s coming up.'],
+    today: ['Nothing on today', 'This week has more.'],
+    week: ['A quiet week so far', 'See all upcoming events.'],
+    all: ['No upcoming events yet', 'New ones are added every couple of hours.'],
+  };
+  function render() {
+    const now = new Date();
+    const shown = events.filter(e => inRange(e, now)).sort((a, b) => new Date(a.start) - new Date(b.start));
+    Object.values(venueNodes).forEach(n => n.classList.remove('has-event'));
+    if (!shown.length) {
+      const [t, d] = EMPTY[range];
+      list.innerHTML = `<li class="events-empty"><strong>${t}</strong>${d}</li>`;
+      focusVenue(null);
+      return;
+    }
+    list.innerHTML = shown.map((e, i) => {
+      const s = new Date(e.start), en = endOf(e);
+      const live = s <= now && en >= now;
+      const v = findVenue(e.venue);
+      if (v) venueNodes[v.key].classList.add('has-event');
+      const time = e.allDay ? 'All day' : `${fmtTime(s)}${e.end ? ` – ${fmtTime(en)}` : ''}`;
+      const kicker = [live ? '<span class="event-live">Live now</span>' : '', e.category ? `<span>${escapeHtml(e.category)}</span>` : '', e.organiser ? `<span>${escapeHtml(e.organiser)}</span>` : ''].join('');
+      return `<li class="event fill" style="--i:${i}" data-idx="${events.indexOf(e)}" data-venue="${v ? v.key : ''}">
+        <div class="event-date"><span class="event-day">${fmtDay(s)}</span><span class="event-mon">${fmtMon(s)}</span><span class="event-wd">${fmtWd(s)}</span></div>
+        <div class="event-body">
+          <div class="event-kicker">${kicker}</div>
+          <h3 class="event-title">${escapeHtml(e.title)}</h3>
+          <p class="event-meta"><span>${time}</span>${e.venue ? `<span class="event-venue">${escapeHtml(e.venue)}</span>` : ''}</p>
+          ${e.description ? `<p class="event-desc">${escapeHtml(e.description)}</p>` : ''}
+        </div>
+        <div class="event-actions">
+          ${e.link ? `<a class="event-btn is-primary fill" href="${escapeHtml(e.link)}" target="_blank" rel="noopener">Sign up</a>` : ''}
+          <button type="button" class="event-btn fill" data-ics>Add to calendar</button>
+          ${e.source && e.source.url ? `<a class="event-src" href="${escapeHtml(e.source.url)}" target="_blank" rel="noopener">Source</a>` : ''}
+        </div>
+      </li>`;
+    }).join('');
+    const first = shown[0];
+    focusVenue(findVenue(first.venue), first.venue);
+  }
+
+  list.addEventListener('pointerover', e => {
+    const row = e.target.closest('.event');
+    if (!row || row.dataset.idx === undefined) return;
+    const ev = events[row.dataset.idx];
+    focusVenue(findVenue(ev.venue), ev.venue);
+  });
+  list.addEventListener('focusin', e => {
+    const row = e.target.closest('.event');
+    if (row && row.dataset.idx !== undefined) { const ev = events[row.dataset.idx]; focusVenue(findVenue(ev.venue), ev.venue); }
+  });
+
+  /* ——— add to calendar ——— */
+  const icsDate = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  const icsText = t => String(t || '').replace(/\\/g, '\\\\').replace(/[,;]/g, m => '\\' + m).replace(/\r?\n/g, '\\n');
+  list.addEventListener('click', e => {
+    const btn = e.target.closest('[data-ics]');
+    if (!btn) return;
+    const ev = events[btn.closest('.event').dataset.idx];
+    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//NTU Atlas//Events//EN', 'BEGIN:VEVENT',
+      `UID:${ev.id || icsDate(new Date(ev.start))}@ntuatlas.com`, `DTSTAMP:${icsDate(new Date())}`,
+      `DTSTART:${icsDate(new Date(ev.start))}`, `DTEND:${icsDate(endOf(ev))}`,
+      `SUMMARY:${icsText(ev.title)}`, ev.venue ? `LOCATION:${icsText(ev.venue)}, NTU Singapore` : '',
+      ev.description ? `DESCRIPTION:${icsText(ev.description)}` : '', ev.link ? `URL:${ev.link}` : '',
+      'END:VEVENT', 'END:VCALENDAR'].filter(Boolean).join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar' }));
+    a.download = `${ev.title.replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'event'}.ics`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  section.querySelectorAll('.events-tab').forEach(tab => tab.addEventListener('click', () => {
+    section.querySelectorAll('.events-tab').forEach(t => { t.classList.toggle('active', t === tab); t.setAttribute('aria-selected', t === tab); });
+    range = tab.dataset.range;
+    render();
+  }));
+
+  function ago(iso) {
+    const m = Math.round((Date.now() - new Date(iso)) / 6e4);
+    return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.round(m / 60)} h ago`;
+  }
+  function show(data) {
+    events = (data.events || []).filter(e => e && e.title && e.start && !isNaN(new Date(e.start)));
+    section.hidden = false;
+    document.querySelector('.nav-events').hidden = false;
+    if (!map.childNodes.length) buildMap();
+    const upcoming = events.filter(e => endOf(e) >= new Date()).length;
+    meta.textContent = `${upcoming} upcoming${data.updated ? `, updated ${ago(data.updated)}` : ''}`;
+    // Default to the widest view that has something in it
+    if (!events.some(e => inRange(e, new Date()))) {
+      const all = section.querySelector('[data-range="all"]');
+      if (all) all.click(); else render();
+    } else render();
+    if (typeof placeInk === 'function') placeInk();
+  }
+  list.innerHTML = '<li class="event is-skeleton"><div></div><div><span style="width:30%"></span><span style="width:70%"></span><span style="width:50%"></span></div></li>';
+  window.__showEvents = show;
+  fetch('/api/events', { headers: { accept: 'application/json' } })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(show)
+    .catch(() => { section.hidden = true; });
 })();
 
-/* ——— MOST VISITED: floating photo preview ——— */
+/* ——— LIQUID MOTION ——— */
+
+/* Smooth, weighted scrolling. Native scroll stays underneath, so sticky
+   sections, anchors and scroll listeners all keep working. */
 (function () {
-  if (!finePointer || reduceMotion) return;
-  const cards = document.querySelectorAll('.top-pick-card[data-img]');
-  if (!cards.length) return;
-  const box = document.createElement('div');
-  box.className = 'pick-preview';
-  box.setAttribute('aria-hidden', 'true');
-  box.innerHTML = '<img alt="">';
-  document.body.appendChild(box);
-  const img = box.firstChild;
-  let x = 0, y = 0, tx = 0, ty = 0, tilt = 0, raf = 0, on = false;
-  function loop() {
-    const dx = tx - x;
-    x += dx * .14; y += (ty - y) * .14;
-    tilt += (Math.max(-12, Math.min(12, dx * .12)) - tilt) * .15;
-    box.style.transform = `translate3d(${x + 28}px,${y - 90}px,0) rotate(${tilt.toFixed(2)}deg)`;
-    raf = on || Math.abs(dx) > .5 ? requestAnimationFrame(loop) : 0;
-  }
-  cards.forEach(card => {
-    card.addEventListener('pointerenter', e => {
-      img.src = card.dataset.img;
-      if (!on) { x = tx = e.clientX; y = ty = e.clientY; }
-      on = true; box.classList.add('is-on');
-      if (!raf) raf = requestAnimationFrame(loop);
-    });
-    card.addEventListener('pointermove', e => { tx = e.clientX; ty = e.clientY; });
-    card.addEventListener('pointerleave', () => { on = false; box.classList.remove('is-on'); });
+  if (reduceMotion || !window.Lenis) return;
+  const lenis = new Lenis({ lerp: .09, wheelMultiplier: 1 });
+  window.lenis = lenis;
+  function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const id = a.getAttribute('href');
+    const target = id === '#' ? 0 : document.querySelector(id);
+    if (target === null) return;
+    e.preventDefault();
+    lenis.scrollTo(target, { offset: target === 0 ? 0 : -80, duration: 1.4 });
+    if (id !== '#') history.replaceState(null, '', id);
   });
+})();
+
+/* Retire the intro curtain once it has lifted */
+(function () {
+  const intro = document.querySelector('.intro');
+  if (!intro) return;
+  if (!document.documentElement.classList.contains('has-intro')) { intro.remove(); return; }
+  intro.addEventListener('animationend', e => { if (e.animationName === 'introLift') intro.remove(); });
+  // never let the curtain linger, e.g. if animations are paused in a background tab
+  setTimeout(() => intro.remove(), 2400);
+})();
+
+/* Rolling letters on nav and footer links */
+document.querySelectorAll('.nav-links a, .footer-legal-link').forEach(el => {
+  const text = el.textContent.trim();
+  el.setAttribute('aria-label', text);
+  el.innerHTML = `<span class="roll" aria-hidden="true">${[...text].map((ch, i) => `<span style="--i:${i}">${escapeHtml(ch)}</span>`).join('')}</span>`;
+});
+
+/* Liquid fills pour in from the pointer's entry point and drain toward its exit */
+(function () {
+  if (!finePointer) return;
+  const setOrigin = (el, e) => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--fx', `${((e.clientX - r.left) / r.width * 100).toFixed(1)}%`);
+    el.style.setProperty('--fy', `${((e.clientY - r.top) / r.height * 100).toFixed(1)}%`);
+  };
+  document.addEventListener('pointerover', e => {
+    const el = e.target.closest && e.target.closest('.fill');
+    if (el && !el.contains(e.relatedTarget)) setOrigin(el, e);
+  });
+  document.addEventListener('pointerout', e => {
+    const el = e.target.closest && e.target.closest('.fill');
+    if (el && !el.contains(e.relatedTarget)) setOrigin(el, e);
+  });
+})();
+
+/* One loop reads scroll velocity and lets a few things respond to it:
+   section headings lean, the hero contours stir, and the footer's edge sloshes. */
+(function () {
+  if (reduceMotion) return;
+  const heads = Array.from(document.querySelectorAll('.section-header'));
+  const footer = document.querySelector('footer');
+  const wave = footer && footer.querySelector('.footer-wave path');
+  let lastY = scrollY, vel = 0, skew = 0;
+  let bulge = 0, bulgeV = 0, footerOn = false;
+  if (footer) new IntersectionObserver(([e]) => { footerOn = e.isIntersecting; }, { rootMargin: '200px 0px' }).observe(footer);
+  window.__flow = 0;
+  function frame(t) {
+    const dy = scrollY - lastY; lastY = scrollY;
+    vel += (dy - vel) * .2;
+    window.__flow += Math.abs(dy) * .0005;
+
+    const target = Math.max(-5, Math.min(5, vel * .18));
+    if (Math.abs(target - skew) > .01 || Math.abs(skew) > .01) {
+      skew += (target - skew) * .15;
+      const v = Math.abs(skew) < .01 ? '' : `skewY(${skew.toFixed(2)}deg)`;
+      heads.forEach(h => { h.style.transform = v; });
+    }
+
+    if (wave && footerOn) {
+      // a damped spring chases the scroll speed; a slow swell keeps the surface alive
+      bulgeV += (Math.max(-60, Math.min(60, vel * 2.2)) - bulge) * .08;
+      bulgeV *= .84;
+      bulge += bulgeV;
+      const swell = Math.sin(t / 900) * 8;
+      const mid = 60;
+      wave.setAttribute('d', `M0,${mid} C360,${(mid - bulge - swell).toFixed(1)} 1080,${(mid - bulge + swell).toFixed(1)} 1440,${mid} L1440,121 L0,121 Z`);
+    }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
