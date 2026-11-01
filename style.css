@@ -506,25 +506,32 @@ a.event-venue:hover { color: var(--ink); text-decoration-color: currentColor; }
 .events-tabs.is-day .tab-ink { opacity: 0; }
 .events-tabs.is-day .events-tab.active { color: var(--ink-2); }
 
-/* ——— MARQUEE ——— */
-.marquee {
-  overflow: hidden; padding: clamp(14px, 2vw, 22px) 0;
-  border-block: 1px solid var(--line);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
-}
-.marquee-track { display: flex; width: max-content; will-change: transform; }
-.marquee-item {
-  display: inline-flex; align-items: center; gap: .42em; padding-right: .42em; white-space: nowrap;
-  font-size: clamp(38px, 6.2vw, 92px); line-height: 1.05; font-weight: 600;
-  font-variation-settings: 'wdth' 78; letter-spacing: -.04em;
-  color: transparent; -webkit-text-stroke: 1.2px var(--ink-3);
-  transition: color .35s ease, -webkit-text-stroke-color .35s ease;
-}
-.marquee-item::after {
-  content: ''; width: .16em; height: .16em; flex: none; background: var(--needle); transform: rotate(45deg);
-}
-.marquee-item:hover { color: var(--ink); -webkit-text-stroke-color: transparent; }
+/* ——— HERO HAND-OFF ———
+   The hero holds still while the page rises over it on a curved edge. */
+.hero-stage { padding-bottom: 100vh; }
+.hero { position: sticky; top: var(--hero-top, 0px); z-index: 0; }
+.hero:focus-within { z-index: 2; }
+.hero-shade { position: absolute; inset: 0; z-index: 3; background: var(--ink); opacity: 0; pointer-events: none; }
+.page-sheet { position: relative; z-index: 1; margin-top: -100vh; background: var(--bg); }
+.sheet-edge { position: absolute; left: 0; bottom: 100%; width: 100%; height: clamp(70px, 11vw, 170px); margin-bottom: -1px; pointer-events: none; }
+.sheet-edge path { fill: var(--bg); }
+
+/* Next up in the hero */
+.next-up { display: inline-flex; align-items: baseline; gap: 10px; min-width: 0; color: var(--ink-2); transition: color .2s ease; }
+.next-up:hover { color: var(--ink); }
+.next-up-label { flex: none; color: var(--needle); font-weight: 600; }
+.next-up-roll { display: block; overflow: hidden; height: 1.4em; line-height: 1.4; min-width: 0; }
+.next-up-item { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.next-up-item.is-in { animation: nextIn .7s var(--ease-out) both; }
+.next-up-item.is-out { animation: nextOut .35s ease both; }
+@keyframes nextIn { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes nextOut { to { transform: translateY(-100%); } }
+
+/* A rule under each heading draws itself as the section scrolls in */
+.section-header { position: relative; }
+.title-rule { position: absolute; left: 0; right: 0; bottom: -12px; height: 1px; background: var(--line-2); transform: scaleX(var(--p, 0)); transform-origin: left; pointer-events: none; }
+.fresh-pin .title-rule { left: var(--gutter); right: var(--gutter); }
+.title-mark { position: absolute; left: 0; bottom: -15px; width: 7px; height: 7px; margin-left: -3px; background: var(--needle); pointer-events: none; opacity: 0; }
 
 /* ——— SECTION TITLES ——— */
 .section-title { font-size: clamp(38px, 5.6vw, 80px); line-height: .95; font-variation-settings: 'wdth' 80; letter-spacing: -.042em; }
@@ -682,6 +689,8 @@ html.js .fresh-section.is-pinned .fresh-banner { overflow: visible; width: max-c
 @media (max-width: 600px) {
   .event { grid-template-columns: 52px minmax(0, 1fr); padding: 20px 4px; }
   .event-day { font-size: 34px; }
+  .hero-coords { display: none; }
+  .hero-scroll { flex: none; white-space: nowrap; }
   .tide-wd { font-size: 11px; }
   .tide-dn { font-size: 13.5px; }
   .event-actions { grid-column: 2; flex-direction: row; flex-wrap: wrap; align-items: center; margin-top: 10px; }
@@ -812,6 +821,10 @@ a:hover > .roll > span, button:hover > .roll > span { transform: translateY(-1.3
   *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
   .tab-ink, .nav-logo-mark { transition: none !important; }
   html.js .title-char { transform: none; transition: none; }
+  .hero-stage { padding-bottom: 0; }
+  .hero { position: relative; }
+  .page-sheet { margin-top: 0; }
+  .sheet-edge, .title-mark, .title-rule { display: none; }
   .event-progress { transition: none; }
   .tool-item:hover { transform: none; }
   html.has-intro .intro { display: none; }

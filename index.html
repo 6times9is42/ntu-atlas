@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="style.css?v=9">
 <script src="theme-init.js?v=7"></script>
 </head>
 <body>
@@ -65,7 +65,9 @@
 <main>
 
 <!-- Hero -->
+<div class="hero-stage">
 <header class="hero">
+  <span class="hero-shade" aria-hidden="true"></span>
   <canvas class="hero-canvas" aria-hidden="true"></canvas>
   <div class="hero-copy">
     <h1 class="hero-title"><span class="line"><span class="hero-word">NTU Atlas</span></span><span class="sr-only">: every NTU portal in one place</span></h1>
@@ -101,14 +103,14 @@
   <div class="hero-meta">
     <div class="hero-meta-inner">
       <span class="hero-coords" aria-hidden="true"><span id="coordLat">1.3483° N</span><span id="coordLon">103.6831° E</span></span>
+      <a class="next-up" id="nextUp" href="#events" hidden><span class="next-up-label">Next up</span><span class="next-up-roll" id="nextUpRoll"></span></a>
       <a class="hero-scroll" href="#portals">Scroll to explore<span class="hero-scroll-line" aria-hidden="true"></span></a>
     </div>
   </div>
 </header>
-
-<div class="marquee" aria-label="Popular portals">
-  <div class="marquee-track"></div>
 </div>
+<div class="page-sheet">
+<svg class="sheet-edge" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0,100 L1440,100 Z"/></svg>
 
 <!-- Top 3 picks -->
 <section class="block" aria-labelledby="topPicksHeading">
@@ -404,6 +406,7 @@
 </div>
 </section>
 
+</div>
 </main>
 
 <!-- Footer -->
@@ -457,6 +460,6 @@
 
 <script src="data.js?v=7"></script>
 <script src="vendor/lenis.min.js?v=1"></script>
-<script src="script.js?v=9"></script>
+<script src="script.js?v=10"></script>
 </body>
 </html>

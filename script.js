@@ -582,40 +582,6 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   hero.addEventListener('pointerleave', () => { pointer.tAmp = 0; });
 })();
 
-/* ——— MARQUEE ——— speed follows scroll velocity */
-(function () {
-  const wrap = document.querySelector('.marquee');
-  const track = wrap && wrap.querySelector('.marquee-track');
-  if (!track) return;
-  const names = ['NTULearn', 'STARS', 'Degree Audit', 'CareerAxis', 'Exam Timetable', 'Library Booking', 'Hall Portal', 'Exchange Portal', 'Financial Aid', 'Campus Shuttle'];
-  const items = names.map(n => allLinks.find(l => l.name === n)).filter(Boolean);
-  const set = hidden => items.map(l =>
-    `<a class="marquee-item" href="${escapeHtml(l.url)}" target="_blank" rel="noopener"${hidden ? ' tabindex="-1" aria-hidden="true"' : ''}>${escapeHtml(l.name)}</a>`).join('');
-  track.innerHTML = set(false) + set(true);
-  if (reduceMotion) return;
-
-  let x = 0, v = 0, lastY = scrollY, half = 0, on = false, hover = false;
-  const measure = () => { half = track.scrollWidth / 2; };
-  measure();
-  window.addEventListener('resize', measure);
-  if (document.fonts) document.fonts.ready.then(measure);
-  wrap.addEventListener('pointerenter', () => { hover = true; });
-  wrap.addEventListener('pointerleave', () => { hover = false; });
-  function tick() {
-    const dy = scrollY - lastY; lastY = scrollY;
-    v += (Math.max(-40, Math.min(40, dy)) * .25 - v) * .1;
-    x -= (hover ? .15 : .6) + v;
-    if (x <= -half) x += half;
-    if (x > 0) x -= half;
-    track.style.transform = `translate3d(${x}px,0,0) skewX(${Math.max(-14, Math.min(14, -v * 1.6)).toFixed(2)}deg)`;
-    if (on) requestAnimationFrame(tick);
-  }
-  new IntersectionObserver(([e]) => {
-    const was = on; on = e.isIntersecting;
-    if (on && !was) { lastY = scrollY; requestAnimationFrame(tick); }
-  }).observe(wrap);
-})();
-
 /* ——— SCROLL REVEALS ——— */
 (function () {
   document.querySelectorAll('.section-title').forEach(h => {
@@ -626,7 +592,7 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   });
   const targets = [];
   document.querySelectorAll('.section-header').forEach(h => targets.push(h));
-  document.querySelectorAll('.section-count, .cat-section, .club-tabs, .clubs-grid, .marquee').forEach(el => { el.dataset.reveal = ''; targets.push(el); });
+  document.querySelectorAll('.section-count, .cat-section, .club-tabs, .clubs-grid').forEach(el => { el.dataset.reveal = ''; targets.push(el); });
   document.querySelectorAll('.top-pick-card, .tool-item').forEach(el => {
     el.dataset.reveal = '';
     el.style.setProperty('--rd', Array.from(el.parentElement.children).indexOf(el) % 4);
@@ -996,6 +962,36 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (selectedDay) selectDay(null); else render();
   }));
 
+  /* ——— next up: the soonest events roll through the hero ——— */
+  const nextUp = document.getElementById('nextUp');
+  const nextRoll = document.getElementById('nextUpRoll');
+  let nextTimer = 0;
+  function startNextUp() {
+    clearInterval(nextTimer);
+    const now = new Date();
+    const soon = events.filter(e => endOf(e) >= now).sort((a, b) => new Date(a.start) - new Date(b.start));
+    const picks = soon.filter((e, i) => soon.findIndex(o => o.title === e.title) === i).slice(0, 3);
+    nextUp.hidden = !picks.length;
+    if (!picks.length) return;
+    const line = e => `${e.title}, ${countText(e, new Date()).replace(/^S/, 's').replace(/^T/, 't').replace(/^I/, 'i').replace(/^O/, 'o')}`;
+    let i = 0;
+    const put = () => {
+      const item = document.createElement('span');
+      item.className = 'next-up-item is-in';
+      item.textContent = line(picks[i]);
+      nextRoll.replaceChildren(item);
+    };
+    put();
+    if (reduceMotion || picks.length < 2) return;
+    nextTimer = setInterval(() => {
+      if (document.hidden || scrollY > innerHeight) return;
+      const old = nextRoll.firstElementChild;
+      old.className = 'next-up-item is-out';
+      i = (i + 1) % picks.length;
+      setTimeout(put, 330);
+    }, 4500);
+  }
+
   function ago(iso) {
     const m = Math.round((Date.now() - new Date(iso)) / 6e4);
     return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.round(m / 60)} h ago`;
@@ -1005,6 +1001,7 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     section.hidden = false;
     document.querySelector('.nav-events').hidden = false;
     buildTide();
+    startNextUp();
     const upcoming = events.filter(e => endOf(e) >= new Date()).length;
     meta.textContent = `${upcoming} upcoming${data.updated ? `, updated ${ago(data.updated)}` : ''}`;
     // Default to the widest view that has something in it
@@ -1189,4 +1186,69 @@ document.querySelectorAll('.nav-links a, .footer-legal-link').forEach(el => {
   addEventListener('scroll', spy, { passive: true });
   addEventListener('resize', spy);
   spy();
+})();
+
+/* Hero hand-off: the page rises on a curve that swells then flattens, while the hero sinks into shade */
+(function () {
+  const hero = document.querySelector('.hero');
+  const copy = hero && hero.querySelector('.hero-copy');
+  const shade = hero && hero.querySelector('.hero-shade');
+  const edge = document.querySelector('.sheet-edge path');
+  if (!hero || !edge) return;
+  const place = () => hero.style.setProperty('--hero-top', `${Math.min(0, innerHeight - hero.offsetHeight)}px`);
+  place();
+  addEventListener('resize', place);
+  if (reduceMotion) return;
+  let p = 0, running = false;
+  const goal = () => {
+    const travel = hero.offsetHeight > innerHeight ? hero.offsetHeight : innerHeight;
+    return Math.max(0, Math.min(1, scrollY / travel));
+  };
+  function paint() {
+    const depth = Math.sin(Math.PI * Math.min(1, p * 1.05)) * 100;
+    edge.setAttribute('d', `M0,100 C360,${(100 - depth).toFixed(1)} 1080,${(100 - depth).toFixed(1)} 1440,100 Z`);
+    if (copy) copy.style.transform = p ? `translateY(${(-p * 90).toFixed(1)}px) scale(${(1 - p * .07).toFixed(4)})` : '';
+    shade.style.opacity = (p * .9).toFixed(3);
+  }
+  function frame() {
+    const g = goal();
+    p += (g - p) * .14;
+    if (Math.abs(g - p) < .0005) { p = g; running = false; } else requestAnimationFrame(frame);
+    paint();
+  }
+  addEventListener('scroll', () => { if (!running) { running = true; requestAnimationFrame(frame); } }, { passive: true });
+  p = goal(); paint();
+})();
+
+/* Heading rules: a hairline draws across and a marker leads it, tied to scroll position */
+(function () {
+  const heads = [...document.querySelectorAll('.section-header')].map(h => {
+    const rule = document.createElement('span'); rule.className = 'title-rule'; rule.setAttribute('aria-hidden', 'true');
+    const mark = document.createElement('span'); mark.className = 'title-mark'; mark.setAttribute('aria-hidden', 'true');
+    h.append(rule, mark);
+    return { h, rule, mark, last: -1 };
+  });
+  if (reduceMotion) return;
+  let queued = false;
+  function update() {
+    queued = false;
+    const vh = innerHeight;
+    heads.forEach(o => {
+      const r = o.h.getBoundingClientRect();
+      if (!r.width) return;
+      const v = Math.max(0, Math.min(1, (vh * .92 - r.bottom) / (vh * .5)));
+      if (Math.abs(v - o.last) < .001) return;
+      o.last = v;
+      o.rule.style.setProperty('--p', v.toFixed(4));
+      // the sweep fades as it finishes, so it never doubles up with the line below the heading
+      const fade = v <= 0 ? 0 : Math.min(1, (1 - v) / .15);
+      o.rule.style.opacity = fade.toFixed(3);
+      o.mark.style.opacity = fade.toFixed(3);
+      o.mark.style.transform = `translateX(${(o.rule.offsetLeft + v * o.rule.offsetWidth).toFixed(1)}px) rotate(45deg)`;
+    });
+  }
+  const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', queue, { passive: true });
+  addEventListener('resize', queue);
+  queue();
 })();
