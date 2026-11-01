@@ -412,16 +412,34 @@ footer { position: relative; margin-top: clamp(140px, 16vw, 220px); background: 
 }
 
 /* ——— EVENTS ——— */
-.events-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 400px); gap: clamp(24px, 4vw, 56px); align-items: start; }
 .events-list { list-style: none; border-top: 1px solid var(--line); min-height: 120px; }
 .event {
   position: relative; isolation: isolate;
-  display: grid; grid-template-columns: 68px minmax(0, 1fr) auto; gap: 6px 22px; align-items: start;
+  display: grid; grid-template-columns: clamp(72px, 8vw, 112px) minmax(0, 1fr) auto; gap: 6px 22px; align-items: start;
   padding: 22px 14px; border-bottom: 1px solid var(--line);
   animation: cardIn .5s var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 10) * 45ms);
 }
 .event-date { display: flex; flex-direction: column; padding-top: 2px; }
-.event-day { font-size: 36px; line-height: .9; font-weight: 600; font-variation-settings: 'wdth' 78; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.event-day {
+  display: block; overflow: hidden; font-size: clamp(44px, 5.4vw, 76px); line-height: .95; font-weight: 600;
+  font-variation-settings: 'wdth' 75; letter-spacing: -.04em; transition: color .25s ease;
+}
+.event-day > span { display: block; animation: dayRoll .8s var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 10) * 60ms + .05s); }
+@keyframes dayRoll { from { transform: translateY(100%); } to { transform: none; } }
+.event-title { transition: transform .35s var(--ease-out); }
+.event-count { font-weight: 600; color: var(--ink-2); }
+.hero-char { letter-spacing: -.04em; }
+.event-progress {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--needle);
+  transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 1s linear;
+  z-index: 1;
+}
+a.event-venue { color: inherit; text-underline-offset: 3px; text-decoration: underline; text-decoration-color: var(--line-2); transition: color .15s ease, text-decoration-color .15s ease; }
+a.event-venue:hover { color: var(--ink); text-decoration-color: currentColor; }
+@media (hover: hover) and (pointer: fine) {
+  .event:hover .event-day { color: var(--needle); }
+  .event:hover .event-title { transform: translateX(6px); }
+}
 .event-mon { margin-top: 6px; font-size: 14px; color: var(--ink-2); }
 .event-wd { font-size: 13.5px; color: var(--ink-3); }
 .event-kicker { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: 13.5px; color: var(--ink-3); }
@@ -466,35 +484,27 @@ footer { position: relative; margin-top: clamp(140px, 16vw, 220px); background: 
 .events-note a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-2); }
 
 /* Compass map of campus: pins for venues, a needle that points at the event you're on */
-.events-map { position: sticky; top: 96px; }
-.events-map svg { width: 100%; height: auto; overflow: visible; }
-.em-face { fill: var(--surface); stroke: var(--line); }
-.em-ring { fill: none; stroke: var(--line); stroke-dasharray: 2 5; }
-.em-ring-label { font-size: 10.5px; fill: var(--ink-3); }
-.em-ticks line { stroke: var(--line-2); }
-.em-ticks line.is-major { stroke: var(--ink-3); stroke-width: 1.5; }
-.em-ticks line.is-north { stroke: var(--needle); stroke-width: 2.5; }
-.em-north { font-size: 13px; font-weight: 700; fill: var(--needle); text-anchor: middle; }
-.em-venue .dot { fill: var(--line-2); transition: fill .3s ease; }
-.em-venue.has-event .dot { fill: var(--ink-2); }
-.em-venue.is-on .dot { fill: var(--needle); }
-.em-ripple { fill: none; stroke: var(--needle); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
-.em-venue.is-on .em-ripple { animation: ripple 1.6s var(--ease-out) infinite; }
-@keyframes ripple { from { opacity: .9; transform: scale(.4); } to { opacity: 0; transform: scale(2.4); } }
-.em-label {
-  font-size: 12.5px; font-weight: 600; fill: var(--ink); opacity: 0; transition: opacity .25s ease;
-  paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round;
+/* Tide: how busy each of the next 14 days is */
+.tide { position: relative; height: clamp(150px, 15vw, 190px); margin: 22px 0 18px; }
+.tide-wave { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: calc(100% - 50px); overflow: hidden; pointer-events: none; }
+.tide-front { fill: var(--ink); }
+.tide-back { fill: var(--needle); opacity: .6; }
+.tide-now { position: absolute; top: 0; bottom: 50px; width: 2px; margin-left: -1px; background: var(--needle); pointer-events: none; }
+.tide-now::before { content: ''; position: absolute; top: -3px; left: -3px; width: 8px; height: 8px; background: var(--needle); transform: rotate(45deg); }
+.tide-days { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(14, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+.tide-day {
+  display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 1px; padding: 0 0 8px;
+  background: none; border: 0; font: inherit; color: var(--ink); cursor: pointer; transition: color .2s ease;
 }
-.em-venue.is-on .em-label { opacity: 1; }
-.em-needle { transition: transform 1s var(--ease-needle); }
-.em-needle .m-n { fill: var(--needle); }
-.em-needle .m-s { fill: var(--steel); }
-.em-pin { fill: var(--surface); stroke: var(--ink-3); stroke-width: 1.5; }
-.events-map-caption {
-  display: flex; justify-content: space-between; gap: 12px; margin-top: 12px;
-  font-size: 14px; color: var(--ink-2); font-variant-numeric: tabular-nums;
-}
-#eventsMapBearing { color: var(--ink-3); }
+.tide-day:disabled { color: var(--ink-3); cursor: default; }
+.tide-wd { font-size: 12.5px; color: var(--ink-3); }
+.tide-dn { font-size: 16px; font-weight: 600; font-variation-settings: 'wdth' 85; line-height: 1.15; }
+.tide-day:disabled .tide-dn { font-weight: 400; }
+.tide-day:not(:disabled):hover .tide-dn, .tide-day[aria-pressed="true"] .tide-dn { color: var(--needle); }
+.tide-day[aria-pressed="true"] { box-shadow: inset 0 -2px 0 var(--needle); }
+.tide-day:focus-visible { outline: 2px solid var(--needle); outline-offset: -2px; }
+.events-tabs.is-day .tab-ink { opacity: 0; }
+.events-tabs.is-day .events-tab.active { color: var(--ink-2); }
 
 /* ——— MARQUEE ——— */
 .marquee {
@@ -519,10 +529,22 @@ footer { position: relative; margin-top: clamp(140px, 16vw, 220px); background: 
 /* ——— SECTION TITLES ——— */
 .section-title { font-size: clamp(38px, 5.6vw, 80px); line-height: .95; font-variation-settings: 'wdth' 80; letter-spacing: -.042em; }
 .section-header { margin-bottom: clamp(24px, 3vw, 40px); }
-.section-title .line { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
-.section-title .line > span { display: block; }
-html.js .section-title .line > span { transform: translateY(108%); transition: transform 1.1s var(--ease-out); }
-html.js .is-in .section-title .line > span, html.js .section-title.is-in .line > span { transform: none; }
+.title-word { display: inline-block; overflow: hidden; padding-bottom: .14em; margin-bottom: -.14em; vertical-align: top; }
+.title-char { display: inline-block; }
+html.js .title-char { transform: translateY(115%); transition: transform .95s var(--ease-out); transition-delay: calc(var(--c) * 24ms); }
+html.js .is-in .title-char, html.js .section-title.is-in .title-char { transform: none; }
+
+/* Theme change pours out from the toggle */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { animation: themePour .75s var(--ease-move); }
+@keyframes themePour { from { clip-path: circle(0 at var(--tx, 100%) var(--ty, 0%)); } to { clip-path: circle(150vmax at var(--tx, 100%) var(--ty, 0%)); } }
+
+/* Nav marker that stretches between sections */
+.nav-links { position: relative; }
+.nav-ink {
+  position: absolute; left: 0; bottom: -3px; width: 1px; height: 2px; background: var(--needle);
+  transform-origin: left; transform: scaleX(0); pointer-events: none;
+}
 
 /* Scroll reveals use animations so they never fight hover/press transitions */
 html.js [data-reveal] { opacity: 0; }
@@ -657,13 +679,11 @@ html.js .fresh-section.is-pinned .fresh-banner { overflow: visible; width: max-c
   .top-pick-tag { margin-bottom: 8px; }
   .top-pick-desc { margin-top: 12px; max-width: 34em; }
 }
-@media (max-width: 960px) {
-  .events-layout { grid-template-columns: 1fr; }
-  .events-map { position: static; order: -1; max-width: 340px; width: 100%; margin: 0 auto; }
-}
 @media (max-width: 600px) {
   .event { grid-template-columns: 52px minmax(0, 1fr); padding: 20px 4px; }
-  .event-day { font-size: 30px; }
+  .event-day { font-size: 34px; }
+  .tide-wd { font-size: 11px; }
+  .tide-dn { font-size: 13.5px; }
   .event-actions { grid-column: 2; flex-direction: row; flex-wrap: wrap; align-items: center; margin-top: 10px; }
 }
 @media (max-width: 760px) {
@@ -791,7 +811,8 @@ a:hover > .roll > span, button:hover > .roll > span { transform: translateY(-1.3
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
   .tab-ink, .nav-logo-mark { transition: none !important; }
-  html.js .section-title .line > span { transform: none; transition: none; }
+  html.js .title-char { transform: none; transition: none; }
+  .event-progress { transition: none; }
   .tool-item:hover { transform: none; }
   html.has-intro .intro { display: none; }
   .fill::before { transition: none; }

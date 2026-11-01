@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=8">
 <script src="theme-init.js?v=7"></script>
 </head>
 <body>
@@ -45,6 +45,7 @@
     <span class="nav-logo-word">NTU Atlas</span>
   </a>
   <ul class="nav-links">
+    <li class="nav-ink" aria-hidden="true"></li>
     <li class="nav-events" hidden><a href="#events">Events</a></li>
     <li><a href="#portals">Portals</a></li>
     <li><a href="#freshmen">Freshmen</a></li>
@@ -158,13 +159,12 @@
     <button class="events-tab active" role="tab" aria-selected="true" data-range="week" aria-controls="eventsList">This week</button>
     <button class="events-tab" role="tab" aria-selected="false" data-range="all" aria-controls="eventsList">All upcoming</button>
   </div>
-  <div class="events-layout">
-    <ol class="events-list" id="eventsList" aria-live="polite"></ol>
-    <figure class="events-map" aria-hidden="true">
-      <svg id="eventsMap" viewBox="-200 -200 400 400"></svg>
-      <figcaption class="events-map-caption"><span id="eventsMapPlace">Point at an event to find it</span><span id="eventsMapBearing"></span></figcaption>
-    </figure>
+  <div class="tide" id="eventsTide" role="group" aria-label="Events per day, next 14 days">
+    <svg class="tide-wave" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true"><path class="tide-back"/><path class="tide-front"/></svg>
+    <span class="tide-now" id="eventsTideNow" aria-hidden="true"></span>
+    <div class="tide-days" id="eventsTideDays"></div>
   </div>
+  <ol class="events-list" id="eventsList" aria-live="polite"></ol>
   <p class="events-note">Collected automatically from the <a href="https://t.me/ntusu" target="_blank" rel="noopener">NTU Students' Union Telegram</a>. Always check the source before you go.</p>
 </section>
 
@@ -456,8 +456,7 @@
 </div>
 
 <script src="data.js?v=7"></script>
-<script src="venues.js?v=7"></script>
 <script src="vendor/lenis.min.js?v=1"></script>
-<script src="script.js?v=8"></script>
+<script src="script.js?v=9"></script>
 </body>
 </html>

@@ -169,6 +169,9 @@ toggle.addEventListener('click', () => {
   const html = document.documentElement;
   const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   const apply = () => html.setAttribute('data-theme', next);
+  const box = toggle.getBoundingClientRect();
+  html.style.setProperty('--tx', `${box.left + box.width / 2}px`);
+  html.style.setProperty('--ty', `${box.top + box.height / 2}px`);
   if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(apply);
   else apply();
   try { localStorage.setItem('theme', next); } catch (e) {}
@@ -616,7 +619,10 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 /* ——— SCROLL REVEALS ——— */
 (function () {
   document.querySelectorAll('.section-title').forEach(h => {
-    h.innerHTML = `<span class="line"><span>${h.innerHTML}</span></span>`;
+    const text = h.textContent.trim();
+    let c = 0;
+    const words = text.split(' ').map(w => `<span class="title-word">${[...w].map(ch => `<span class="title-char" style="--c:${c++}">${escapeHtml(ch)}</span>`).join('')}</span>`).join(' ');
+    h.innerHTML = `<span class="sr-only">${escapeHtml(text)}</span><span aria-hidden="true">${words}</span>`;
   });
   const targets = [];
   document.querySelectorAll('.section-header').forEach(h => targets.push(h));
@@ -781,13 +787,15 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (!section) return;
   const list = document.getElementById('eventsList');
   const meta = document.getElementById('eventsMeta');
-  const map = document.getElementById('eventsMap');
-  const placeEl = document.getElementById('eventsMapPlace');
-  const bearingEl = document.getElementById('eventsMapBearing');
+  const tabs = section.querySelector('.events-tabs');
+  const tide = document.getElementById('eventsTide');
+  const tideDays = document.getElementById('eventsTideDays');
+  const tideNow = document.getElementById('eventsTideNow');
   const TZ = 'Asia/Singapore';
   const HOUR = 36e5;
   let events = [];
   let range = 'week';
+  let selectedDay = null;
 
   const dayKey = d => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(d);
   const fmtDay = d => new Intl.DateTimeFormat('en-SG', { timeZone: TZ, day: 'numeric' }).format(d);
@@ -797,85 +805,32 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     .format(d).replace(':00', '').replace(/\s?(am|pm)/i, (m, p) => p.toLowerCase());
   const endOf = e => e.end ? new Date(e.end) : new Date(new Date(e.start).getTime() + (e.allDay ? 24 : 2) * HOUR);
 
-  /* venue text → known venue */
-  function findVenue(text) {
-    if (!text || typeof NTU_VENUES === 'undefined') return null;
-    const t = ` ${text.toLowerCase()} `;
-    let best = null, bestLen = 0;
-    NTU_VENUES.forEach(v => v.aliases.forEach(a => {
-      const hit = a.length <= 3 ? new RegExp(`[^a-z]${a}[^a-z]`).test(t) : t.includes(a);
-      if (hit && a.length > bestLen) { best = v; bestLen = a.length; }
-    }));
-    return best;
-  }
-  const PX_PER_M = 0.19;
-  function project(v) {
-    const dx = (v.lon - NTU_CENTRE.lon) * 111320 * Math.cos(NTU_CENTRE.lat * Math.PI / 180);
-    const dy = (v.lat - NTU_CENTRE.lat) * 110574;
-    return { x: dx * PX_PER_M, y: -dy * PX_PER_M, metres: Math.hypot(dx, dy), bearing: (Math.atan2(dx, dy) * 180 / Math.PI + 360) % 360 };
-  }
+  const spansDay = (e, key) => dayKey(new Date(e.start)) <= key && dayKey(new Date(endOf(e).getTime() - 1)) >= key;
+  const mapsUrl = venue => /\b(online|zoom|webinar|teams)\b/i.test(venue) ? ''
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${venue}, NTU Singapore`)}`;
 
-  /* ——— map ——— */
-  const NS = 'http://www.w3.org/2000/svg';
-  const el = (tag, attrs, parent) => {
-    const n = document.createElementNS(NS, tag);
-    for (const k in attrs) n.setAttribute(k, attrs[k]);
-    if (parent) parent.appendChild(n);
-    return n;
+  /* time left, or time until, in plain words */
+  function countText(e, now) {
+    const s = new Date(e.start), en = endOf(e);
+    const mins = ms => Math.max(1, Math.round(ms / 6e4));
+    const span = m => m < 60 ? `${m} min` : `${Math.round(m / 60)} h`;
+    if (s <= now) return e.allDay ? 'On today' : `${span(mins(en - now))} left`;
+    const days = Math.round((Date.parse(dayKey(s)) - Date.parse(dayKey(now))) / (24 * HOUR));
+    if (days === 0) return `Starts in ${span(mins(s - now))}`;
+    return days === 1 ? 'Tomorrow' : `In ${days} days`;
+  }
+  const liveShare = (e, now) => {
+    const s = new Date(e.start).getTime(), en = endOf(e).getTime();
+    return Math.min(1, Math.max(0, (now - s) / (en - s)));
   };
-  const venueNodes = {};
-  let needle, heading = 0;
-  function buildMap() {
-    el('circle', { class: 'em-face', r: 178 }, map);
-    [250, 500, 750].forEach(m => {
-      el('circle', { class: 'em-ring', r: m * PX_PER_M }, map);
-      el('text', { class: 'em-ring-label', x: 4, y: -m * PX_PER_M - 4 }, map).textContent = `${m} m`;
-    });
-    const ticks = el('g', { class: 'em-ticks' }, map);
-    for (let d = 0; d < 360; d += 5) {
-      const a = d * Math.PI / 180, r1 = d % 45 === 0 ? 164 : 170;
-      el('line', {
-        x1: (Math.sin(a) * r1).toFixed(1), y1: (-Math.cos(a) * r1).toFixed(1),
-        x2: (Math.sin(a) * 176).toFixed(1), y2: (-Math.cos(a) * 176).toFixed(1),
-        class: d === 0 ? 'is-north' : d % 45 === 0 ? 'is-major' : ''
-      }, ticks);
-    }
-    el('text', { class: 'em-north', y: -186 }, map).textContent = 'N';
-    (typeof NTU_VENUES === 'undefined' ? [] : NTU_VENUES).forEach(v => {
-      const p = project(v);
-      const g = el('g', { class: 'em-venue', transform: `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})` }, map);
-      el('circle', { class: 'em-ripple', r: 7 }, g);
-      el('circle', { class: 'dot', r: 4.5 }, g);
-      const label = el('text', { class: 'em-label', y: -12, 'text-anchor': p.x > 60 ? 'end' : p.x < -60 ? 'start' : 'middle' }, g);
-      label.textContent = v.name;
-      venueNodes[v.key] = g;
-    });
-    needle = el('g', { class: 'em-needle' }, map);
-    el('polygon', { class: 'm-n', points: '0,-46 6,0 -6,0' }, needle);
-    el('polygon', { class: 'm-s', points: '0,46 6,0 -6,0' }, needle);
-    el('circle', { class: 'em-pin', r: 4 }, map);
-  }
-  function focusVenue(v, venueText) {
-    Object.values(venueNodes).forEach(n => n.classList.remove('is-on'));
-    if (!v) {
-      placeEl.textContent = venueText ? venueText : 'Point at an event to find it';
-      bearingEl.textContent = venueText ? 'Not on the map' : '';
-      return;
-    }
-    venueNodes[v.key].classList.add('is-on');
-    const p = project(v);
-    heading += ((p.bearing - heading) % 360 + 540) % 360 - 180;
-    needle.style.transform = `rotate(${heading.toFixed(1)}deg)`;
-    placeEl.textContent = v.name;
-    bearingEl.textContent = `${Math.round(p.metres / 10) * 10} m, ${String(Math.round(p.bearing)).padStart(3, '0')}°`;
-  }
 
   /* ——— list ——— */
   function inRange(e, now) {
     const s = new Date(e.start), en = endOf(e);
     if (en < now) return false;
+    if (selectedDay) return spansDay(e, selectedDay);
     if (range === 'now') return s <= now;
-    if (range === 'today') return dayKey(s) <= dayKey(now) && dayKey(en) >= dayKey(now);
+    if (range === 'today') return spansDay(e, dayKey(now));
     if (range === 'week') return s < new Date(now.getTime() + 7 * 24 * HOUR);
     return true;
   }
@@ -888,26 +843,26 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   function render() {
     const now = new Date();
     const shown = events.filter(e => inRange(e, now)).sort((a, b) => new Date(a.start) - new Date(b.start));
-    Object.values(venueNodes).forEach(n => n.classList.remove('has-event'));
     if (!shown.length) {
       const [t, d] = EMPTY[range];
       list.innerHTML = `<li class="events-empty"><strong>${t}</strong>${d}</li>`;
-      focusVenue(null);
       return;
     }
     list.innerHTML = shown.map((e, i) => {
       const s = new Date(e.start), en = endOf(e);
       const live = s <= now && en >= now;
-      const v = findVenue(e.venue);
-      if (v) venueNodes[v.key].classList.add('has-event');
       const time = e.allDay ? 'All day' : `${fmtTime(s)}${e.end ? ` – ${fmtTime(en)}` : ''}`;
-      const kicker = [live ? '<span class="event-live">Live now</span>' : '', e.category ? `<span>${escapeHtml(e.category)}</span>` : '', e.organiser ? `<span>${escapeHtml(e.organiser)}</span>` : ''].join('');
-      return `<li class="event fill" style="--i:${i}" data-idx="${events.indexOf(e)}" data-venue="${v ? v.key : ''}">
-        <div class="event-date"><span class="event-day">${fmtDay(s)}</span><span class="event-mon">${fmtMon(s)}</span><span class="event-wd">${fmtWd(s)}</span></div>
+      const kicker = [live ? '<span class="event-live">Live now</span>' : '', `<span class="event-count">${countText(e, now)}</span>`, e.category ? `<span>${escapeHtml(e.category)}</span>` : '', e.organiser ? `<span>${escapeHtml(e.organiser)}</span>` : ''].join('');
+      const maps = e.venue ? mapsUrl(e.venue) : '';
+      const venue = !e.venue ? '' : maps
+        ? `<a class="event-venue" href="${escapeHtml(maps)}" target="_blank" rel="noopener" aria-label="${escapeHtml(e.venue)}, open in Google Maps">${escapeHtml(e.venue)}</a>`
+        : `<span class="event-venue">${escapeHtml(e.venue)}</span>`;
+      return `<li class="event fill" style="--i:${i}" data-idx="${events.indexOf(e)}">
+        <div class="event-date"><span class="event-day"><span>${fmtDay(s)}</span></span><span class="event-mon">${fmtMon(s)}</span><span class="event-wd">${fmtWd(s)}</span></div>
         <div class="event-body">
           <div class="event-kicker">${kicker}</div>
           <h3 class="event-title">${escapeHtml(e.title)}</h3>
-          <p class="event-meta"><span>${time}</span>${e.venue ? `<span class="event-venue">${escapeHtml(e.venue)}</span>` : ''}</p>
+          <p class="event-meta"><span>${time}</span>${venue}</p>
           ${e.description ? `<p class="event-desc">${escapeHtml(e.description)}</p>` : ''}
         </div>
         <div class="event-actions">
@@ -915,22 +870,101 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
           <button type="button" class="event-btn fill" data-ics>Add to calendar</button>
           ${e.source && httpUrl(e.source.url) ? `<a class="event-src" href="${escapeHtml(httpUrl(e.source.url))}" target="_blank" rel="noopener">Source</a>` : ''}
         </div>
+        ${live ? `<span class="event-progress" style="--p:${liveShare(e, now).toFixed(4)}" aria-hidden="true"></span>` : ''}
       </li>`;
     }).join('');
-    const first = shown[0];
-    focusVenue(findVenue(first.venue), first.venue);
   }
 
-  list.addEventListener('pointerover', e => {
-    const row = e.target.closest('.event');
-    if (!row || row.dataset.idx === undefined) return;
-    const ev = events[row.dataset.idx];
-    focusVenue(findVenue(ev.venue), ev.venue);
+  /* ——— tide: the next 14 days as a wave, tallest on the busiest days ——— */
+  const TIDE_DAYS = 14;
+  const front = tide.querySelector('.tide-front');
+  const back = tide.querySelector('.tide-back');
+  let heights = new Array(TIDE_DAYS).fill(0), speeds = new Array(TIDE_DAYS).fill(0), goals = new Array(TIDE_DAYS).fill(0);
+  let tideOn = false, tideRunning = false, pointerX = null;
+  const wavePath = (hs, shift) => {
+    const pts = hs.map((h, i) => [(i + .5) / TIDE_DAYS * 1000 + shift, 120 - h]);
+    pts.unshift([-60, 120 - hs[0] * .4]); pts.push([1060, 120 - hs[TIDE_DAYS - 1] * .4]);
+    let d = `M${pts[0][0]},120 L${pts[0][0]},${pts[0][1].toFixed(1)}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      d += ` Q${pts[i][0].toFixed(1)},${pts[i][1].toFixed(1)} ${((pts[i][0] + pts[i + 1][0]) / 2).toFixed(1)},${((pts[i][1] + pts[i + 1][1]) / 2).toFixed(1)}`;
+    }
+    return `${d} L1060,120 Z`;
+  };
+  function drawTide(t) {
+    const shown = heights.map((h, i) => {
+      const x = (i + .5) / TIDE_DAYS * 1000;
+      const swell = pointerX === null ? 0 : 16 * Math.exp(-(((x - pointerX) / 70) ** 2));
+      return Math.max(0, h + swell + (reduceMotion ? 0 : Math.sin(t / 750 + i * .8) * 2.5));
+    });
+    front.setAttribute('d', wavePath(shown, 0));
+    back.setAttribute('d', wavePath(shown.map((h, i) => h * .86 + 8 + (reduceMotion ? 0 : Math.sin(t / 1100 + i * 1.1) * 3.5)), reduceMotion ? 10 : Math.sin(t / 1600) * 14));
+  }
+  function tideFrame(t) {
+    if (!tideOn) { tideRunning = false; return; }
+    heights = heights.map((h, i) => {
+      speeds[i] = (speeds[i] + (goals[i] - h) * .07) * .82;
+      return h + speeds[i];
+    });
+    drawTide(t);
+    requestAnimationFrame(tideFrame);
+  }
+  function setGoals() {
+    tideDays.querySelectorAll('.tide-day').forEach((b, i) => {
+      const count = Number(b.dataset.count);
+      goals[i] = (count ? 40 + Math.min(count, 3) * 18 : 5) + (b.dataset.day === selectedDay ? 10 : 0);
+    });
+    if (reduceMotion) { heights = goals.slice(); drawTide(0); }
+    else if (tideOn && !tideRunning) { tideRunning = true; requestAnimationFrame(tideFrame); }
+  }
+  function buildTide() {
+    const now = new Date();
+    const first = dayKey(now);
+    tideNow.style.left = `${(((now - new Date(`${first}T00:00:00+08:00`)) / (24 * HOUR)) / TIDE_DAYS * 100).toFixed(2)}%`;
+    tideDays.innerHTML = Array.from({ length: TIDE_DAYS }, (_, i) => {
+      const d = new Date(new Date(`${first}T12:00:00+08:00`).getTime() + i * 24 * HOUR);
+      const key = dayKey(d);
+      const count = events.filter(e => endOf(e) >= now && spansDay(e, key)).length;
+      const label = `${fmtWd(d)} ${fmtDay(d)} ${fmtMon(d)}, ${count ? `${count} event${count > 1 ? 's' : ''}` : 'no events'}`;
+      return `<button type="button" class="tide-day" data-day="${key}" data-count="${count}" aria-label="${label}" aria-pressed="false"${count ? '' : ' disabled'}>
+        <span class="tide-wd">${fmtWd(d).slice(0, 1)}</span><span class="tide-dn">${fmtDay(d)}</span></button>`;
+    }).join('');
+    setGoals();
+  }
+  function selectDay(key) {
+    selectedDay = key;
+    tabs.classList.toggle('is-day', !!key);
+    tideDays.querySelectorAll('.tide-day').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.day === key)));
+    setGoals();
+    render();
+  }
+  tideDays.addEventListener('click', e => {
+    const b = e.target.closest('.tide-day');
+    if (b && !b.disabled) selectDay(b.dataset.day === selectedDay ? null : b.dataset.day);
   });
-  list.addEventListener('focusin', e => {
-    const row = e.target.closest('.event');
-    if (row && row.dataset.idx !== undefined) { const ev = events[row.dataset.idx]; focusVenue(findVenue(ev.venue), ev.venue); }
-  });
+  if (finePointer && !reduceMotion) {
+    tide.addEventListener('pointermove', e => {
+      const r = tide.getBoundingClientRect();
+      pointerX = (e.clientX - r.left) / r.width * 1000;
+    });
+    tide.addEventListener('pointerleave', () => { pointerX = null; });
+  }
+  new IntersectionObserver(([e]) => {
+    tideOn = e.isIntersecting;
+    if (tideOn) setGoals();
+  }).observe(tide);
+
+  /* keep the countdowns and live bars honest while the page stays open */
+  setInterval(() => {
+    if (document.hidden || section.hidden) return;
+    const now = new Date();
+    list.querySelectorAll('.event[data-idx]').forEach(row => {
+      const ev = events[row.dataset.idx];
+      const count = row.querySelector('.event-count');
+      if (count && endOf(ev) >= now) count.textContent = countText(ev, now);
+      const bar = row.querySelector('.event-progress');
+      if (bar) bar.style.setProperty('--p', liveShare(ev, now).toFixed(4));
+    });
+  }, 30000);
 
   /* ——— add to calendar ——— */
   const icsDate = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
@@ -959,7 +993,7 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   section.querySelectorAll('.events-tab').forEach(tab => tab.addEventListener('click', () => {
     section.querySelectorAll('.events-tab').forEach(t => { t.classList.toggle('active', t === tab); t.setAttribute('aria-selected', t === tab); });
     range = tab.dataset.range;
-    render();
+    if (selectedDay) selectDay(null); else render();
   }));
 
   function ago(iso) {
@@ -970,7 +1004,7 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     events = (data.events || []).filter(e => e && e.title && e.start && !isNaN(new Date(e.start)));
     section.hidden = false;
     document.querySelector('.nav-events').hidden = false;
-    if (!map.childNodes.length) buildMap();
+    buildTide();
     const upcoming = events.filter(e => endOf(e) >= new Date()).length;
     meta.textContent = `${upcoming} upcoming${data.updated ? `, updated ${ago(data.updated)}` : ''}`;
     // Default to the widest view that has something in it
@@ -1080,4 +1114,79 @@ document.querySelectorAll('.nav-links a, .footer-legal-link').forEach(el => {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+})();
+
+/* Display type breathes toward the pointer: letters near it widen on the font's width axis */
+(function () {
+  const word = document.querySelector('.hero-word');
+  if (word) {
+    const text = word.textContent;
+    word.innerHTML = `<span class="sr-only">${escapeHtml(text)}</span><span aria-hidden="true">${[...text].map(ch => `<span class="hero-char">${escapeHtml(ch)}</span>`).join('')}</span>`;
+  }
+  if (reduceMotion || !finePointer || innerWidth < 961) return;
+  const groups = [];
+  if (word) groups.push({ box: word, base: 75, max: 90, reach: 260, letters: [...word.querySelectorAll('.hero-char')] });
+  document.querySelectorAll('.section-title').forEach(h => groups.push({ box: h, base: 80, max: 98, reach: 130, letters: [...h.querySelectorAll('.title-char')] }));
+  groups.forEach(g => { g.values = g.letters.map(() => g.base); });
+  let px = -9999, py = -9999, running = false;
+  function frame() {
+    let moving = false;
+    groups.forEach(g => {
+      const r = g.box.getBoundingClientRect();
+      const near = px > r.left - g.reach && px < r.right + g.reach && py > r.top - g.reach && py < r.bottom + g.reach;
+      if (!near && g.values.every(v => v === g.base)) return;
+      g.letters.forEach((el, i) => {
+        const b = el.getBoundingClientRect();
+        const pull = near ? Math.max(0, 1 - Math.hypot(px - (b.left + b.width / 2), py - (b.top + b.height / 2)) / g.reach) : 0;
+        const goal = g.base + (g.max - g.base) * pull * pull;
+        let v = g.values[i] + (goal - g.values[i]) * .16;
+        if (Math.abs(goal - v) < .05) v = goal; else moving = true;
+        if (v !== g.values[i]) {
+          g.values[i] = v;
+          el.style.fontVariationSettings = v === g.base ? '' : `'wdth' ${v.toFixed(1)}`;
+        }
+      });
+    });
+    if (moving) requestAnimationFrame(frame); else running = false;
+  }
+  addEventListener('pointermove', e => {
+    px = e.clientX; py = e.clientY;
+    if (!running) { running = true; requestAnimationFrame(frame); }
+  }, { passive: true });
+})();
+
+/* Nav marker: its leading edge runs ahead and the tail catches up, so it stretches between sections */
+(function () {
+  const ink = document.querySelector('.nav-ink');
+  const bar = document.querySelector('.nav-links');
+  if (!ink || !bar) return;
+  const links = () => [...bar.querySelectorAll('a[href^="#"]')].filter(a => a.offsetWidth);
+  let left = 0, right = 0, goalL = 0, goalR = 0, running = false;
+  const paint = () => { ink.style.transform = `translateX(${left.toFixed(1)}px) scaleX(${Math.max(0, right - left).toFixed(1)})`; };
+  function frame() {
+    const forward = goalR > right;
+    left += (goalL - left) * (forward ? .09 : .2);
+    right += (goalR - right) * (forward ? .2 : .09);
+    paint();
+    if (Math.abs(goalL - left) + Math.abs(goalR - right) > .3) requestAnimationFrame(frame);
+    else { left = goalL; right = goalR; paint(); running = false; }
+  }
+  function spy() {
+    const line = innerHeight * .4;
+    let current = null;
+    links().forEach(a => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target && !target.hidden && target.getBoundingClientRect().top <= line && target.getBoundingClientRect().bottom > 0) current = a;
+    });
+    const base = bar.getBoundingClientRect();
+    if (current) {
+      const r = current.getBoundingClientRect();
+      goalL = r.left - base.left + 12; goalR = r.right - base.left - 12;
+    } else { goalL = goalR = (goalL + goalR) / 2; }
+    if (reduceMotion) { left = goalL; right = goalR; paint(); }
+    else if (!running) { running = true; requestAnimationFrame(frame); }
+  }
+  addEventListener('scroll', spy, { passive: true });
+  addEventListener('resize', spy);
+  spy();
 })();
