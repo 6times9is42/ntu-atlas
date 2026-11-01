@@ -14,12 +14,12 @@ crons = ["0 */2 * * *"]
 
 [[kv_namespaces]]
 binding = "EVENTS_KV"
-id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+id = "9faa53e5d30b4e74975571f6b7abe24a"
 
 [vars]
 # Public Telegram channels to read (comma-separated usernames)
 TELEGRAM_CHANNELS = "ntusu"
-GROQ_MODEL = "llama-3.3-70b-versatile"
+GROQ_MODEL = "openai/gpt-oss-120b"
 
 # Secrets (set with `npx wrangler secret put NAME`, never commit them):
 #   GROQ_API_KEY  – from console.groq.com

@@ -9,7 +9,9 @@ import { senderVerified } from './safety.js';
 
 const STORE_KEY = 'events';
 const FIRST_RUN_POSTS = 15;
-const BATCH = 10;
+// Groq's free tier allows 8,000 tokens a minute, and big batches lose posts
+const BATCH = 3;
+const BATCH_PAUSE_MS = 20000;
 
 const list = s => String(s || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
 
@@ -48,6 +50,7 @@ async function ingestTelegram(env) {
     let posts = (await fetchChannel(channel)).filter(p => p.id > last);
     if (!last) posts = posts.slice(-FIRST_RUN_POSTS);
     for (let i = 0; i < posts.length; i += BATCH) {
+      if (i) await new Promise(r => setTimeout(r, BATCH_PAUSE_MS));
       const chunk = posts.slice(i, i + BATCH);
       const events = await extractEvents(env, chunk.map(p => ({ ref: String(p.id), postedAt: p.postedAt, text: p.text })));
       for (const e of events) {
