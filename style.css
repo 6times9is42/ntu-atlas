@@ -5,7 +5,7 @@
   --surface-2: #E6EAF0;
   --ink: #0C1A2E;
   --ink-2: #4A586D;
-  --ink-3: #66728A;
+  --ink-3: #5E6A81;
   --line: #DCE2EA;
   --line-2: #C3CCD8;
   --needle: #C1272D;
@@ -164,11 +164,12 @@ html[data-theme="dark"] .icon-moon { opacity: 1; transform: none; }
 .search-results.active { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
 .search-result-item {
   display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-  padding: 11px 14px; border-radius: 12px; outline: none;
+  padding: 11px 14px; border-radius: 12px;
   transition: background-color .12s ease;
 }
 .search-result-item:hover, .search-result-item:focus-visible { background: var(--surface-2); }
 .search-result-name { font-weight: 600; }
+.search-empty { padding: 11px 14px; color: var(--ink-2); }
 .search-result-cat { font-size: 13.5px; color: var(--ink-3); white-space: nowrap; }
 
 /* ——— SECTIONS ——— */
@@ -236,6 +237,13 @@ html[data-theme="dark"] .icon-moon { opacity: 1; transform: none; }
 .link-card-name { transition: color .15s ease; }
 
 /* ——— CLUBS ——— */
+.clubs-find { max-width: 360px; margin-bottom: 16px; }
+.clubs-search {
+  width: 100%; height: 46px; padding: 0 18px; font: inherit; font-size: 16px; color: var(--ink);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+}
+.clubs-search::placeholder { color: var(--ink-3); }
+.clubs-empty { grid-column: 1 / -1; padding: 20px 4px; color: var(--ink-2); }
 .clubs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(264px, 1fr)); gap: 12px; }
 .club-card {
   display: flex; flex-direction: column; padding: 18px 20px; min-height: 168px;
@@ -339,7 +347,7 @@ footer { position: relative; margin-top: clamp(140px, 16vw, 220px); background: 
 
 /* ——— HERO ——— */
 .hero {
-  position: relative; isolation: isolate; overflow: hidden;
+  position: relative; isolation: isolate; overflow-x: clip;
   margin-top: -68px; padding-top: 68px; min-height: 100svh;
   display: flex; flex-direction: column;
 }
@@ -480,7 +488,7 @@ a.event-venue:hover { color: var(--ink); text-decoration-color: currentColor; }
   animation: shimmer 1.4s linear infinite;
 }
 @keyframes shimmer { to { background-position: -200% 0; } }
-.events-note { margin-top: 20px; font-size: 14px; color: var(--ink-3); }
+.events-note { margin-top: 20px; font-size: 14px; color: var(--ink-2); }
 .events-note a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-2); }
 
 /* Compass map of campus: pins for venues, a needle that points at the event you're on */
@@ -506,15 +514,8 @@ a.event-venue:hover { color: var(--ink); text-decoration-color: currentColor; }
 .events-tabs.is-day .tab-ink { opacity: 0; }
 .events-tabs.is-day .events-tab.active { color: var(--ink-2); }
 
-/* ——— HERO HAND-OFF ———
-   The hero holds still while the page rises over it on a curved edge. */
-.hero-stage { padding-bottom: 100vh; }
-.hero { position: sticky; top: var(--hero-top, 0px); z-index: 0; }
-.hero:focus-within { z-index: 2; }
-.hero-shade { position: absolute; inset: 0; z-index: 3; background: var(--ink); opacity: 0; pointer-events: none; }
-.page-sheet { position: relative; z-index: 1; margin-top: -100vh; background: var(--bg); }
-.sheet-edge { position: absolute; left: 0; bottom: 100%; width: 100%; height: clamp(70px, 11vw, 170px); margin-bottom: -1px; pointer-events: none; }
-.sheet-edge path { fill: var(--bg); }
+.hero { z-index: 1; }
+.hero-copy:focus-within { position: relative; z-index: 3; }
 
 /* Next up in the hero */
 .next-up { display: inline-flex; align-items: baseline; gap: 10px; min-width: 0; color: var(--ink-2); transition: color .2s ease; }
@@ -625,6 +626,8 @@ html.js [data-reveal].is-in { animation: revealUp 1s var(--ease-out) both; anima
   border-radius: var(--r-xl); background: var(--surface); border: 1px solid var(--line);
   counter-increment: step; overflow: hidden;
 }
+/* Screen-reader text stays inside its own card, not the page's scroll width */
+.fresh-item, .tide-day, .link-card { position: relative; }
 .fresh-item:hover { border-color: var(--line-2); }
 .fresh-item-dot {
   font-size: clamp(96px, 9.5vw, 144px); line-height: .8; font-weight: 600;
@@ -696,7 +699,6 @@ html.js .fresh-section.is-pinned .fresh-banner { overflow: visible; width: max-c
   .event-actions { grid-column: 2; flex-direction: row; flex-wrap: wrap; align-items: center; margin-top: 10px; }
 }
 @media (max-width: 760px) {
-  .nav-links { display: none; }
   .theme-toggle { margin-left: auto; }
   .links-grid { grid-template-columns: 1fr; }
   .footer-inner { flex-direction: column; }
@@ -707,7 +709,6 @@ html.js .fresh-section.is-pinned .fresh-banner { overflow: visible; width: max-c
 @media (max-width: 600px) {
   .search-kbd { display: none; }
   .search-input { padding-right: 20px; }
-  .tools-row { grid-template-columns: 1fr; }
   .hero-coords span + span { display: none; }
   .fresh-intro { width: 82vw; }
   .modal-panel { padding: 28px 24px; }
@@ -725,7 +726,7 @@ html.js .fresh-section.is-pinned .fresh-banner { overflow: visible; width: max-c
    North is the top of the page: the needle turns with scroll progress
    and swings home on hover. */
 .compass-top {
-  position: fixed; right: max(16px, calc((100vw - var(--max)) / 2 - 72px)); bottom: 24px; z-index: 60;
+  position: fixed; right: max(16px, calc(((100% - var(--max)) / 2 + var(--gutter) - 58px) / 2)); bottom: 24px; z-index: 60;
   width: 58px; height: 58px; border-radius: 999px;
   display: grid; place-items: center;
   background: color-mix(in srgb, var(--surface) 86%, transparent);
@@ -736,7 +737,7 @@ html.js .fresh-section.is-pinned .fresh-banner { overflow: visible; width: max-c
 }
 .compass-top.is-on { opacity: 1; transform: none; pointer-events: auto; }
 .compass-top.is-on:active { transform: scale(.93); }
-.compass-top svg { width: 58px; height: 58px; overflow: visible; }
+.compass-top svg { width: 100%; height: 100%; overflow: visible; }
 .ct-track { fill: none; stroke: var(--line); stroke-width: 2; }
 .ct-progress { fill: none; stroke: var(--needle); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 150.8; stroke-dashoffset: 150.8; transform: rotate(-90deg); }
 .ct-ticks line { stroke: var(--ink-3); stroke-width: 1; }
@@ -816,15 +817,76 @@ a:hover > .roll > span, button:hover > .roll > span { transform: translateY(-1.3
 .clubs-more { --fill-bg: var(--ink); }
 .clubs-more:hover { color: var(--bg); }
 
+/* ——— PHONES: find a link fast ———
+   Section bar under the thumb, one-line rows, descriptions kept for screen readers only. */
+@media (max-width: 760px) {
+  nav.scrolled { background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  nav { height: 60px; }
+  .nav-links {
+    display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 55; margin: 0; gap: 0;
+    padding: 0 6px env(safe-area-inset-bottom);
+    background: var(--bg); border-top: 1px solid var(--line);
+  }
+  .nav-links li { flex: 1 1 0; min-width: 0; }
+  .nav-links .nav-ink { display: none; }
+  @media (max-width: 360px) { .nav-links a { font-size: 12px; } }
+  .nav-links li[hidden] { display: none; }
+  .nav-links a {
+    display: grid; place-items: center; height: 54px; padding: 0 2px; border-radius: 10px;
+    font-size: 13px; text-align: center; line-height: 1.15;
+  }
+  body { padding-bottom: calc(55px + env(safe-area-inset-bottom)); }
+  .compass-top { display: none; }
+
+  .hero { margin-top: -60px; padding-top: 60px; min-height: calc(100svh - 55px - env(safe-area-inset-bottom)); }
+  .block { padding-top: 44px; }
+  .section-header { margin-bottom: 16px; }
+  .link-card-desc, .club-card-desc, .top-pick-desc {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap;
+  }
+  .link-card { align-items: center; min-height: 48px; padding: 10px 12px; }
+  .links-subgroup-label { padding: 12px 12px 2px; }
+
+  .clubs-find { max-width: none; margin-bottom: 12px; }
+  .clubs-grid { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 0 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg); }
+  .club-card {
+    position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 8px;
+    min-height: 56px; padding: 8px 0; background: none; border: 0; border-radius: 0; animation: none;
+  }
+  .club-card + .club-card { border-top: 1px solid var(--line); }
+  .club-card-name { grid-column: 1; grid-row: 1; margin: 0; }
+  .club-card-tag { grid-column: 1; grid-row: 2; }
+  .club-card-links { grid-column: 2; grid-row: 1 / span 2; margin: 0; padding: 0; }
+  .club-social-link { justify-content: center; width: 44px; height: 44px; font-size: 0; gap: 0; }
+  .club-social-link svg { width: 20px; height: 20px; }
+  .clubs-empty { padding: 16px 0; }
+
+  .top-pick-card { padding-top: 14px; padding-bottom: 14px; }
+  .top-pick-tag { margin-bottom: 2px; }
+  .tools-row { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .tool-item { column-gap: 10px; padding: 10px; }
+  .tool-icon { width: 36px; height: 36px; border-radius: 10px; }
+  .tool-name { font-size: 15px; }
+  .tool-desc { font-size: 13px; }
+  .cat-tabs, .club-tabs, .events-tabs { margin-bottom: 14px; }
+}
+@media (hover: none), (pointer: coarse) {
+  .cat-tab, .club-tab, .events-tab { min-height: 44px; }
+  .nav-links a:hover { background: none; color: var(--ink-2); }
+  .theme-toggle { width: 44px; height: 44px; }
+  .footer-legal-link, .event-btn, .event-src, .next-up, .hero-scroll { min-height: 44px; display: inline-flex; align-items: center; }
+}
+@media (forced-colors: active) {
+  .tab-ink { display: none; }
+  .cat-tab.active, .club-tab.active, .events-tab.active { outline: 2px solid Highlight; color: CanvasText; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 1ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
   .tab-ink, .nav-logo-mark { transition: none !important; }
   html.js .title-char { transform: none; transition: none; }
-  .hero-stage { padding-bottom: 0; }
-  .hero { position: relative; }
-  .page-sheet { margin-top: 0; }
-  .sheet-edge, .title-mark, .title-rule { display: none; }
+  .title-mark, .title-rule { display: none; }
   .event-progress { transition: none; }
   .tool-item:hover { transform: none; }
   html.has-intro .intro { display: none; }

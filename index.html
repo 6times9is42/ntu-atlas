@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="stylesheet" href="style.css?v=10">
 <script src="theme-init.js?v=7"></script>
 </head>
 <body>
@@ -50,7 +50,7 @@
     <li><a href="#portals">Portals</a></li>
     <li><a href="#freshmen">Freshmen</a></li>
     <li><a href="#clubs">Clubs</a></li>
-    <li><a href="#direct">Direct access</a></li>
+    <li><a href="#direct">Quick links</a></li>
   </ul>
   <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle light/dark mode" title="Toggle theme">
     <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
@@ -65,9 +65,7 @@
 <main>
 
 <!-- Hero -->
-<div class="hero-stage">
 <header class="hero">
-  <span class="hero-shade" aria-hidden="true"></span>
   <canvas class="hero-canvas" aria-hidden="true"></canvas>
   <div class="hero-copy">
     <h1 class="hero-title"><span class="line"><span class="hero-word">NTU Atlas</span></span><span class="sr-only">: every NTU portal in one place</span></h1>
@@ -81,7 +79,7 @@
     <!-- Search -->
     <section class="search-section" aria-label="Search portals">
       <div class="search-wrap">
-        <label for="searchInput" class="sr-only">Search NTU portals</label>
+        <label for="searchInput" class="sr-only">Search NTU portals and clubs</label>
         <span class="search-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </span>
@@ -89,13 +87,13 @@
           type="search"
           id="searchInput"
           class="search-input"
-          placeholder="Search portals — try 'grades', 'housing', 'career'..."
+          placeholder="Search — try 'grades' or 'housing'"
           autocomplete="off"
-          aria-autocomplete="list"
           aria-controls="searchResults"
         >
         <kbd class="search-kbd" aria-hidden="true">/</kbd>
-        <div class="search-results" id="searchResults" role="listbox" aria-label="Search results"></div>
+        <div class="search-results" id="searchResults" role="group" aria-label="Search results"></div>
+        <p class="sr-only" id="searchStatus" role="status"></p>
       </div>
     </section>
     </div>
@@ -108,18 +106,15 @@
     </div>
   </div>
 </header>
-</div>
-<div class="page-sheet">
-<svg class="sheet-edge" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0,100 L1440,100 Z"/></svg>
 
 <!-- Top 3 picks -->
 <section class="block" aria-labelledby="topPicksHeading">
   <div class="section-header">
     <h2 class="section-title" id="topPicksHeading">Most visited</h2>
-    <span class="section-count" aria-label="3 links">3 links</span>
+    <span class="section-count">3 links</span>
   </div>
   <div class="top-picks-grid">
-      <a class="top-pick-card fill" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener" aria-label="NTULearn - Access course materials and lectures">
+      <a class="top-pick-card fill" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener">
         <span class="top-pick-tag">Course materials</span>
         <span class="top-pick-name">NTULearn</span>
         <span class="top-pick-desc">Your central hub for course materials, lecture recordings, assignment submissions, and announcements from all your enrolled modules.</span>
@@ -128,7 +123,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </span>
       </a>
-      <a class="top-pick-card fill" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener" aria-label="Degree Audit - View grades and track AU progress">
+      <a class="top-pick-card fill" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener">
         <span class="top-pick-tag">Academic progress</span>
         <span class="top-pick-name">Degree Audit</span>
         <span class="top-pick-desc">Track your academic progress, view your grades, monitor outstanding AU requirements, and ensure you're on track to graduate.</span>
@@ -137,7 +132,7 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </span>
       </a>
-      <a class="top-pick-card fill" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener" aria-label="STARS - Register for courses and plan your timetable">
+      <a class="top-pick-card fill" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener">
         <span class="top-pick-tag">Registration</span>
         <span class="top-pick-name">STARS</span>
         <span class="top-pick-desc">Register for modules each semester, plan your timetable, manage waitlists, and add or drop courses during the registration window.</span>
@@ -166,15 +161,15 @@
     <span class="tide-now" id="eventsTideNow" aria-hidden="true"></span>
     <div class="tide-days" id="eventsTideDays"></div>
   </div>
-  <ol class="events-list" id="eventsList" aria-live="polite"></ol>
-  <p class="events-note">Collected automatically from the <a href="https://t.me/ntusu" target="_blank" rel="noopener">NTU Students' Union Telegram</a>. Always check the source before you go.</p>
+  <ol class="events-list" id="eventsList"></ol>
+  <p class="events-note">Collected automatically from <a href="https://www.ntu.edu.sg/events" target="_blank" rel="noopener">NTU Events</a> and the <a href="https://t.me/ntusu" target="_blank" rel="noopener">Students' Union</a> and <a href="https://t.me/ntusc" target="_blank" rel="noopener">Sports Club</a> Telegram channels. Always check the source before you go.</p>
 </section>
 
 <!-- All categories -->
 <section class="block" id="portals" aria-labelledby="allLinksHeading">
   <div class="section-header">
     <h2 class="section-title" id="allLinksHeading">All portals</h2>
-    <span class="section-count" aria-label="10 categories">10 categories</span>
+    <span class="section-count">10 categories</span>
   </div>
   <div class="cat-section">
     <div class="cat-tabs" role="tablist" aria-label="Portal categories">
@@ -257,60 +252,60 @@
         Your first few weeks involve a lot of portals you've never heard of. These are the eight things worth getting done before classes start — in roughly the right order.
       </p>
     </div>
-    <div class="fresh-checklist" role="list">
-      <a class="fresh-item" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener" role="listitem" aria-label="Step 1: Register your modules in STARS">
+    <div class="fresh-checklist">
+      <a class="fresh-item" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener">
         <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
-          <div class="fresh-item-name">Register your modules</div>
+          <div class="fresh-item-name"><span class="sr-only">Step 1: </span>Register your modules</div>
           <div class="fresh-item-hint">STARS opens in waves — log in early and have backup modules ready.</div>
         </div>
       </a>
-      <a class="fresh-item" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener" role="listitem" aria-label="Step 2: Check NTULearn for pre-course materials">
+      <a class="fresh-item" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener">
         <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
-          <div class="fresh-item-name">Check NTULearn</div>
+          <div class="fresh-item-name"><span class="sr-only">Step 2: </span>Check NTULearn</div>
           <div class="fresh-item-hint">Professors often post pre-reading and syllabus before Week 1.</div>
         </div>
       </a>
-      <a class="fresh-item" href="https://ntusg.starrezhousing.com/StarRezStudentPortal/60E2C0B3/1/1/Home-Home?UrlToken=CFD12569" target="_blank" rel="noopener" role="listitem" aria-label="Step 3: Sort out your housing">
+      <a class="fresh-item" href="https://ntusg.starrezhousing.com/StarRezStudentPortal/60E2C0B3/1/1/Home-Home?UrlToken=CFD12569" target="_blank" rel="noopener">
         <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
-          <div class="fresh-item-name">Sort housing early</div>
+          <div class="fresh-item-name"><span class="sr-only">Step 3: </span>Sort housing early</div>
           <div class="fresh-item-hint">Halls fill up fast. Apply through the Hall Portal as soon as applications open.</div>
         </div>
       </a>
-      <a class="fresh-item" href="https://www.ntu.edu.sg/admissions/undergraduate/financial-matters/financial-aid" target="_blank" rel="noopener" role="listitem" aria-label="Step 4: Explore financial aid options">
+      <a class="fresh-item" href="https://www.ntu.edu.sg/admissions/undergraduate/financial-matters/financial-aid" target="_blank" rel="noopener">
         <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
-          <div class="fresh-item-name">Explore financial aid</div>
+          <div class="fresh-item-name"><span class="sr-only">Step 4: </span>Explore financial aid</div>
           <div class="fresh-item-hint">Bursary deadlines are often missed by freshmen who don't know they qualify.</div>
         </div>
       </a>
-      <a class="fresh-item" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener" role="listitem" aria-label="Step 5: Check your degree audit requirements">
+      <a class="fresh-item" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener">
         <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
-          <div class="fresh-item-name">Read your degree audit</div>
+          <div class="fresh-item-name"><span class="sr-only">Step 5: </span>Read your degree audit</div>
           <div class="fresh-item-hint">Understand graduation requirements from Day 1 to avoid scrambling in Year 4.</div>
         </div>
       </a>
-      <a class="fresh-item" href="https://careeraxis.ntu.edu.sg/students" target="_blank" rel="noopener" role="listitem" aria-label="Step 6: Create your CareerAxis profile early">
+      <a class="fresh-item" href="https://careeraxis.ntu.edu.sg/students" target="_blank" rel="noopener">
         <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
-          <div class="fresh-item-name">Set up CareerAxis</div>
+          <div class="fresh-item-name"><span class="sr-only">Step 6: </span>Set up CareerAxis</div>
           <div class="fresh-item-hint">Even in Year 1 — internship positions close months before the start date.</div>
         </div>
       </a>
-      <a class="fresh-item" href="https://libcalendar.ntu.edu.sg/" target="_blank" rel="noopener" role="listitem" aria-label="Step 7: Learn how to book library spaces">
+      <a class="fresh-item" href="https://libcalendar.ntu.edu.sg/" target="_blank" rel="noopener">
         <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
-          <div class="fresh-item-name">Bookmark library booking</div>
+          <div class="fresh-item-name"><span class="sr-only">Step 7: </span>Bookmark library booking</div>
           <div class="fresh-item-hint">Good rooms fill by 8 AM during exam season. Bookmark and book early.</div>
         </div>
       </a>
-      <a class="fresh-item" href="https://t.me/+vuhtJw7fENg5OTll" target="_blank" rel="noopener" role="listitem" aria-label="Step 8: Join the NTU student community">
+      <a class="fresh-item" href="https://t.me/+vuhtJw7fENg5OTll" target="_blank" rel="noopener">
         <span class="fresh-item-dot" aria-hidden="true"></span>
         <div class="fresh-item-text">
-          <div class="fresh-item-name">Join the community</div>
+          <div class="fresh-item-name"><span class="sr-only">Step 8: </span>Join the community</div>
           <div class="fresh-item-hint">The NTU Atlas Telegram has seniors ready to answer questions you're embarrassed to Google.</div>
         </div>
       </a>
@@ -336,6 +331,10 @@
       <button class="club-tab" role="tab" aria-selected="false" data-filter="Uniformed" id="club-tab-uniformed" aria-controls="clubsGrid">Uniformed</button>
       <button class="club-tab" role="tab" aria-selected="false" data-filter="Welfare" id="club-tab-welfare" aria-controls="clubsGrid">Welfare</button>
 </div>
+  <div class="clubs-find">
+    <label for="clubsSearch" class="sr-only">Find a club by name</label>
+    <input type="search" id="clubsSearch" class="clubs-search" placeholder="Find a club" autocomplete="off" aria-controls="clubsGrid">
+  </div>
   <div class="clubs-grid" id="clubsGrid" role="list" aria-label="Clubs and societies"></div>
   <button type="button" class="clubs-more fill" id="clubsMore" hidden></button>
 </section>
@@ -343,60 +342,60 @@
 <!-- Quick tools row -->
 <section class="block tools-section" id="direct" aria-labelledby="quickToolsHeading">
   <div class="section-header">
-    <h2 class="section-title" id="quickToolsHeading">Direct access</h2>
+    <h2 class="section-title" id="quickToolsHeading">Quick links</h2>
     <span class="section-count">Always-on</span>
   </div>
-  <div class="tools-row" role="list">
-    <a class="tool-item fill" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener" role="listitem" aria-label="NTULearn">
+  <div class="tools-row">
+    <a class="tool-item fill" href="https://ntulearn.ntu.edu.sg/ultra/institution-page" target="_blank" rel="noopener">
       <div class="tool-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
       </div>
       <span class="tool-name">NTULearn</span>
       <span class="tool-desc">Course materials</span>
     </a>
-    <a class="tool-item fill" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener" role="listitem" aria-label="STARS registration">
+    <a class="tool-item fill" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/aus_stars_planner.main" target="_blank" rel="noopener">
       <div class="tool-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       </div>
       <span class="tool-name">STARS</span>
       <span class="tool-desc">Registration</span>
     </a>
-    <a class="tool-item fill" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener" role="listitem" aria-label="Degree audit">
+    <a class="tool-item fill" href="https://wish.wis.ntu.edu.sg/pls/webexe/ldap_login.login?w_url=https://wish.wis.ntu.edu.sg/pls/webexe/dars_result_ro.main_display" target="_blank" rel="noopener">
       <div class="tool-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
       </div>
       <span class="tool-name">Degree Audit</span>
       <span class="tool-desc">Track progress</span>
     </a>
-    <a class="tool-item fill" href="https://wis.ntu.edu.sg/webexe/owa/exam_timetable_und.main" target="_blank" rel="noopener" role="listitem" aria-label="Exam timetable">
+    <a class="tool-item fill" href="https://wis.ntu.edu.sg/webexe/owa/exam_timetable_und.main" target="_blank" rel="noopener">
       <div class="tool-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </div>
       <span class="tool-name">Exams</span>
       <span class="tool-desc">Timetable &amp; seats</span>
     </a>
-    <a class="tool-item fill" href="https://careeraxis.ntu.edu.sg/students" target="_blank" rel="noopener" role="listitem" aria-label="CareerAxis">
+    <a class="tool-item fill" href="https://careeraxis.ntu.edu.sg/students" target="_blank" rel="noopener">
       <div class="tool-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
       </div>
       <span class="tool-name">CareerAxis</span>
       <span class="tool-desc">Jobs &amp; internships</span>
     </a>
-    <a class="tool-item fill" href="https://libcalendar.ntu.edu.sg/" target="_blank" rel="noopener" role="listitem" aria-label="Library booking">
+    <a class="tool-item fill" href="https://libcalendar.ntu.edu.sg/" target="_blank" rel="noopener">
       <div class="tool-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       </div>
       <span class="tool-name">Library</span>
       <span class="tool-desc">Book a room</span>
     </a>
-    <a class="tool-item fill" href="https://gem.ntu.edu.sg/" target="_blank" rel="noopener" role="listitem" aria-label="Exchange portal">
+    <a class="tool-item fill" href="https://gem.ntu.edu.sg/" target="_blank" rel="noopener">
       <div class="tool-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
       </div>
       <span class="tool-name">Exchange</span>
       <span class="tool-desc">Study abroad</span>
     </a>
-    <a class="tool-item fill" href="https://ntusg.starrezhousing.com/StarRezStudentPortal/60E2C0B3/1/1/Home-Home?UrlToken=CFD12569" target="_blank" rel="noopener" role="listitem" aria-label="Hall portal housing">
+    <a class="tool-item fill" href="https://ntusg.starrezhousing.com/StarRezStudentPortal/60E2C0B3/1/1/Home-Home?UrlToken=CFD12569" target="_blank" rel="noopener">
       <div class="tool-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </div>
@@ -406,7 +405,6 @@
 </div>
 </section>
 
-</div>
 </main>
 
 <!-- Footer -->
@@ -460,6 +458,6 @@
 
 <script src="data.js?v=7"></script>
 <script src="vendor/lenis.min.js?v=1"></script>
-<script src="script.js?v=10"></script>
+<script src="script.js?v=11"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 /* ——— SEARCH FUNCTION ——— */
 const searchInput = document.getElementById('searchInput');
 const searchResults = document.getElementById('searchResults');
+const searchStatus = document.getElementById('searchStatus');
 const intentMap = {
   'grades': ['Transcript', 'Degree Audit', 'FGO Option'],
   'grade': ['Transcript', 'Degree Audit', 'FGO Option'],
@@ -26,8 +27,8 @@ const intentMap = {
   'booking': ['Library Booking', 'Facilities Booking'],
   'sport': ['Facilities Booking'],
   'sports': ['Sports & Rec Centre'],
-  'bus': ['Campus Shuttle'],
-  'shuttle': ['Campus Shuttle'],
+  'bus': ['Campus Shuttle (Omnibus)'],
+  'shuttle': ['Campus Shuttle (Omnibus)'],
   'map': ['Campus Map'],
   'canteen': ['Food & Beverage'],
   'food': ['Food & Beverage'],
@@ -71,7 +72,7 @@ function searchLinks(query) {
   allClubs.forEach(club => {
     if (!results.find(r => r.name === club.name)) {
       if (club.name.toLowerCase().includes(q) || club.desc.toLowerCase().includes(q) || club.type.toLowerCase().includes(q)) {
-        results.push({ name: club.name, cat: 'Club', url: club.instagram ? `https://instagram.com/${club.instagram}` : '#' });
+        results.push({ name: club.name, cat: 'Club', url: club.instagram ? `https://instagram.com/${club.instagram}` : '#clubs' });
       }
     }
   });
@@ -82,18 +83,26 @@ function searchLinks(query) {
 searchInput.addEventListener('input', () => {
   const q = searchInput.value;
   const results = searchLinks(q);
-  if (results.length === 0 || !q.trim()) {
-    searchResults.innerHTML = '';
+  searchResults.innerHTML = '';
+  if (!q.trim()) {
+    searchStatus.textContent = '';
     searchResults.classList.remove('active');
     return;
   }
-  searchResults.innerHTML = '';
+  searchStatus.textContent = results.length ? `${results.length} ${results.length === 1 ? 'result' : 'results'}. Press the down arrow to reach them.` : 'No matches.';
+  if (!results.length) {
+    const none = document.createElement('p');
+    none.className = 'search-empty';
+    none.textContent = 'No matches. Try a portal, a task like "exam", or a club name.';
+    searchResults.appendChild(none);
+    searchResults.classList.add('active');
+    return;
+  }
   results.forEach(r => {
     const a = document.createElement('a');
     a.className = 'search-result-item';
     a.href = r.url;
-    a.target = '_blank';
-    a.rel = 'noopener';
+    if (r.url !== '#clubs') { a.target = '_blank'; a.rel = 'noopener'; }
     const nameSpan = document.createElement('span');
     nameSpan.className = 'search-result-name';
     nameSpan.textContent = r.name;
@@ -132,9 +141,10 @@ document.addEventListener('click', e => {
 });
 
 searchInput.addEventListener('focus', () => {
+  // On phones, lift the box under the header so results sit above the keyboard
+  if (matchMedia('(max-width: 760px)').matches) scrollTo({ top: scrollY + searchInput.getBoundingClientRect().top - 72, behavior: 'auto' });
   if (searchInput.value.trim()) {
-    const results = searchLinks(searchInput.value);
-    if (results.length > 0) searchResults.classList.add('active');
+    searchResults.classList.add('active');
   }
 });
 
@@ -147,12 +157,6 @@ document.querySelectorAll('.cat-tab').forEach(tab => {
     tab.setAttribute('aria-selected', 'true');
     const panel = document.getElementById(tab.getAttribute('aria-controls'));
     if (panel) panel.classList.add('active');
-  });
-  tab.addEventListener('keydown', e => {
-    const tabs = Array.from(document.querySelectorAll('.cat-tab'));
-    const idx = tabs.indexOf(e.target);
-    if (e.key === 'ArrowRight') { e.preventDefault(); tabs[(idx + 1) % tabs.length].focus(); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); tabs[(idx - 1 + tabs.length) % tabs.length].focus(); }
   });
 });
 
@@ -253,18 +257,20 @@ const clubsGrid = document.getElementById('clubsGrid');
 const clubsCount = document.getElementById('clubsCount');
 
 const clubsMore = document.getElementById('clubsMore');
-const CLUBS_PREVIEW = 24;
+const clubsSearch = document.getElementById('clubsSearch');
+const clubsPhone = matchMedia('(max-width: 760px)');
+const clubsPreview = () => (clubsPhone.matches ? 8 : 24);
 let clubFilter = 'All';
 let clubsExpanded = false;
 
 const instagramSVG = `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`;
 function renderClubs(filter) {
-  const filtered = filter === 'All' ? allClubs : allClubs.filter(c => c.type === filter);
+  const query = clubsSearch.value.trim().toLowerCase();
+  const filtered = allClubs.filter(c => (filter === 'All' || c.type === filter) && (!query || c.name.toLowerCase().includes(query) || c.desc.toLowerCase().includes(query)));
   const count = filtered.length;
   clubsCount.textContent = `${count} ${count === 1 ? 'club' : 'clubs'}`;
-  clubsCount.setAttribute('aria-label', `${count} ${count === 1 ? 'club' : 'clubs'}`);
 
-  const shown = clubsExpanded ? filtered : filtered.slice(0, CLUBS_PREVIEW);
+  const shown = clubsExpanded || query ? filtered : filtered.slice(0, clubsPreview());
   clubsGrid.innerHTML = shown.map((club, i) => {
     const name = escapeHtml(club.name);
     const type = escapeHtml(club.type);
@@ -281,7 +287,7 @@ function renderClubs(filter) {
         <span class="club-card-desc">${desc}</span>
         <div class="club-card-links">${igLink}</div>
       </div>`;
-  }).join('');
+  }).join('') || `<div class="clubs-empty" role="listitem">No clubs match. Try a shorter word, or check the All tab.</div>`;
 
   const hiddenCount = count - shown.length;
   clubsMore.hidden = hiddenCount <= 0;
@@ -313,13 +319,10 @@ document.querySelectorAll('.club-tab').forEach(tab => {
     clubsExpanded = false;
     renderClubs(filter);
   });
-  tab.addEventListener('keydown', e => {
-    const tabs = Array.from(document.querySelectorAll('.club-tab'));
-    const idx = tabs.indexOf(e.target);
-    if (e.key === 'ArrowRight') { e.preventDefault(); tabs[(idx + 1) % tabs.length].focus(); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); tabs[(idx - 1 + tabs.length) % tabs.length].focus(); }
-  });
 });
+
+clubsSearch.addEventListener('input', () => { clubsExpanded = false; renderClubs(clubFilter); });
+clubsPhone.addEventListener('change', () => renderClubs(clubFilter));
 
 renderClubs('All');
 
@@ -424,6 +427,25 @@ tabLists.forEach(list => {
     if (!tab) return;
     moveInk(list, true);
     tab.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+  });
+});
+/* Standard tab keys: one tab stop per list, arrows and Home/End move between tabs */
+tabLists.forEach(list => {
+  const tabs = Array.from(list.querySelectorAll('[role="tab"]'));
+  const syncStops = () => {
+    const current = tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0];
+    tabs.forEach(t => { t.tabIndex = t === current ? 0 : -1; });
+  };
+  syncStops();
+  new MutationObserver(syncStops).observe(list, { subtree: true, attributes: true, attributeFilter: ['aria-selected'] });
+  list.addEventListener('keydown', e => {
+    const idx = tabs.indexOf(e.target);
+    if (idx === -1) return;
+    const next = { ArrowRight: tabs[(idx + 1) % tabs.length], ArrowLeft: tabs[(idx - 1 + tabs.length) % tabs.length], Home: tabs[0], End: tabs[tabs.length - 1] }[e.key];
+    if (!next) return;
+    e.preventDefault();
+    next.focus();
+    next.click();
   });
 });
 const placeInk = () => tabLists.forEach(l => moveInk(l, false));
@@ -891,8 +913,8 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
       const key = dayKey(d);
       const count = events.filter(e => endOf(e) >= now && spansDay(e, key)).length;
       const label = `${fmtWd(d)} ${fmtDay(d)} ${fmtMon(d)}, ${count ? `${count} event${count > 1 ? 's' : ''}` : 'no events'}`;
-      return `<button type="button" class="tide-day" data-day="${key}" data-count="${count}" aria-label="${label}" aria-pressed="false"${count ? '' : ' disabled'}>
-        <span class="tide-wd">${fmtWd(d).slice(0, 1)}</span><span class="tide-dn">${fmtDay(d)}</span></button>`;
+      return `<button type="button" class="tide-day" data-day="${key}" data-count="${count}" aria-pressed="false"${count ? '' : ' disabled'}>
+        <span class="tide-wd" aria-hidden="true">${fmtWd(d).slice(0, 1)}</span><span class="tide-dn" aria-hidden="true">${fmtDay(d)}</span><span class="sr-only">${label}</span></button>`;
     }).join('');
     setGoals();
   }
@@ -1188,36 +1210,20 @@ document.querySelectorAll('.nav-links a, .footer-legal-link').forEach(el => {
   spy();
 })();
 
-/* Hero hand-off: the page rises on a curve that swells then flattens, while the hero sinks into shade */
+/* Hero exit: the words drift and fade as the page scrolls past them. Paused while search is in use. */
 (function () {
   const hero = document.querySelector('.hero');
   const copy = hero && hero.querySelector('.hero-copy');
-  const shade = hero && hero.querySelector('.hero-shade');
-  const edge = document.querySelector('.sheet-edge path');
-  if (!hero || !edge) return;
-  const place = () => hero.style.setProperty('--hero-top', `${Math.min(0, innerHeight - hero.offsetHeight)}px`);
-  place();
-  addEventListener('resize', place);
-  if (reduceMotion) return;
-  let p = 0, running = false;
-  const goal = () => {
-    const travel = hero.offsetHeight > innerHeight ? hero.offsetHeight : innerHeight;
-    return Math.max(0, Math.min(1, scrollY / travel));
-  };
+  if (!copy || reduceMotion) return;
+  let ticking = false;
   function paint() {
-    const depth = Math.sin(Math.PI * Math.min(1, p * 1.05)) * 100;
-    edge.setAttribute('d', `M0,100 C360,${(100 - depth).toFixed(1)} 1080,${(100 - depth).toFixed(1)} 1440,100 Z`);
-    if (copy) copy.style.transform = p ? `translateY(${(-p * 90).toFixed(1)}px) scale(${(1 - p * .07).toFixed(4)})` : '';
-    shade.style.opacity = (p * .9).toFixed(3);
+    ticking = false;
+    const p = copy.contains(document.activeElement) ? 0 : Math.max(0, Math.min(1, scrollY / hero.offsetHeight));
+    copy.style.transform = p ? `translate3d(0,${(p * 70).toFixed(1)}px,0)` : '';
+    copy.style.opacity = p ? (1 - p * 1.1).toFixed(3) : '';
   }
-  function frame() {
-    const g = goal();
-    p += (g - p) * .14;
-    if (Math.abs(g - p) < .0005) { p = g; running = false; } else requestAnimationFrame(frame);
-    paint();
-  }
-  addEventListener('scroll', () => { if (!running) { running = true; requestAnimationFrame(frame); } }, { passive: true });
-  p = goal(); paint();
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } }, { passive: true });
+  paint();
 })();
 
 /* Heading rules: a hairline draws across and a marker leads it, tied to scroll position */

@@ -1,9 +1,10 @@
 /* NTU Atlas events worker
-   - cron: reads public Telegram channels, extracts events with Groq, stores them in KV
+   - cron: reads NTU's events page and public Telegram channels (extracting those with Groq), stores events in KV
    - email: accepts forwarded announcement emails from allowed senders
    - fetch: serves GET /api/events to the site */
 import PostalMime from 'postal-mime';
 import { fetchChannel } from './telegram.js';
+import { fetchNtuEvents } from './ntu.js';
 import { extractEvents } from './extract.js';
 import { senderVerified } from './safety.js';
 
@@ -42,25 +43,31 @@ async function saveEvents(env, incoming) {
   return events.length;
 }
 
-async function ingestTelegram(env) {
-  const found = [];
-  for (const channel of list(env.TELEGRAM_CHANNELS)) {
-    const lastKey = `tg:${channel}:last`;
-    const last = parseInt(await env.EVENTS_KV.get(lastKey) || '0', 10);
-    let posts = (await fetchChannel(channel)).filter(p => p.id > last);
-    if (!last) posts = posts.slice(-FIRST_RUN_POSTS);
-    for (let i = 0; i < posts.length; i += BATCH) {
-      if (i) await new Promise(r => setTimeout(r, BATCH_PAUSE_MS));
-      const chunk = posts.slice(i, i + BATCH);
-      const events = await extractEvents(env, chunk.map(p => ({ ref: String(p.id), postedAt: p.postedAt, text: p.text })));
-      for (const e of events) {
-        const post = chunk.find(p => String(p.id) === String(e.ref));
-        delete e.ref;
-        e.source = { type: 'telegram', channel, url: post ? post.url : `https://t.me/${channel}` };
-        found.push(e);
-      }
+async function readChannel(env, channel, found) {
+  const lastKey = `tg:${channel}:last`;
+  const last = parseInt(await env.EVENTS_KV.get(lastKey) || '0', 10);
+  let posts = (await fetchChannel(channel)).filter(p => p.id > last);
+  if (!last) posts = posts.slice(-FIRST_RUN_POSTS);
+  for (let i = 0; i < posts.length; i += BATCH) {
+    if (i) await new Promise(r => setTimeout(r, BATCH_PAUSE_MS));
+    const chunk = posts.slice(i, i + BATCH);
+    const events = await extractEvents(env, chunk.map(p => ({ ref: String(p.id), postedAt: p.postedAt, text: p.text })));
+    for (const e of events) {
+      const post = chunk.find(p => String(p.id) === String(e.ref));
+      delete e.ref;
+      e.source = { type: 'telegram', channel, url: post ? post.url : `https://t.me/${channel}` };
+      found.push(e);
     }
-    if (posts.length) await env.EVENTS_KV.put(lastKey, String(Math.max(...posts.map(p => p.id))));
+  }
+  if (posts.length) await env.EVENTS_KV.put(lastKey, String(Math.max(...posts.map(p => p.id))));
+}
+
+// One source failing must not cost the others their events; a failed channel retries next run
+async function ingestSources(env) {
+  const found = [];
+  try { found.push(...await fetchNtuEvents()); } catch (err) { console.log('NTU events failed:', err.message); }
+  for (const channel of list(env.TELEGRAM_CHANNELS)) {
+    try { await readChannel(env, channel, found); } catch (err) { console.log(`Telegram ${channel} failed:`, err.message); }
   }
   return saveEvents(env, found);
 }
@@ -99,13 +106,13 @@ export default {
     }
     if (url.pathname === '/api/refresh' && req.method === 'POST') {
       if (!env.ADMIN_TOKEN || req.headers.get('authorization') !== `Bearer ${env.ADMIN_TOKEN}`) return json({ error: 'unauthorised' }, 401);
-      const count = await ingestTelegram(env);
+      const count = await ingestSources(env);
       return json({ ok: true, stored: count });
     }
     return json({ error: 'not found' }, 404);
   },
   async scheduled(event, env, ctx) {
-    ctx.waitUntil(ingestTelegram(env));
+    ctx.waitUntil(ingestSources(env));
   },
   async email(message, env, ctx) {
     await ingestEmail(message, env);
