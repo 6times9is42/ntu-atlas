@@ -6,13 +6,16 @@ import PostalMime from 'postal-mime';
 import { fetchChannel } from './telegram.js';
 import { fetchNtuEvents } from './ntu.js';
 import { extractEvents } from './extract.js';
-import { senderVerified } from './safety.js';
+import { senderVerified, sameEvent } from './safety.js';
 
 const STORE_KEY = 'events';
-const FIRST_RUN_POSTS = 15;
+const NEXT_CHANNEL_KEY = 'tg:next-channel';
+const FIRST_RUN_POSTS = 9;
 // Groq's free tier allows 8,000 tokens a minute, and big batches lose posts
 const BATCH = 3;
 const BATCH_PAUSE_MS = 20000;
+// A Cloudflare run allows 50 outside requests: one page per channel, one for NTU, and this many Groq calls
+const MAX_BATCHES_PER_RUN = 25;
 
 const list = s => String(s || '').split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
 
@@ -38,18 +41,23 @@ async function saveEvents(env, incoming) {
   const events = [...byId.values()]
     .filter(e => new Date(e.end || e.start).getTime() > cutoff)
     .sort((a, b) => new Date(a.start) - new Date(b.start))
+    // Channels cross-post the same event under slightly different titles
+    .filter((e, i, all) => !all.slice(0, i).some(earlier => sameEvent(earlier, e)))
     .slice(0, 300);
   await env.EVENTS_KV.put(STORE_KEY, JSON.stringify({ updated: new Date().toISOString(), events }));
   return events.length;
 }
 
-async function readChannel(env, channel, found) {
+// Returns false if the batch budget ran out before this channel was finished
+async function readChannel(env, channel, found, budget) {
   const lastKey = `tg:${channel}:last`;
   const last = parseInt(await env.EVENTS_KV.get(lastKey) || '0', 10);
   let posts = (await fetchChannel(channel)).filter(p => p.id > last);
   if (!last) posts = posts.slice(-FIRST_RUN_POSTS);
   for (let i = 0; i < posts.length; i += BATCH) {
-    if (i) await new Promise(r => setTimeout(r, BATCH_PAUSE_MS));
+    if (budget.left <= 0) return false;
+    budget.left--;
+    if (budget.used++) await new Promise(r => setTimeout(r, env.BATCH_PAUSE_MS === undefined ? BATCH_PAUSE_MS : Number(env.BATCH_PAUSE_MS)));
     const chunk = posts.slice(i, i + BATCH);
     const events = await extractEvents(env, chunk.map(p => ({ ref: String(p.id), postedAt: p.postedAt, text: p.text })));
     for (const e of events) {
@@ -58,17 +66,29 @@ async function readChannel(env, channel, found) {
       e.source = { type: 'telegram', channel, url: post ? post.url : `https://t.me/${channel}` };
       found.push(e);
     }
+    // Save before moving the marker, so a run that gets cut off never loses events
+    if (events.length) await saveEvents(env, found);
+    await env.EVENTS_KV.put(lastKey, String(Math.max(...chunk.map(p => p.id))));
   }
-  if (posts.length) await env.EVENTS_KV.put(lastKey, String(Math.max(...posts.map(p => p.id))));
+  return true;
 }
 
-// One source failing must not cost the others their events; a failed channel retries next run
+// One source failing must not cost the others their events; a failed channel retries next run.
+// When the budget runs out, the next run picks up from the unfinished channel.
 async function ingestSources(env) {
   const found = [];
   try { found.push(...await fetchNtuEvents()); } catch (err) { console.log('NTU events failed:', err.message); }
-  for (const channel of list(env.TELEGRAM_CHANNELS)) {
-    try { await readChannel(env, channel, found); } catch (err) { console.log(`Telegram ${channel} failed:`, err.message); }
+  const channels = list(env.TELEGRAM_CHANNELS);
+  const first = parseInt(await env.EVENTS_KV.get(NEXT_CHANNEL_KEY) || '0', 10) % channels.length || 0;
+  const budget = { left: MAX_BATCHES_PER_RUN, used: 0 };
+  let resumeAt = 0;
+  for (let n = 0; n < channels.length; n++) {
+    const at = (first + n) % channels.length;
+    try {
+      if (!await readChannel(env, channels[at], found, budget)) { resumeAt = at; break; }
+    } catch (err) { console.log(`Telegram ${channels[at]} failed:`, err.message); }
   }
+  await env.EVENTS_KV.put(NEXT_CHANNEL_KEY, String(resumeAt));
   return saveEvents(env, found);
 }
 

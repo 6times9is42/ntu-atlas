@@ -18,7 +18,7 @@ id = "9faa53e5d30b4e74975571f6b7abe24a"
 
 [vars]
 # Public Telegram channels to read (comma-separated usernames)
-TELEGRAM_CHANNELS = "ntusu,ntusc"
+TELEGRAM_CHANNELS = "ntusu,ntustudentaffairs,ntuwellbeing,ntuwsc,ntusc,ntucac,ntuiic,scdsannouncements,maenoticeboard,ntusoh,ntuhall6,ntuhall7,ntuhall10,ntuhall12,ntusaraca"
 GROQ_MODEL = "openai/gpt-oss-120b"
 
 # Secrets (set with `npx wrangler secret put NAME`, never commit them):

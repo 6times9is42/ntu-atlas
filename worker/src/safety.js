@@ -17,6 +17,17 @@ export function linkFromSource(link, sourceText) {
   return sourceText.includes(link) ? cleanUrl(link) : null;
 }
 
+const titleWords = t => new Set(String(t).toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 2));
+
+// Same start day and mostly the same title words
+export function sameEvent(a, b) {
+  if (String(a.start).slice(0, 10) !== String(b.start).slice(0, 10)) return false;
+  const x = titleWords(a.title), y = titleWords(b.title);
+  if (!x.size || !y.size) return false;
+  const shared = [...x].filter(w => y.has(w)).length;
+  return shared / Math.min(x.size, y.size) >= 0.75 && shared >= 2;
+}
+
 const sameOrgDomain = (found, domain) => found === domain || found.endsWith(`.${domain}`);
 
 /* True only if Cloudflare's own Authentication-Results header shows the sender's domain

@@ -2,7 +2,7 @@
 
 A Cloudflare Worker that keeps `ntuatlas.com/api/events` filled with upcoming NTU events.
 
-- **Every two hours** it reads NTU's public events page directly, plus public Telegram channels (the NTU Students' Union and Sports Club by default),
+- **Every two hours** it reads NTU's public events page directly, plus public Telegram channels (see `TELEGRAM_CHANNELS` in `wrangler.toml`),
   asks Groq to turn new announcements into structured events, and stores them in Workers KV.
 - **Forwarded emails** sent to an address you set up are processed the same way.
 - The site fetches `/api/events`. Until this Worker is live, the Events section simply stays hidden.

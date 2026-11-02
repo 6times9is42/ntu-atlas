@@ -23,7 +23,8 @@ export function htmlToText(html) {
 
 export function parseChannel(html, channel) {
   const posts = [];
-  const parts = html.split(`data-post="${channel}/`).slice(1);
+  // Telegram keeps the channel's own capitals here, and our list is lowercase
+  const parts = html.split(new RegExp(`data-post="${channel}/`, 'i')).slice(1);
   for (const part of parts) {
     const id = parseInt(part, 10);
     const textMatch = part.match(/tgme_widget_message_text[^>]*>([\s\S]*?)<\/div>/);
