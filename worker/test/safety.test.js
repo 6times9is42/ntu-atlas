@@ -33,5 +33,7 @@ assert.equal(sameEvent(ev('Paws & Pause Therapy Dog Session'), ev('Therapy Dog S
 assert.equal(sameEvent(ev('Paws & Pause Therapy Dog Session'), ev('Paws & Pause Therapy Dog Session', '2026-11-04T12:00:00+08:00')), false);
 assert.equal(sameEvent(ev('Hall 6 Movie Night'), ev('Hall 7 Bonding Night')), false);
 assert.equal(sameEvent(ev('Career Fair'), ev('Career Talk')), false);
+assert.equal(sameEvent(ev('Hall 6 Movie Night'), ev('Hall 7 Movie Night')), false);
+assert.equal(sameEvent(ev('NTUVA Audition Bands'), ev('NTUVA Audition Bands and Dance Crews Open Call for Everyone')), false);
 
 console.log('safety checks passed');

@@ -51,10 +51,16 @@ export async function extractEvents(env, items) {
   });
 }
 
+const optionalText = v => (typeof v === 'string' && v.trim() ? v.trim() : null);
+
+// Model output is untrusted: anything malformed is dropped here, so it can never break saving
 function validEvent(e) {
-  if (!e || typeof e.title !== 'string' || !e.title.trim()) return false;
-  if (!e.start || isNaN(new Date(e.start))) return false;
-  if (e.end && (isNaN(new Date(e.end)) || new Date(e.end) < new Date(e.start))) e.end = null;
+  if (!e || typeof e !== 'object' || typeof e.title !== 'string' || !e.title.trim()) return false;
+  if (typeof e.start !== 'string' || isNaN(new Date(e.start))) return false;
+  if (typeof e.end !== 'string' || isNaN(new Date(e.end)) || new Date(e.end) < new Date(e.start)) e.end = null;
+  e.title = e.title.trim().slice(0, 120);
+  for (const k of ['venue', 'organiser', 'description', 'link']) e[k] = optionalText(e[k]);
+  e.allDay = e.allDay === true;
   if (!CATEGORIES.includes(e.category)) e.category = 'Other';
   return true;
 }

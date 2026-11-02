@@ -13,6 +13,8 @@ globalThis.fetch = async (url, opts) => {
   const tg = url.match(/t\.me\/s\/(\w+)/);
   if (tg) return new Response(page(tg[1], 9));
   groqCalls++;
+  // A malformed event from the model must be dropped, not stall the channel
+  if (groqCalls === 1) return new Response(JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify({ events: [{ ref: '1', title: 'Bad', start: 1730000000000 }, { ref: '1', title: ['x'], start: '2026-12-01T10:00:00+08:00' }] }) } }] }));
   const ref = JSON.parse(opts.body).messages[1].content.match(/Announcement (\d+)/)[1];
   const content = JSON.stringify({ events: [{ ref, title: `Event ${groqCalls}`, start: `2026-12-${String(groqCalls % 28 + 1).padStart(2, '0')}T10:00:00+08:00`, category: 'Talks' }] });
   return new Response(JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content } }] }));

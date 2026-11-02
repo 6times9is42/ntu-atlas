@@ -30,6 +30,8 @@ function eventId(e) {
   return `ev${(h >>> 0).toString(36)}`;
 }
 
+const trust = e => (e.source && e.source.type === 'telegram' ? 1 : 0);
+
 async function saveEvents(env, incoming) {
   const store = await loadStore(env);
   const byId = new Map(store.events.map(e => [e.id, e]));
@@ -38,12 +40,12 @@ async function saveEvents(env, incoming) {
     byId.set(e.id, { ...byId.get(e.id), ...e });
   }
   const cutoff = Date.now() - 12 * 36e5;
-  const events = [...byId.values()]
-    .filter(e => new Date(e.end || e.start).getTime() > cutoff)
-    .sort((a, b) => new Date(a.start) - new Date(b.start))
-    // Channels cross-post the same event under slightly different titles
-    .filter((e, i, all) => !all.slice(0, i).some(earlier => sameEvent(earlier, e)))
-    .slice(0, 300);
+  // Channels cross-post the same event under slightly different titles. NTU's own listing wins over Telegram.
+  const kept = [];
+  for (const e of [...byId.values()].sort((a, b) => trust(a) - trust(b))) {
+    if (new Date(e.end || e.start).getTime() > cutoff && !kept.some(k => sameEvent(k, e))) kept.push(e);
+  }
+  const events = kept.sort((a, b) => new Date(a.start) - new Date(b.start)).slice(0, 300);
   await env.EVENTS_KV.put(STORE_KEY, JSON.stringify({ updated: new Date().toISOString(), events }));
   return events.length;
 }
