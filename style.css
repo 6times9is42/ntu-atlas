@@ -479,6 +479,14 @@ a.event-venue:hover { color: var(--ink); text-decoration-color: currentColor; }
 .event-btn.is-primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .event-src { font-size: 13.5px; color: var(--ink-3); transition: color .15s ease; }
 .event-src:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.events-more {
+  display: block; width: 100%; min-height: 52px; padding: 14px; border-bottom: 1px solid var(--line);
+  font-size: 15px; font-weight: 600; color: var(--ink-2); text-align: left;
+  transition: color .15s ease;
+}
+.events-more:hover { color: var(--ink); }
+.events-more:focus-visible { outline: 2px solid var(--needle); outline-offset: -2px; }
+.event-title:focus { outline: none; }
 .events-empty { padding: 40px 14px; color: var(--ink-2); }
 .events-empty strong { display: block; color: var(--ink); font-size: 18px; margin-bottom: 4px; }
 .event.is-skeleton { animation: none; }

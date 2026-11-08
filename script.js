@@ -669,6 +669,18 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   window.addEventListener('resize', layout);
   window.addEventListener('scroll', update, { passive: true });
   track.addEventListener('scroll', update, { passive: true });
+
+  // A sideways swipe moves the route too: while pinned it's page scroll, so pass it on as vertical
+  section.addEventListener('wheel', e => {
+    if (!section.classList.contains('is-pinned') || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    const start = section.getBoundingClientRect().top + padTop;
+    const p = dist > 0 ? -start / dist : 0;
+    if ((e.deltaX < 0 && p <= 0) || (e.deltaX > 0 && p >= 1)) return;
+    e.preventDefault();
+    const dx = e.deltaMode === 1 ? e.deltaX * 16 : e.deltaX;
+    if (window.lenis) window.lenis.scrollTo(window.lenis.targetScroll + dx);
+    else scrollBy(0, dx);
+  }, { passive: false });
 })();
 
 /* ——— POINTER: spotlight, magnetic buttons, trailing cursor ——— */
@@ -784,6 +796,14 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   let events = [];
   let range = 'week';
   let selectedDay = null;
+  // Show a few at a time so a busy week doesn't bury the rest of the page
+  const PAGE = () => innerWidth <= 760 ? 3 : 5;
+  let limit = PAGE(), lastView = '';
+  const more = document.createElement('button');
+  more.type = 'button';
+  more.className = 'events-more';
+  more.hidden = true;
+  list.after(more);
 
   const dayKey = d => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(d);
   const fmtDay = d => new Intl.DateTimeFormat('en-SG', { timeZone: TZ, day: 'numeric' }).format(d);
@@ -830,7 +850,13 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
   };
   function render() {
     const now = new Date();
-    const shown = events.filter(e => inRange(e, now)).sort((a, b) => new Date(a.start) - new Date(b.start));
+    const all = events.filter(e => inRange(e, now)).sort((a, b) => new Date(a.start) - new Date(b.start));
+    const view = `${range}|${selectedDay}`;
+    if (view !== lastView) { lastView = view; limit = PAGE(); }
+    const shown = all.slice(0, limit);
+    const left = all.length - shown.length;
+    more.hidden = all.length <= PAGE();
+    more.textContent = !left ? 'Show fewer' : left > PAGE() ? `Show ${PAGE()} more (${left} left)` : `Show ${left} more`;
     if (!shown.length) {
       const [t, d] = EMPTY[range];
       list.innerHTML = `<li class="events-empty"><strong>${t}</strong>${d}</li>`;
@@ -976,6 +1002,23 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     a.download = `${ev.title.replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'event'}.ics`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+
+  more.addEventListener('click', () => {
+    const showing = list.querySelectorAll('.event[data-idx]').length;
+    const collapse = more.textContent === 'Show fewer';
+    limit = collapse ? PAGE() : limit + PAGE();
+    render();
+    if (collapse) {
+      const top = section.querySelector('.events-tabs');
+      if (top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'start' });
+    } else {
+      // the new rows start animating from index 0, and focus lands on the first of them
+      list.querySelectorAll('.event[data-idx]').forEach((row, i) => row.style.setProperty('--i', Math.max(0, i - showing)));
+      const first = list.querySelectorAll('.event[data-idx]')[showing];
+      const title = first && first.querySelector('.event-title');
+      if (title) { title.tabIndex = -1; title.focus({ preventScroll: true }); }
+    }
   });
 
   section.querySelectorAll('.events-tab').forEach(tab => tab.addEventListener('click', () => {
@@ -1144,9 +1187,34 @@ document.querySelectorAll('.nav-links a, .footer-legal-link').forEach(el => {
   }
   if (reduceMotion || !finePointer || innerWidth < 961) return;
   const groups = [];
-  if (word) groups.push({ box: word, base: 75, max: 90, reach: 260, letters: [...word.querySelectorAll('.hero-char')] });
-  document.querySelectorAll('.section-title').forEach(h => groups.push({ box: h, base: 80, max: 98, reach: 130, letters: [...h.querySelectorAll('.title-char')] }));
+  if (word) groups.push({ box: word, base: 75, max: 85, reach: 300, letters: [...word.querySelectorAll('.hero-char')] });
+  document.querySelectorAll('.section-title').forEach(h => groups.push({ box: h, base: 80, max: 96, reach: 140, letters: [...h.querySelectorAll('.title-char')] }));
   groups.forEach(g => { g.values = g.letters.map(() => g.base); });
+  /* Letter centres are measured once at rest. Measuring them live fed back on itself:
+     a widened letter pushed its neighbours, which changed their pull, so the word jittered.
+     The width a letter gains is also taken back out of the spacing, so the word keeps its
+     length and letters part around the pointer instead of the line sliding about. */
+  function measure() {
+    groups.forEach(g => {
+      g.letters.forEach(el => { el.style.letterSpacing = ''; });
+      g.letters.forEach(el => { el.style.fontVariationSettings = `'wdth' ${g.max}`; });
+      const wide = g.letters.map(el => el.getBoundingClientRect().width);
+      g.letters.forEach(el => { el.style.fontVariationSettings = ''; });
+      const r = g.box.getBoundingClientRect();
+      g.spacing = parseFloat(getComputedStyle(g.letters[0]).letterSpacing) || 0;
+      g.gain = [];
+      g.centres = g.letters.map((el, i) => {
+        const b = el.getBoundingClientRect();
+        g.gain.push(Math.max(0, wide[i] - b.width));
+        return [b.left + b.width / 2 - r.left, b.top + b.height / 2 - r.top];
+      });
+      g.values = g.letters.map(() => g.base);
+    });
+  }
+  measure();
+  if (document.fonts) document.fonts.ready.then(measure);
+  let mt;
+  addEventListener('resize', () => { clearTimeout(mt); mt = setTimeout(measure, 150); });
   let px = -9999, py = -9999, running = false;
   function frame() {
     let moving = false;
@@ -1154,17 +1222,22 @@ document.querySelectorAll('.nav-links a, .footer-legal-link').forEach(el => {
       const r = g.box.getBoundingClientRect();
       const near = px > r.left - g.reach && px < r.right + g.reach && py > r.top - g.reach && py < r.bottom + g.reach;
       if (!near && g.values.every(v => v === g.base)) return;
+      const goals = g.centres.map(([cx, cy]) => {
+        const pull = near ? Math.max(0, 1 - Math.hypot(px - r.left - cx, py - r.top - cy) / g.reach) : 0;
+        // smoothstep: no sharp edge where the reach begins
+        return g.base + (g.max - g.base) * pull * pull * (3 - 2 * pull);
+      });
       g.letters.forEach((el, i) => {
-        const b = el.getBoundingClientRect();
-        const pull = near ? Math.max(0, 1 - Math.hypot(px - (b.left + b.width / 2), py - (b.top + b.height / 2)) / g.reach) : 0;
-        const goal = g.base + (g.max - g.base) * pull * pull;
-        let v = g.values[i] + (goal - g.values[i]) * .16;
-        if (Math.abs(goal - v) < .05) v = goal; else moving = true;
+        let v = g.values[i] + (goals[i] - g.values[i]) * .1;
+        if (Math.abs(goals[i] - v) < .05) v = goals[i]; else moving = true;
         if (v !== g.values[i]) {
           g.values[i] = v;
           el.style.fontVariationSettings = v === g.base ? '' : `'wdth' ${v.toFixed(1)}`;
         }
       });
+      const extra = g.values.reduce((sum, v, i) => sum + g.gain[i] * (v - g.base) / (g.max - g.base), 0);
+      const spacing = extra ? `${(g.spacing - extra / g.letters.length).toFixed(2)}px` : '';
+      g.letters.forEach(el => { el.style.letterSpacing = spacing; });
     });
     if (moving) requestAnimationFrame(frame); else running = false;
   }
