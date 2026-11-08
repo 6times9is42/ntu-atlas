@@ -436,7 +436,9 @@ footer { position: relative; margin-top: clamp(140px, 16vw, 220px); background: 
 @keyframes dayRoll { from { transform: translateY(100%); } to { transform: none; } }
 .event-title { transition: transform .35s var(--ease-out); }
 .event-count { font-weight: 600; color: var(--ink-2); }
-.hero-char { letter-spacing: -.04em; }
+.hero-char { letter-spacing: -.04em; display: inline-block; transform-origin: 50% 100%; }
+.hero-title .line > .hero-word.is-inked { color: var(--ink); background: none; }
+.title-char { transform-origin: 50% 100%; }
 .event-progress {
   position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--needle);
   transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform 1s linear;

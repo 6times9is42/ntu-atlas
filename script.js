@@ -675,10 +675,13 @@ const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (!section.classList.contains('is-pinned') || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
     const start = section.getBoundingClientRect().top + padTop;
     const p = dist > 0 ? -start / dist : 0;
-    if ((e.deltaX < 0 && p <= 0) || (e.deltaX > 0 && p >= 1)) return;
+    // only once the section fills the screen, and not past either end of the route
+    if (section.getBoundingClientRect().top > innerHeight * .2 || p > 1.02 || (e.deltaX < 0 && p <= 0) || (e.deltaX > 0 && p >= 1)) return;
     e.preventDefault();
+    e.stopPropagation();
     const dx = e.deltaMode === 1 ? e.deltaX * 16 : e.deltaX;
-    if (window.lenis) window.lenis.scrollTo(window.lenis.targetScroll + dx);
+    // follow the swipe 1:1; the trackpad already supplies its own momentum
+    if (window.lenis) window.lenis.scrollTo(window.lenis.targetScroll + dx, { immediate: true, force: true });
     else scrollBy(0, dx);
   }, { passive: false });
 })();
@@ -1178,37 +1181,31 @@ document.querySelectorAll('.nav-links a, .footer-legal-link').forEach(el => {
   requestAnimationFrame(frame);
 })();
 
-/* Display type breathes toward the pointer: letters near it widen on the font's width axis */
+/* Display type rises toward the pointer: letters near it lift and stretch a little.
+   Transforms only, so nothing reflows and neighbouring letters never collide. */
 (function () {
   const word = document.querySelector('.hero-word');
   if (word) {
     const text = word.textContent;
-    word.innerHTML = `<span class="sr-only">${escapeHtml(text)}</span><span aria-hidden="true">${[...text].map(ch => `<span class="hero-char">${escapeHtml(ch)}</span>`).join('')}</span>`;
+    word.innerHTML = `<span class="sr-only">${escapeHtml(text)}</span><span aria-hidden="true">${[...text].map(ch => ch === ' ' ? ' ' : `<span class="hero-char">${escapeHtml(ch)}</span>`).join('')}</span>`;
+    // once the ink has filled, paint it solid and unclip the line so lifted letters stay whole
+    word.addEventListener('animationend', e => {
+      if (e.animationName !== 'inkFill') return;
+      word.classList.add('is-inked');
+      word.parentElement.style.overflow = 'visible';
+    });
   }
   if (reduceMotion || !finePointer || innerWidth < 961) return;
   const groups = [];
-  if (word) groups.push({ box: word, base: 75, max: 85, reach: 300, letters: [...word.querySelectorAll('.hero-char')] });
-  document.querySelectorAll('.section-title').forEach(h => groups.push({ box: h, base: 80, max: 96, reach: 140, letters: [...h.querySelectorAll('.title-char')] }));
-  groups.forEach(g => { g.values = g.letters.map(() => g.base); });
-  /* Letter centres are measured once at rest. Measuring them live fed back on itself:
-     a widened letter pushed its neighbours, which changed their pull, so the word jittered.
-     The width a letter gains is also taken back out of the spacing, so the word keeps its
-     length and letters part around the pointer instead of the line sliding about. */
+  if (word) groups.push({ box: word, lift: .05, stretch: .06, reach: 280, letters: [...word.querySelectorAll('.hero-char')] });
+  document.querySelectorAll('.section-title').forEach(h => groups.push({ box: h, lift: .08, stretch: .08, reach: 140, letters: [...h.querySelectorAll('.title-char')] }));
+  groups.forEach(g => { g.values = g.letters.map(() => 0); });
+  // horizontal centres don't move (nothing reflows), so measure them once
   function measure() {
     groups.forEach(g => {
-      g.letters.forEach(el => { el.style.letterSpacing = ''; });
-      g.letters.forEach(el => { el.style.fontVariationSettings = `'wdth' ${g.max}`; });
-      const wide = g.letters.map(el => el.getBoundingClientRect().width);
-      g.letters.forEach(el => { el.style.fontVariationSettings = ''; });
       const r = g.box.getBoundingClientRect();
-      g.spacing = parseFloat(getComputedStyle(g.letters[0]).letterSpacing) || 0;
-      g.gain = [];
-      g.centres = g.letters.map((el, i) => {
-        const b = el.getBoundingClientRect();
-        g.gain.push(Math.max(0, wide[i] - b.width));
-        return [b.left + b.width / 2 - r.left, b.top + b.height / 2 - r.top];
-      });
-      g.values = g.letters.map(() => g.base);
+      g.size = parseFloat(getComputedStyle(g.box).fontSize) || 16;
+      g.centres = g.letters.map(el => { const b = el.getBoundingClientRect(); return b.left + b.width / 2 - r.left; });
     });
   }
   measure();
@@ -1221,23 +1218,18 @@ document.querySelectorAll('.nav-links a, .footer-legal-link').forEach(el => {
     groups.forEach(g => {
       const r = g.box.getBoundingClientRect();
       const near = px > r.left - g.reach && px < r.right + g.reach && py > r.top - g.reach && py < r.bottom + g.reach;
-      if (!near && g.values.every(v => v === g.base)) return;
-      const goals = g.centres.map(([cx, cy]) => {
-        const pull = near ? Math.max(0, 1 - Math.hypot(px - r.left - cx, py - r.top - cy) / g.reach) : 0;
-        // smoothstep: no sharp edge where the reach begins
-        return g.base + (g.max - g.base) * pull * pull * (3 - 2 * pull);
-      });
+      if (!near && g.values.every(v => v === 0)) return;
+      const dy = py - (r.top + r.height / 2);
       g.letters.forEach((el, i) => {
-        let v = g.values[i] + (goals[i] - g.values[i]) * .1;
-        if (Math.abs(goals[i] - v) < .05) v = goals[i]; else moving = true;
-        if (v !== g.values[i]) {
-          g.values[i] = v;
-          el.style.fontVariationSettings = v === g.base ? '' : `'wdth' ${v.toFixed(1)}`;
-        }
+        const pull = near ? Math.max(0, 1 - Math.hypot(px - r.left - g.centres[i], dy * .6) / g.reach) : 0;
+        const goal = pull * pull * (3 - 2 * pull);
+        let v = g.values[i] + (goal - g.values[i]) * .12;
+        if (Math.abs(goal - v) < .002) v = goal; else moving = true;
+        if (v === g.values[i]) return;
+        g.values[i] = v;
+        el.style.translate = v ? `0 ${(-v * g.lift * g.size).toFixed(2)}px` : '';
+        el.style.scale = v ? `1 ${(1 + v * g.stretch).toFixed(4)}` : '';
       });
-      const extra = g.values.reduce((sum, v, i) => sum + g.gain[i] * (v - g.base) / (g.max - g.base), 0);
-      const spacing = extra ? `${(g.spacing - extra / g.letters.length).toFixed(2)}px` : '';
-      g.letters.forEach(el => { el.style.letterSpacing = spacing; });
     });
     if (moving) requestAnimationFrame(frame); else running = false;
   }
